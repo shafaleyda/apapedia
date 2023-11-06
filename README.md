@@ -9,31 +9,31 @@
 ---
 **Kontrak Tahap 1 Tugas Akhir**
 
-| NPM | Nama Lengkap | Fitur yang akan diselesaikan  |
-| ----------| --- | ---------- | 
-| 2106634534 | Shafa Aleyda Tsabitah | 1 2 3 |
-| 2106751890 | Thalia Fortuna | 4 5 6 |
-| 2106751783 | Nadhif Rahman Alfan | 4 5 6 |
+| NPM | Nama Lengkap | Fitur yang akan diselesaikan                                              |
+| ----------| --- |---------------------------------------------------------------------------| 
+| 2106634534 | Shafa Aleyda Tsabitah | Catalog Service #6<br/>Catalog Service #7<br/>Catalog Service #8          |
+| 2106751890 | Thalia Fortuna | Order Service #7<br/>Order Service #8<br/>Order Service #9                |
+| 2106751783 | Nadhif Rahman Alfan | Order Service #6<br/>Order Service #2<br/>Order Service #1<br/>Frontend Web #5 |
 | 2106751051 | Rangga Yudhistira Brata | 4 5 6 |
-| 2106751606 | Ramya Nareswari Wikantiyoso | 4 5 6 |
+| 2106751606 | Ramya Nareswari Wikantiyoso | Catalog Service #1<br/>Catalog Service #2<br/>Catalog Service #3<br/>Frontend Web #7|
 ---
 **Kontrak Tahap 2 Tugas Akhir**
 
-| NPM | Nama Lengkap | Fitur yang akan diselesaikan  |
-| ----------| --- | ---------- | 
-| 2106634534 | Shafa Aleyda Tsabitah | 1 2 3 |
-| 2106751890 | Thalia Fortuna | 4 5 6 |
-| 2106751783 | Nadhif Rahman Alfan | 4 5 6 |
-| 2106751051 | Rangga Yudhistira Brata | 4 5 6 |
-| 2106751606 | Ramya Nareswari Wikantiyoso | 4 5 6 |
+| NPM | Nama Lengkap | Fitur yang akan diselesaikan                                                       |
+| ----------| --- |------------------------------------------------------------------------------------| 
+| 2106634534 | Shafa Aleyda Tsabitah | Catalog Service #9</br>Catalog Service #10</br>Frontend Web #2</br>Frontend Web #3 |
+| 2106751890 | Thalia Fortuna | Order Service #10</br>Order Service #11</br>Frontend Web #6</br>Frontend Web #8    |
+| 2106751783 | Nadhif Rahman Alfan | Order Service #3</br>Order Service #4</br>Order Service #5</br>Frontend Web #4     |
+| 2106751051 | Rangga Yudhistira Brata | 4 5 6                                                                              |
+| 2106751606 | Ramya Nareswari Wikantiyoso | Catalog Service #4</br>Catalog Service #5</br>Frontend Web #9</br>Frontend Mobile #6    |
 ---
 **Kontrak Tahap 3 Tugas Akhir**
 
 | NPM | Nama Lengkap | Fitur yang akan diselesaikan  |
 | ----------| --- | ---------- | 
-| 2106634534 | Shafa Aleyda Tsabitah | 1 2 3 |
-| 2106751890 | Thalia Fortuna | 4 5 6 |
-| 2106751783 | Nadhif Rahman Alfan | 4 5 6 |
+| 2106634534 | Shafa Aleyda Tsabitah | Frontend Mobile #2 |
+| 2106751890 | Thalia Fortuna | Frontend Mobile #5, #7 |
+| 2106751783 | Nadhif Rahman Alfan | Frontend Mobile #3, #4 |
 | 2106751051 | Rangga Yudhistira Brata | 4 5 6 |
-| 2106751606 | Ramya Nareswari Wikantiyoso | 4 5 6 |
+| 2106751606 | Ramya Nareswari Wikantiyoso | Frontend Mobile #8 |
 ---
