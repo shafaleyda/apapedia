@@ -2,8 +2,10 @@ package com.apapedia.catalogue;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 
-@SpringBootApplication
+@SpringBootApplication()
 public class CatalogueApplication {
 
 	public static void main(String[] args) {
