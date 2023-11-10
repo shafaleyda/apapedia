@@ -1,4 +1,4 @@
-package com.apapedia.order.restcontroller;
+package com.apapedia.order.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -10,8 +10,7 @@ import com.apapedia.order.dto.request.CreateCartRequestDTO;
 import com.apapedia.order.service.CartService;
 
 @RestController
-@RequestMapping("/api")
-public class CartRestController {
+public class CartController {
     @Autowired
     CartMapper cartMapper;
 
