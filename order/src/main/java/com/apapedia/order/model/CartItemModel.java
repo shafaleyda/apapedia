@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,6 +30,7 @@ public class CartItemModel {
     private Integer quantity;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "cart_id", nullable = false)
     private CartModel cart;
 

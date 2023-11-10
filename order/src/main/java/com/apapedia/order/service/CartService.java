@@ -7,4 +7,6 @@ public interface CartService {
     CartModel createCart(CartModel cart);
 
     CartModel getCartById(UUID id);
+
+    CartModel updateCart(CartModel cart);
 }

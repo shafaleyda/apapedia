@@ -10,6 +10,8 @@ import lombok.Setter;
 import java.util.Set;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,5 +31,6 @@ public class CartModel {
     private Long totalPrice = 0L;
 
     @OneToMany(mappedBy = "cart")
+    @JsonIgnore
     private Set<CartItemModel> ListCartItem;
 }

@@ -22,4 +22,9 @@ public class CartServiceImpl implements CartService{
     public CartModel getCartById(UUID id){
         return cartDb.findById(id).get();
     }
+
+    @Override
+    public CartModel updateCart(CartModel cart){
+        return cartDb.save(cart);
+    }
 }
