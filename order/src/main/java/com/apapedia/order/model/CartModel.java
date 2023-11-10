@@ -18,7 +18,6 @@ import java.util.UUID;
 @Table(name = "cart")
 public class CartModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id = UUID.randomUUID();
 
     @NotNull
@@ -29,6 +28,6 @@ public class CartModel {
     @Column(name = "total_price", nullable = false)
     private Long totalPrice = 0L;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
-    private Set<CartItemModel> cartItems;
+    @OneToMany(mappedBy = "cart")
+    private Set<CartItemModel> ListCartItem;
 }

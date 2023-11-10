@@ -17,7 +17,6 @@ import java.util.UUID;
 @Table(name = "cart_item")
 public class CartItemModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id = UUID.randomUUID();
 
     @NotNull
@@ -28,7 +27,8 @@ public class CartItemModel {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "cart_id", nullable = false)
-    private CartModel cartId;
+    private CartModel cart;
+
 }
