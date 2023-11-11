@@ -1,11 +1,13 @@
 package com.apapedia.catalogue.dto.request;
 
 import com.apapedia.catalogue.model.Category;
+import com.apapedia.catalogue.model.Image;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -27,7 +29,7 @@ public class UpdateCatalogRequestDTO extends CreateCatalogueRequestDTO{
     private int stock;
 
     @NotBlank
-    private String image;
+    private Set<Image> image;
 
     private Category categoryName;
 }

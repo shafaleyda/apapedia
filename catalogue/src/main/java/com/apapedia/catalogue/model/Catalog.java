@@ -1,5 +1,6 @@
 package com.apapedia.catalogue.model;
 
+import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.annotations.SQLDelete;
@@ -47,9 +48,9 @@ public class Catalog {
     @Column(name = "stock", nullable = false)
     private int stock;
 
-    @NotNull
-    @Column(name = "image")
-    private String image;
+    @OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+    @JoinTable(name="image", joinColumns={@JoinColumn(name="id_catalog")},inverseJoinColumns={@JoinColumn(name="id_image")})
+    private Set<Image> image;
 
     @NotNull
     @Column(name = "is_deleted", nullable = false)
