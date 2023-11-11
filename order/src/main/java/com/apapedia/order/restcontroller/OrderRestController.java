@@ -54,15 +54,15 @@ public class OrderRestController {
             @Valid @RequestBody UpdateOrderRequestDTO orderDTO, BindingResult bindingResult) {
     
         System.out.println("Received request for orderId: " + id);
+        OrderModel oldOrder = orderRestService.getRestOrderByOrderId(id);
     
         if(bindingResult.hasFieldErrors()){
             System.out.println("Invalid request body: " + bindingResult.getAllErrors());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request body has invalid type or missing field"); 
         } else {
             var order = orderMapper.updateOrderRequestDTOToOrder(orderDTO);
-            System.out.println(order.getCreatedAt());
             order.setId(id);
-            OrderModel orderUpdated = orderRestService.updateRestOrder(order); 
+            OrderModel orderUpdated = orderRestService.updateRestOrder(order, oldOrder); 
             
             System.out.println("Order updated successfully: " + orderUpdated);
             return orderUpdated; 

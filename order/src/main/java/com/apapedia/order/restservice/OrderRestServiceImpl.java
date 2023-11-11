@@ -49,15 +49,19 @@ public class OrderRestServiceImpl implements OrderRestService{
     }
 
     @Override
-    public OrderModel updateRestOrder(OrderModel orderFromDTO){
+    public OrderModel updateRestOrder(OrderModel orderFromDTO, OrderModel oldOrder){
         OrderModel order = getRestOrderByOrderId(orderFromDTO.getId());
         if (order != null){
             order.setUpdatedAt(LocalDateTime.now());
             order.setStatus(orderFromDTO.getStatus());
+            order.setCustomer(oldOrder.getCustomer());
+
+            //new
+            order.setCreatedAt(oldOrder.getCreatedAt());
+            order.setTotalPrice(oldOrder.getTotalPrice());
+            order.setSeller(oldOrder.getSeller());
             orderDb.save(order);
         }
         return order;
     }
-
-    
 }

@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 
 import com.apapedia.order.dto.OrderMapper;
 import com.apapedia.order.dto.request.CreateOrderRequestDTO;
+import com.apapedia.order.model.OrderModel;
 import com.apapedia.order.restservice.OrderRestService;
 import com.github.javafaker.Faker;
 
@@ -30,13 +31,16 @@ public class OrderApplication {
 	CommandLineRunner run(OrderRestService orderRestService, OrderMapper orderMapper){
 		return args -> {
 			for (int i = 0; i < 10; i++) {
-				var orderDTO = new CreateOrderRequestDTO();		
-				orderDTO.setUpdatedAt(LocalDateTime.now());		
-				orderDTO.setStatus(0); // Adjust the range as needed
-				
+				// var orderDTO = new CreateOrderRequestDTO();		
+				// orderDTO.setUpdatedAt(LocalDateTime.now());		
+				// orderDTO.setStatus(0); // Adjust the range as needed
+				// System.out.println(orderDTO);
+				OrderModel order = new OrderModel();
 				// Save the fake order to the database
-				var order = orderMapper.createOrderRequestDTOToOrder(orderDTO);
+				// var order = orderMapper.createOrderRequestDTOToOrder(orderDTO);
 				order.setCreatedAt(LocalDateTime.now());
+				order.setUpdatedAt(LocalDateTime.now());		
+				order.setStatus(0); 
 				order.setTotalPrice(Integer.valueOf((int) (Math.random() * 1000000)));				
 				order.setCustomer(UUID.randomUUID());
 				order.setSeller(UUID.randomUUID());

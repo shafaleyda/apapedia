@@ -12,7 +12,7 @@ public interface OrderRestService {
 
     OrderModel getRestOrderByOrderId(UUID id);
 
-    OrderModel updateRestOrder(OrderModel order);
+    OrderModel updateRestOrder(OrderModel order, OrderModel oldOrder);
 
     List<OrderModel> listByCustomer(UUID customer);
 

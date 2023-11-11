@@ -26,15 +26,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateOrderRequestDTO {
-    // private HashMap<UUID,Integer> items;
+    private HashMap<UUID,Integer> items;
 
-    // private UUID customer;
-
-    private LocalDateTime updatedAt;
-
-    private Integer status;
-
-    // private Integer totalPrice;
-
-    // private UUID seller;
+    private UUID customer;
 }

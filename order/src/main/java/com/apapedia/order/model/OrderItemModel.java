@@ -25,9 +25,8 @@ import lombok.Setter;
 @Entity
 @Table(name="order_item")
 public class OrderItemModel {
-    @Id
-    private UUID id = UUID.randomUUID();
 
+    @Id
     @NotNull
     @Size(max = 100)
     @Column(name = "product_id", nullable = false)
