@@ -9,5 +9,8 @@ public interface CatalogRestService {
     List<Catalog> retrieveRestAllCatalog();
     void deleteCatalog(UUID idCatalog);
     List<Catalog> retrieveRestAllCatalogByCatalogName(String catalogName);
-    List<Catalog> retrieveRestAllCatalogByCatalogPrice(int catalogPrice);
+    List<Catalog> retrieveRestAllCatalogByCatalogPrice(Integer catalogPrice);
+    //Catalog getImage(UUID idCatalog);
+    byte[] decompressImage(byte[] data); 
+    void saveCatalog(Catalog catalog); 
 }

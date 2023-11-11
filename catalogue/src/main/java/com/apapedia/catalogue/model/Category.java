@@ -4,6 +4,7 @@ import java.util.UUID;
 import java.util.List; 
 
 import com.apapedia.catalogue.model.Catalog;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -28,6 +29,7 @@ public class Category {
     @Column(name = "category_name", nullable = false)
     private String categoryName; 
 
-    @OneToMany(mappedBy = "categoryId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Catalog> listCatalog; 
 }

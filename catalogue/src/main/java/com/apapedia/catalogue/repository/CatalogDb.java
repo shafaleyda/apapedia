@@ -10,6 +10,6 @@ import java.util.List;
 public interface CatalogDb extends JpaRepository<Catalog, UUID>{
         List<Catalog> findAll();
         List<Catalog> findByProductNameContainingIgnoreCaseOrderByProductNameAsc(String catalogName);
-        List<Catalog> findByOrderByProductPriceAsc(int productPrice);
+        List<Catalog> findByPriceOrderByPriceAsc(Integer price);
 }
 
