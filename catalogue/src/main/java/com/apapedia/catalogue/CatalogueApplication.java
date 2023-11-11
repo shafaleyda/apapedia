@@ -6,15 +6,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-
 import com.github.javafaker.Faker;
 import jakarta.transaction.Transactional;
 
-
 import java.util.Random;
-
 import java.util.Locale;
 import java.util.List; 
+import java.util.UUID;
 
 import com.apapedia.catalogue.model.Catalog;
 import com.apapedia.catalogue.model.Category;
@@ -66,6 +64,7 @@ public class CatalogueApplication {
 				var category = listCategory.get(randomIndex); 
 				var stock = random.nextInt(100); 
 
+				catalog.setSeller(UUID.randomUUID());
 				catalog.setPrice(price);
 				catalog.setProductName(productName);
 				catalog.setProductDescription(productDescription);

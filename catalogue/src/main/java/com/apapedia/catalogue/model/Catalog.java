@@ -29,7 +29,9 @@ public class Catalog {
     @Column(name = "id_catalog")
     private UUID idCatalog = UUID.randomUUID(); 
 
-    //seller
+    @NotNull
+    @Column(name = "seller")
+    private UUID seller; 
 
     @NotNull
     @Column(name = "price", nullable = false)
@@ -59,4 +61,9 @@ public class Catalog {
     @NotNull
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = Boolean.FALSE;
+
+    //Asumsi satu seller dapat teraosiasi dengan beberapa catalog 
+    // @ManyToOne(fetch = FetchType.EAGER)
+    // @JoinColumn(name = "seller", referencedColumnName = "id_user")
+    // private User seller; 
 }

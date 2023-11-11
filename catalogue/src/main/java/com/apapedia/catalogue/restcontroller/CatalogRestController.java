@@ -1,5 +1,6 @@
 package com.apapedia.catalogue.restcontroller;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,28 +8,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.UUID;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
-import java.io.IOException;
-import java.sql.Blob;
-
-
-import com.apapedia.catalogue.restservice.CatalogRestService;
-
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.UUID;
+import java.sql.SQLException;
+import java.util.List;
+import java.io.IOException;
+
+import com.apapedia.catalogue.restservice.CatalogRestService;
 import com.apapedia.catalogue.dto.response.ReadCatalogResponseDTO;
-import com.apapedia.catalogue.model.Catalog;
-import com.apapedia.catalogue.repository.CatalogDb;
 
 @RestController
 @RequestMapping("/api")
@@ -36,7 +26,7 @@ public class CatalogRestController {
     @Autowired
     private CatalogRestService catalogRestService; 
     
-    @GetMapping(value = "/catalog/{id}/delete")
+    @DeleteMapping(value = "/catalog/{id}")
     public String deleteProduct(@PathVariable UUID id) {
         catalogRestService.deleteCatalog(id);
         return "Product has been deleted"; 

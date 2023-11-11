@@ -13,6 +13,7 @@ import java.util.UUID;
 @Data
 public class ReadCatalogResponseDTO {
     private UUID idCatalog; 
+    private UUID seller; 
     private Integer price;
     private String productName; 
     private String productDescription; 

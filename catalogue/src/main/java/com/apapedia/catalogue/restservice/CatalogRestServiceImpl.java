@@ -38,6 +38,7 @@ public class CatalogRestServiceImpl implements CatalogRestService{
                 if (catalog.isPresent()) {
                     result.add(ReadCatalogResponseDTO.builder()
                         .idCatalog(catalog.get().getIdCatalog())
+                        .seller(catalog.get().getSeller())
                         .price(catalog.get().getPrice())
                         .productName(catalog.get().getProductName())
                         .productDescription(catalog.get().getProductDescription())
@@ -70,6 +71,7 @@ public class CatalogRestServiceImpl implements CatalogRestService{
             if (catalog.isPresent()) {
                 result.add(ReadCatalogResponseDTO.builder()
                     .idCatalog(catalog.get().getIdCatalog())
+                    .seller(catalog.get().getSeller())
                     .price(catalog.get().getPrice())
                     .productName(catalog.get().getProductName())
                     .productDescription(catalog.get().getProductDescription())
@@ -94,6 +96,7 @@ public class CatalogRestServiceImpl implements CatalogRestService{
             if (catalog.isPresent()) {
                 result.add(ReadCatalogResponseDTO.builder()
                     .idCatalog(catalog.get().getIdCatalog())
+                    .seller(catalog.get().getSeller())
                     .price(catalog.get().getPrice())
                     .productName(catalog.get().getProductName())
                     .productDescription(catalog.get().getProductDescription())
