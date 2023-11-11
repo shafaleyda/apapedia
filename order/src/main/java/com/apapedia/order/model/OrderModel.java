@@ -27,28 +27,24 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="order")
+@Table(name="orders")
 public class OrderModel {
     @Id
     private UUID id = UUID.randomUUID();
 
     @NotNull
-    @Size(max = 100)
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @NotNull
-    @Size(max = 100)
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     @NotNull
-    @Size(max = 100)
     @Column(name = "status", nullable = false)
     private Integer status;
 
     @NotNull
-    @Size(max = 100)
     @Column(name = "total_price", nullable = false)
     private Integer totalPrice;
 
@@ -60,9 +56,9 @@ public class OrderModel {
     @Column(name = "seller", nullable = false)
     private UUID seller;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<OrderItemModel> listOrderItem;
+    // @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    // @JsonIgnore
+    // private List<OrderItemModel> listOrderItem;
 
     // asumsi berhubungan dengan tabel user
     // @ManyToOne(fetch = FetchType.EAGER)

@@ -1,6 +1,6 @@
 package com.apapedia.order.dto.request;
 
-import org.hibernate.validator.constraints.UUID;
+import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class UpdateOrderRequestDTO extends CreateOrderRequestDTO{
-    @NotNull
     private UUID id;
 }

@@ -1,11 +1,13 @@
 package com.apapedia.order.restcontroller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import org.hibernate.mapping.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -47,18 +49,23 @@ public class OrderRestController {
         return listOrder;
     }
 
-    @PutMapping("/{orderId}/status")
-    public OrderModel updateOrderStatus(
+    @PutMapping("/order/update/{orderId}")
+    public OrderModel updateOrderStatus(@PathVariable("orderId") UUID id,
             @Valid @RequestBody UpdateOrderRequestDTO orderDTO, BindingResult bindingResult) {
-
+    
+        System.out.println("Received request for orderId: " + id);
+    
         if(bindingResult.hasFieldErrors()){
+            System.out.println("Invalid request body: " + bindingResult.getAllErrors());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request body has invalid type or missing field"); 
         } else {
             var order = orderMapper.updateOrderRequestDTOToOrder(orderDTO);
+            System.out.println(order.getCreatedAt());
+            order.setId(id);
             OrderModel orderUpdated = orderRestService.updateRestOrder(order); 
             
+            System.out.println("Order updated successfully: " + orderUpdated);
             return orderUpdated; 
         }
     }
-
 }

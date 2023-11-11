@@ -1,5 +1,6 @@
 package com.apapedia.order.restservice;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +18,11 @@ import jakarta.transaction.Transactional;
 public class OrderRestServiceImpl implements OrderRestService{
     @Autowired
     private OrderDb orderDb;
+
+    @Override
+    public void saveOrder(OrderModel order){
+        orderDb.save(order);
+    }
 
     @Override
     public List<OrderModel> retrieveRestAllOrder(){
@@ -46,10 +52,8 @@ public class OrderRestServiceImpl implements OrderRestService{
     public OrderModel updateRestOrder(OrderModel orderFromDTO){
         OrderModel order = getRestOrderByOrderId(orderFromDTO.getId());
         if (order != null){
-            order.setCreatedAt(orderFromDTO.getCreatedAt());
             order.setUpdatedAt(LocalDateTime.now());
             order.setStatus(orderFromDTO.getStatus());
-            order.setTotalPrice(orderFromDTO.getTotalPrice());
             orderDb.save(order);
         }
         return order;
