@@ -3,12 +3,8 @@ package com.apapedia.catalogue.model;
 import java.util.UUID;
 import java.util.List; 
 
-import com.apapedia.catalogue.model.Catalog;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +26,5 @@ public class Category {
     private String categoryName; 
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<Catalog> listCatalog; 
 }

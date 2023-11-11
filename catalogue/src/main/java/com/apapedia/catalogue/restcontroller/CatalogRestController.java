@@ -26,6 +26,7 @@ import com.apapedia.catalogue.restservice.CatalogRestService;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+import com.apapedia.catalogue.dto.response.ReadCatalogResponseDTO;
 import com.apapedia.catalogue.model.Catalog;
 import com.apapedia.catalogue.repository.CatalogDb;
 
@@ -35,31 +36,33 @@ public class CatalogRestController {
     @Autowired
     private CatalogRestService catalogRestService; 
     
-    @Autowired
-    private CatalogDb catalogDb; 
-
-    @GetMapping("catalog/{id}/delete")
+    @GetMapping(value = "/catalog/{id}/delete")
     public String deleteProduct(@PathVariable UUID id) {
         catalogRestService.deleteCatalog(id);
         return "Product has been deleted"; 
     }
 
     @GetMapping("/catalog/view-all-by-name")
-    @ResponseBody public ResponseEntity<List<Catalog>> retrieveAllCatalogByName(@RequestParam(name = "query", required = false)String namaProduk, HttpServletResponse response) throws SQLException, IOException{
+    @ResponseBody public ResponseEntity<List<ReadCatalogResponseDTO>> retrieveAllCatalogByName(@RequestParam(name = "query", required = false)String namaProduk, HttpServletResponse response) throws SQLException, IOException{
         if (namaProduk != null) {
-            List<Catalog> listCatalogFindByName = catalogRestService.retrieveRestAllCatalogByCatalogName(namaProduk);
+            List<ReadCatalogResponseDTO> listCatalogFindByName = catalogRestService.retrieveRestAllCatalogByCatalogName(namaProduk);
             return ResponseEntity.status(HttpStatus.OK)
             .body(listCatalogFindByName);
         } 
-        List<Catalog> listAllCatalog = catalogRestService.retrieveRestAllCatalog();
+        List<ReadCatalogResponseDTO> listAllCatalog = catalogRestService.retrieveRestAllReadCatalogResponseDTO();
             return ResponseEntity.status(HttpStatus.OK)
             .body(listAllCatalog); 
-    } //cek lagi
+    } 
 
     @GetMapping("/catalog/view-all-by-price")
-    @ResponseBody public List<Catalog> retrieveAllCatalogByPrice(@RequestParam(name = "query", required = false)Integer hargaProduk){
+    @ResponseBody public ResponseEntity<List<ReadCatalogResponseDTO>> retrieveAllCatalogByPrice(@RequestParam(name = "query", required = false)Integer hargaProduk){
         if (hargaProduk != null) {
-            return catalogRestService.retrieveRestAllCatalogByCatalogPrice(hargaProduk); 
-        } return catalogRestService.retrieveRestAllCatalogByCatalogPrice(hargaProduk); 
-    } //cek lagi
+            List<ReadCatalogResponseDTO> listCatalogFindByName = catalogRestService.retrieveRestAllCatalogByCatalogPrice(hargaProduk);
+            return ResponseEntity.status(HttpStatus.OK)
+            .body(listCatalogFindByName);
+        } 
+        List<ReadCatalogResponseDTO> listAllCatalog = catalogRestService.retrieveRestAllReadCatalogResponseDTO();
+            return ResponseEntity.status(HttpStatus.OK)
+            .body(listAllCatalog); 
+    } 
 }

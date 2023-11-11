@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
+import com.apapedia.catalogue.dto.response.ReadCatalogResponseDTO;
 import com.apapedia.catalogue.model.Catalog;
 import com.apapedia.catalogue.repository.CatalogDb;
 
@@ -28,6 +29,29 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     }
 
     @Override
+    public List<ReadCatalogResponseDTO> retrieveRestAllReadCatalogResponseDTO() {
+        List<ReadCatalogResponseDTO> result = new ArrayList<>(); 
+
+            for (Catalog cat: retrieveRestAllCatalog()) {
+                Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
+
+                if (catalog.isPresent()) {
+                    result.add(ReadCatalogResponseDTO.builder()
+                        .idCatalog(catalog.get().getIdCatalog())
+                        .price(catalog.get().getPrice())
+                        .productName(catalog.get().getProductName())
+                        .productDescription(catalog.get().getProductDescription())
+                        .categoryId(catalog.get().getCategory().getIdCategory())
+                        .categoryName(catalog.get().getCategory().getCategoryName())
+                        .stock(catalog.get().getStock())
+                        .isDeleted(catalog.get().getIsDeleted())
+                        .image(decompressImage(catalog.get().getImage())).build());
+                }
+            }
+        return result; 
+    }
+
+    @Override
     public void deleteCatalog(UUID idCatalog) {
         for (Catalog catalog: retrieveRestAllCatalog()) {
             if (catalog.getIdCatalog().equals(idCatalog)) {
@@ -37,18 +61,20 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     }
 
     @Override
-    public List<Catalog> retrieveRestAllCatalogByCatalogName(String catalogName) {
-        List<Catalog> result = new ArrayList<>(); 
+    public List<ReadCatalogResponseDTO> retrieveRestAllCatalogByCatalogName(String catalogName) {
+        List<ReadCatalogResponseDTO> result = new ArrayList<>(); 
 
         for (Catalog cat: catalogDb.findByProductNameContainingIgnoreCaseOrderByProductNameAsc(catalogName)) {
             Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
 
             if (catalog.isPresent()) {
-                result.add(Catalog.builder()
+                result.add(ReadCatalogResponseDTO.builder()
+                    .idCatalog(catalog.get().getIdCatalog())
                     .price(catalog.get().getPrice())
                     .productName(catalog.get().getProductName())
                     .productDescription(catalog.get().getProductDescription())
-                    .category(catalog.get().getCategory())
+                    .categoryId(catalog.get().getCategory().getIdCategory())
+                    .categoryName(catalog.get().getCategory().getCategoryName())
                     .stock(catalog.get().getStock())
                     .isDeleted(catalog.get().getIsDeleted())
                     .image(decompressImage(catalog.get().getImage())).build());
@@ -59,8 +85,27 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     }
 
     @Override
-    public List<Catalog> retrieveRestAllCatalogByCatalogPrice(Integer catalogPrice) {
-        return catalogDb.findByPriceOrderByPriceAsc(catalogPrice); 
+    public List<ReadCatalogResponseDTO> retrieveRestAllCatalogByCatalogPrice(Integer catalogPrice) {
+        List<ReadCatalogResponseDTO> result = new ArrayList<>(); 
+
+        for (Catalog cat: catalogDb.findByPriceOrderByPriceAsc(catalogPrice)) {
+            Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
+
+            if (catalog.isPresent()) {
+                result.add(ReadCatalogResponseDTO.builder()
+                    .idCatalog(catalog.get().getIdCatalog())
+                    .price(catalog.get().getPrice())
+                    .productName(catalog.get().getProductName())
+                    .productDescription(catalog.get().getProductDescription())
+                    .categoryId(catalog.get().getCategory().getIdCategory())
+                    .categoryName(catalog.get().getCategory().getCategoryName())
+                    .stock(catalog.get().getStock())
+                    .isDeleted(catalog.get().getIsDeleted())
+                    .image(decompressImage(catalog.get().getImage())).build());
+            }
+        }
+        
+        return result;
     }
 
     @Override

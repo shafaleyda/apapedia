@@ -12,13 +12,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.SQLDelete;
+
 import org.hibernate.annotations.Where;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import java.sql.Blob;
 
 @Getter
 @Setter
@@ -50,17 +45,15 @@ public class Catalog {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category", referencedColumnName = "id_category")
-    @JsonBackReference
     private Category category;
 
     @NotNull
     @Column(name = "stock", nullable = false)
     private Integer stock; 
 
-    @NotNull
+    @Lob
     @Column(name = "image", length = 1000)
     @Basic(fetch = FetchType.EAGER)
-    @Lob
     private byte[] image;
 
     @NotNull
