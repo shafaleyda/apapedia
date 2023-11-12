@@ -9,7 +9,6 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Data
 public class CatalogRest {
     private UUID idCatalog; 
@@ -20,6 +19,6 @@ public class CatalogRest {
     private Integer categoryId; 
     private String categoryName; 
     private Integer stock; 
-    private byte[] image; 
+    private String image; 
     private Boolean isDeleted; 
 }

@@ -6,6 +6,6 @@ import com.apapedia.catalogue.model.Category;
 
 import java.util.UUID; 
 
-public interface CategoryDb extends JpaRepository<Category, UUID> {
+public interface CategoryDb extends JpaRepository<Category, Integer> {
     
 }

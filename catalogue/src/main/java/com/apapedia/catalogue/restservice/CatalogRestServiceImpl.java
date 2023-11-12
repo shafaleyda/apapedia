@@ -33,19 +33,21 @@ public class CatalogRestServiceImpl implements CatalogRestService{
 
             for (Catalog cat: retrieveRestAllCatalog()) {
                 Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
-
+                
                 if (catalog.isPresent()) {
-                    result.add(CatalogRest.builder()
-                        .idCatalog(catalog.get().getIdCatalog())
-                        .seller(catalog.get().getSeller())
-                        .price(catalog.get().getPrice())
-                        .productName(catalog.get().getProductName())
-                        .productDescription(catalog.get().getProductDescription())
-                        .categoryId(catalog.get().getCategory().getIdCategory())
-                        .categoryName(catalog.get().getCategory().getCategoryName())
-                        .stock(catalog.get().getStock())
-                        .isDeleted(catalog.get().getIsDeleted())
-                        .image(decompressImage(catalog.get().getImage())).build());
+                    CatalogRest catalogRest = new CatalogRest(); 
+                    catalogRest.setIdCatalog(catalog.get().getIdCatalog());
+                    catalogRest.setSeller(catalog.get().getSeller());
+                    catalogRest.setPrice(catalog.get().getPrice());
+                    catalogRest.setProductName(catalog.get().getProductName());
+                    catalogRest.setProductDescription(catalog.get().getProductDescription());
+                    catalogRest.setCategoryId(catalog.get().getCategory().getIdCategory());
+                    catalogRest.setCategoryName(catalog.get().getCategory().getCategoryName());
+                    catalogRest.setStock(catalog.get().getStock());
+                    catalogRest.setIsDeleted(catalog.get().getIsDeleted());
+                    catalogRest.setImage(catalog.get().getImage());
+                    
+                    result.add(catalogRest);
                 }
             }
         return result; 
@@ -63,22 +65,23 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     @Override
     public List<CatalogRest> retrieveRestAllCatalogByCatalogName(String catalogName) {
         List<CatalogRest> result = new ArrayList<>(); 
-
+        
         for (Catalog cat: catalogDb.findByProductNameContainingIgnoreCaseOrderByProductNameAsc(catalogName)) {
             Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
 
             if (catalog.isPresent()) {
-                result.add(CatalogRest.builder()
-                    .idCatalog(catalog.get().getIdCatalog())
-                    .seller(catalog.get().getSeller())
-                    .price(catalog.get().getPrice())
-                    .productName(catalog.get().getProductName())
-                    .productDescription(catalog.get().getProductDescription())
-                    .categoryId(catalog.get().getCategory().getIdCategory())
-                    .categoryName(catalog.get().getCategory().getCategoryName())
-                    .stock(catalog.get().getStock())
-                    .isDeleted(catalog.get().getIsDeleted())
-                    .image(decompressImage(catalog.get().getImage())).build());
+                CatalogRest catalogRest = new CatalogRest(); 
+                catalogRest.setIdCatalog(catalog.get().getIdCatalog());
+                catalogRest.setSeller(catalog.get().getSeller());
+                catalogRest.setPrice(catalog.get().getPrice());
+                catalogRest.setProductName(catalog.get().getProductName());
+                catalogRest.setProductDescription(catalog.get().getProductDescription());
+                catalogRest.setCategoryId(catalog.get().getCategory().getIdCategory());
+                catalogRest.setCategoryName(catalog.get().getCategory().getCategoryName());
+                catalogRest.setStock(catalog.get().getStock());
+                catalogRest.setIsDeleted(catalog.get().getIsDeleted());
+                catalogRest.setImage(catalog.get().getImage());
+                result.add(catalogRest);
             }
         }
         
@@ -88,22 +91,23 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     @Override
     public List<CatalogRest> retrieveRestAllCatalogByCatalogPrice(Integer catalogPrice) {
         List<CatalogRest> result = new ArrayList<>(); 
-
+        
         for (Catalog cat: catalogDb.findByPriceOrderByPriceAsc(catalogPrice)) {
             Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
-
+            
             if (catalog.isPresent()) {
-                result.add(CatalogRest.builder()
-                    .idCatalog(catalog.get().getIdCatalog())
-                    .seller(catalog.get().getSeller())
-                    .price(catalog.get().getPrice())
-                    .productName(catalog.get().getProductName())
-                    .productDescription(catalog.get().getProductDescription())
-                    .categoryId(catalog.get().getCategory().getIdCategory())
-                    .categoryName(catalog.get().getCategory().getCategoryName())
-                    .stock(catalog.get().getStock())
-                    .isDeleted(catalog.get().getIsDeleted())
-                    .image(decompressImage(catalog.get().getImage())).build());
+                CatalogRest catalogRest = new CatalogRest(); 
+                catalogRest.setIdCatalog(catalog.get().getIdCatalog());
+                catalogRest.setSeller(catalog.get().getSeller());
+                catalogRest.setPrice(catalog.get().getPrice());
+                catalogRest.setProductName(catalog.get().getProductName());
+                catalogRest.setProductDescription(catalog.get().getProductDescription());
+                catalogRest.setCategoryId(catalog.get().getCategory().getIdCategory());
+                catalogRest.setCategoryName(catalog.get().getCategory().getCategoryName());
+                catalogRest.setStock(catalog.get().getStock());
+                catalogRest.setIsDeleted(catalog.get().getIsDeleted());
+                catalogRest.setImage(catalog.get().getImage());
+                result.add(catalogRest);
             }
         }
         
@@ -128,7 +132,7 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     }
 
     @Override
-    public void saveCatalog(Catalog catalog) {
+    public void saveCatalog(Catalog catalog) { 
         catalogDb.save(catalog); 
     }
     

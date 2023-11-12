@@ -54,9 +54,8 @@ public class Catalog {
     private Integer stock; 
 
     @Lob
-    @Column(name = "image", length = 1000)
-    @Basic(fetch = FetchType.EAGER)
-    private byte[] image;
+    @Column(name = "image", nullable = false)
+	private String image;
 
     @NotNull
     @Column(name = "is_deleted", nullable = false)
