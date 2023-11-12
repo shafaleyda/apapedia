@@ -61,9 +61,4 @@ public class Catalog {
     @NotNull
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = Boolean.FALSE;
-
-    //Asumsi satu seller dapat teraosiasi dengan beberapa catalog 
-    // @ManyToOne(fetch = FetchType.EAGER)
-    // @JoinColumn(name = "seller", referencedColumnName = "id_user")
-    // private User seller; 
 }

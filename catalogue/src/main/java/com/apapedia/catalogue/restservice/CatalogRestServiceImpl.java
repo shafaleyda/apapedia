@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
-import com.apapedia.catalogue.dto.response.ReadCatalogResponseDTO;
 import com.apapedia.catalogue.model.Catalog;
 import com.apapedia.catalogue.repository.CatalogDb;
+import com.apapedia.catalogue.rest.CatalogRest;
 
 @Service
 @Transactional
@@ -25,18 +25,17 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     @Override
     public List<Catalog> retrieveRestAllCatalog() {
         return catalogDb.findAll(); 
-
     }
 
     @Override
-    public List<ReadCatalogResponseDTO> retrieveRestAllReadCatalogResponseDTO() {
-        List<ReadCatalogResponseDTO> result = new ArrayList<>(); 
+    public List<CatalogRest> retrieveRestAllReadCatalogResponseDTO() {
+        List<CatalogRest> result = new ArrayList<>(); 
 
             for (Catalog cat: retrieveRestAllCatalog()) {
                 Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
 
                 if (catalog.isPresent()) {
-                    result.add(ReadCatalogResponseDTO.builder()
+                    result.add(CatalogRest.builder()
                         .idCatalog(catalog.get().getIdCatalog())
                         .seller(catalog.get().getSeller())
                         .price(catalog.get().getPrice())
@@ -62,14 +61,14 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     }
 
     @Override
-    public List<ReadCatalogResponseDTO> retrieveRestAllCatalogByCatalogName(String catalogName) {
-        List<ReadCatalogResponseDTO> result = new ArrayList<>(); 
+    public List<CatalogRest> retrieveRestAllCatalogByCatalogName(String catalogName) {
+        List<CatalogRest> result = new ArrayList<>(); 
 
         for (Catalog cat: catalogDb.findByProductNameContainingIgnoreCaseOrderByProductNameAsc(catalogName)) {
             Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
 
             if (catalog.isPresent()) {
-                result.add(ReadCatalogResponseDTO.builder()
+                result.add(CatalogRest.builder()
                     .idCatalog(catalog.get().getIdCatalog())
                     .seller(catalog.get().getSeller())
                     .price(catalog.get().getPrice())
@@ -87,14 +86,14 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     }
 
     @Override
-    public List<ReadCatalogResponseDTO> retrieveRestAllCatalogByCatalogPrice(Integer catalogPrice) {
-        List<ReadCatalogResponseDTO> result = new ArrayList<>(); 
+    public List<CatalogRest> retrieveRestAllCatalogByCatalogPrice(Integer catalogPrice) {
+        List<CatalogRest> result = new ArrayList<>(); 
 
         for (Catalog cat: catalogDb.findByPriceOrderByPriceAsc(catalogPrice)) {
             Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
 
             if (catalog.isPresent()) {
-                result.add(ReadCatalogResponseDTO.builder()
+                result.add(CatalogRest.builder()
                     .idCatalog(catalog.get().getIdCatalog())
                     .seller(catalog.get().getSeller())
                     .price(catalog.get().getPrice())

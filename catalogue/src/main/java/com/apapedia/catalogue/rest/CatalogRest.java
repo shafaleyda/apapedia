@@ -1,4 +1,4 @@
-package com.apapedia.catalogue.dto.response;
+package com.apapedia.catalogue.rest;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,13 +11,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Data
-public class ReadCatalogResponseDTO {
+public class CatalogRest {
     private UUID idCatalog; 
     private UUID seller; 
     private Integer price;
     private String productName; 
     private String productDescription; 
-    private UUID categoryId; 
+    private Integer categoryId; 
     private String categoryName; 
     private Integer stock; 
     private byte[] image; 

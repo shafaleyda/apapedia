@@ -19,7 +19,8 @@ import lombok.Setter;
 public class Category {
     @Id
     @Column(name = "id_category")
-    private UUID idCategory = UUID.randomUUID(); 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer idCategory; 
 
     @NotNull
     @Column(name = "category_name", nullable = false)

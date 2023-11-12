@@ -16,9 +16,13 @@ import java.util.UUID;
 import java.sql.SQLException;
 import java.util.List;
 import java.io.IOException;
+import java.util.HashMap; 
+import java.util.Map; 
+import java.util.Hashtable;
+import java.util.Dictionary;
 
 import com.apapedia.catalogue.restservice.CatalogRestService;
-import com.apapedia.catalogue.dto.response.ReadCatalogResponseDTO;
+import com.apapedia.catalogue.rest.CatalogRest;
 
 @RestController
 @RequestMapping("/api")
@@ -33,26 +37,40 @@ public class CatalogRestController {
     }
 
     @GetMapping("/catalog/view-all-by-name")
-    @ResponseBody public ResponseEntity<List<ReadCatalogResponseDTO>> retrieveAllCatalogByName(@RequestParam(name = "query", required = false)String namaProduk, HttpServletResponse response) throws SQLException, IOException{
-        if (namaProduk != null) {
-            List<ReadCatalogResponseDTO> listCatalogFindByName = catalogRestService.retrieveRestAllCatalogByCatalogName(namaProduk);
+    @ResponseBody public ResponseEntity<Dictionary<String, Object>> retrieveAllCatalogByName(@RequestParam(name = "query", required = false)String namaProduk, HttpServletResponse response) throws SQLException, IOException{
+        Dictionary<String, Object> responseData= new Hashtable<>();
+        if (namaProduk.length() > 0){
+            List<CatalogRest> listCatalogFindByName = catalogRestService.retrieveRestAllCatalogByCatalogName(namaProduk);
+            responseData.put("status", HttpStatus.OK.value());
+            responseData.put("data", listCatalogFindByName);
+            responseData.put("message", "success"); 
             return ResponseEntity.status(HttpStatus.OK)
-            .body(listCatalogFindByName);
+            .body(responseData);
         } 
-        List<ReadCatalogResponseDTO> listAllCatalog = catalogRestService.retrieveRestAllReadCatalogResponseDTO();
+        List<CatalogRest> listAllCatalog = catalogRestService.retrieveRestAllReadCatalogResponseDTO();
+            responseData.put("status", HttpStatus.OK.value());
+            responseData.put("data", listAllCatalog);
+            responseData.put("message", "success"); 
             return ResponseEntity.status(HttpStatus.OK)
-            .body(listAllCatalog); 
+            .body(responseData);
     } 
 
     @GetMapping("/catalog/view-all-by-price")
-    @ResponseBody public ResponseEntity<List<ReadCatalogResponseDTO>> retrieveAllCatalogByPrice(@RequestParam(name = "query", required = false)Integer hargaProduk){
-        if (hargaProduk != null) {
-            List<ReadCatalogResponseDTO> listCatalogFindByName = catalogRestService.retrieveRestAllCatalogByCatalogPrice(hargaProduk);
+    @ResponseBody public ResponseEntity<Dictionary<String, Object>> retrieveAllCatalogByPrice(@RequestParam(name = "query", required = false)Integer hargaProduk){
+        Dictionary<String, Object> responseData= new Hashtable<>();
+        if (hargaProduk.toString().length() > 0) {
+            List<CatalogRest> listCatalogFindByPrice = catalogRestService.retrieveRestAllCatalogByCatalogPrice(hargaProduk);
+            responseData.put("status", HttpStatus.OK.value());
+            responseData.put("data", listCatalogFindByPrice);
+            responseData.put("message", "success"); 
             return ResponseEntity.status(HttpStatus.OK)
-            .body(listCatalogFindByName);
+            .body(responseData);
         } 
-        List<ReadCatalogResponseDTO> listAllCatalog = catalogRestService.retrieveRestAllReadCatalogResponseDTO();
+        List<CatalogRest> listAllCatalog = catalogRestService.retrieveRestAllReadCatalogResponseDTO();
+            responseData.put("status", HttpStatus.OK.value());
+            responseData.put("data", listAllCatalog);
+            responseData.put("message", "success"); 
             return ResponseEntity.status(HttpStatus.OK)
-            .body(listAllCatalog); 
+            .body(responseData);
     } 
 }

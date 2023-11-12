@@ -3,15 +3,15 @@ package com.apapedia.catalogue.restservice;
 import java.util.List;
 import java.util.UUID;
 
-import com.apapedia.catalogue.dto.response.ReadCatalogResponseDTO;
 import com.apapedia.catalogue.model.Catalog;
+import com.apapedia.catalogue.rest.CatalogRest;
 
 public interface CatalogRestService {
     List<Catalog> retrieveRestAllCatalog();
-    List<ReadCatalogResponseDTO> retrieveRestAllReadCatalogResponseDTO(); 
+    List<CatalogRest> retrieveRestAllReadCatalogResponseDTO(); 
     void deleteCatalog(UUID idCatalog);
-    List<ReadCatalogResponseDTO> retrieveRestAllCatalogByCatalogName(String catalogName);
-    List<ReadCatalogResponseDTO> retrieveRestAllCatalogByCatalogPrice(Integer catalogPrice);
+    List<CatalogRest> retrieveRestAllCatalogByCatalogName(String catalogName);
+    List<CatalogRest> retrieveRestAllCatalogByCatalogPrice(Integer catalogPrice);
     byte[] decompressImage(byte[] data); 
     void saveCatalog(Catalog catalog); 
 }

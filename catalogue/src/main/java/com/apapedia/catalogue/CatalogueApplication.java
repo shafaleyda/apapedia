@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.Locale;
 import java.util.List; 
 import java.util.UUID;
+import java.util.Arrays; 
 
 import com.apapedia.catalogue.model.Catalog;
 import com.apapedia.catalogue.model.Category;
@@ -42,11 +43,14 @@ public class CatalogueApplication {
 			String imageUrl = "https://tinyjpg.com/images/social/website.jpg"; 
 			byte[] compressedImage = imageUtil.fetchAndCompressImage(imageUrl); 
 
+			List<String> categoryNameList = Arrays.asList("Aksesoris Fashion", "Buku & Alat Tulis", "Elektronik",
+															"Fashion Bayi & Anak", "Fashion Muslim", "Fotografi", 
+															"Hobi & Koleksi", "Jam Tangan", "Perawatan & Kecantikan", 
+															"Makanan & Minuman", "Otomotif", "Perlengkapan Rumah", "Souvenir & Party Supplies"); 
 			//Faker category
-			for (int i = 0; i <= 9; i++){
+			for (int i = 0; i <= 12; i++){
 				var category = new Category(); 
-				var categoryName = faker.animal().name();
-
+				var categoryName = categoryNameList.get(i);
 				category.setCategoryName(categoryName);
 				categoryRestService.saveCategory(category);
 			}
