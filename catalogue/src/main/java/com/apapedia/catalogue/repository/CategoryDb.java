@@ -1,9 +1,11 @@
 package com.apapedia.catalogue.repository;
 
-import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-@Transactional
-public class CategoryDb {
+import com.apapedia.catalogue.model.Category;
+
+import java.util.UUID;
+
+public interface CategoryDb extends JpaRepository<Category, UUID> {
+
 }

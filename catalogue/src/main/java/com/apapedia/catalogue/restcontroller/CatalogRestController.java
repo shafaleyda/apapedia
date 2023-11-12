@@ -3,11 +3,17 @@ package com.apapedia.catalogue.restcontroller;
 import com.apapedia.catalogue.dto.mapper.CatalogMapper;
 import com.apapedia.catalogue.dto.request.CreateCatalogueRequestDTO;
 import com.apapedia.catalogue.dto.request.UpdateCatalogRequestDTO;
+import com.apapedia.catalogue.dto.response.ReadCatalogResponseDTO;
 import com.apapedia.catalogue.model.Catalog;
-import com.apapedia.catalogue.model.Image;
+//import com.apapedia.catalogue.model.ImageData;
 import com.apapedia.catalogue.restservice.CatalogRestService;
 //import com.apapedia.catalogue.service.StorageService;
+import com.apapedia.catalogue.service.StorageService;
+import com.apapedia.catalogue.utils.FileStorage;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,7 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -28,6 +37,13 @@ public class CatalogRestController {
 
     @Autowired
     private CatalogRestService catalogRestService;
+
+    @Autowired
+    private StorageService fileStorageService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
 //
 //    @Autowired
 //    private StorageService service;
@@ -56,51 +72,55 @@ public class CatalogRestController {
     }
 
     @GetMapping(value="/catalog/all")
-    private List<Catalog> retrieveAllCatalogue(){
-        return catalogRestService.retrieveRestAllCatalog();
+    private List<ReadCatalogResponseDTO> retrieveAllCatalogue(){
+        return catalogRestService.retrieveRestAllReadCatalogResponseDTO();
 
     }
-
-//    @PostMapping(value={"/catalog/create"}, produces = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public Catalog createRestCatalogue(@Valid @RequestBody CreateCatalogueRequestDTO catalogDTO,
-                                       BindingResult bindingResult,
-                                       @RequestPart("imageFile") MultipartFile[] imageFiles)
-                                        throws IOException
-                                       {
-        if(bindingResult.hasFieldErrors()){
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Request body has invalid type or missing field"
-            );
-        } else {
-            // Upload images and create a catalog
-            Set<Image> imageModel = new HashSet<>();
-            for (MultipartFile file : imageFiles) {
-                Image imageModels = new Image(
-                        file.getOriginalFilename(), file.getContentType(), file.getBytes());
-                imageModel.add(imageModels);
-            }
-            var catalog = catalogMapper.createCatalogRequestDTOToCatalogModel(catalogDTO);
-            catalogRestService.createRestCatalog(catalog);
-            return catalog;
-        }
-    }
-
-//    @PostMapping
-//    public Set<Image> uploadImage(MultipartFile[] multipartFiles) throws IOException {
-////        String uploadImage = service.uploadImage(file);
-////        return ResponseEntity.status(HttpStatus.OK)
-////                .body(uploadImage);
-//        Set<Image> imageModel = new HashSet<>();
-//        for (MultipartFile file: multipartFiles){
-//            Image imageModels = new Image(
-//                file.getOriginalFilename(), file.getContentType(), file.getBytes());
-//            imageModel.add(imageModels);
-//        }
-//        return imageModel;
+//
+//    @PostMapping(value={"/catalog/create"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+//    public Catalog createRestCatalogue(@Valid @ModelAttribute CreateCatalogueRequestDTO catalogDTO,
+//                                       BindingResult bindingResult,
+//                                       @RequestParam("image") MultipartFile[] imageFiles)
+//            throws IOException {
+//
+//            // Upload images and create a catalog
+//            var catalog = catalogMapper.createCatalogRequestDTOToCatalogModel(catalogDTO);
+//            catalogRestService.createRestCatalog(catalog, imageFiles);
+//            return catalog;
+//
 //    }
 
+    @PostMapping(value={"/catalog/create"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Catalog createRestCatalogue(@Valid @ModelAttribute CreateCatalogueRequestDTO catalogDTO,
+                                       BindingResult bindingResult,
+                                       @RequestParam("image") MultipartFile[] imageFiles,
+                                       @RequestParam("model") String jsonObject)
+            throws IOException {
+
+        // Upload images and create a catalog
+        var catalog = catalogMapper.createCatalogRequestDTOToCatalogModel(catalogDTO);
+        // Handle file uploads
+        List<String> fileNames = Arrays.stream(imageFiles)
+                .map(file -> {
+                    return fileStorageService.storeFile(file);
+                })
+                .collect(Collectors.toList());
+        String concatenatedFileNames = String.join(",", fileNames);
+        byte[] fileNamesBytes = concatenatedFileNames.getBytes(StandardCharsets.UTF_8);
+
+        // Attach image file names to the catalog
+        catalog.setImage(fileNamesBytes);
+
+
+        // Continue with your existing code to save the catalog
+        catalogRestService.createRestCatalog(catalog, imageFiles, jsonObject);
+
+        return catalog;
+
+    }
+
     @PutMapping(value = "/catalog/{idCatalog}")
-    private Catalog updateRestPenerbit(
+    private Catalog updateRestCatalog(
             @PathVariable("idCatalog") UUID idCatalog,
             @RequestBody UpdateCatalogRequestDTO updateCatalogRequestDTO) {
         try {
@@ -118,14 +138,33 @@ public class CatalogRestController {
         }
     }
 
-//    @GetMapping("/{fileName}")
-//    public ResponseEntity<?> downloadImage(@PathVariable String fileName){
-//        byte[] imageData=service.downloadImage(fileName);
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .contentType(MediaType.valueOf("image/png"))
-//                .body(imageData);
-//
-//    }
+    @GetMapping("/catalog/view-all-by-name")
+    @ResponseBody public ResponseEntity<List<ReadCatalogResponseDTO>> retrieveAllCatalogByName(@RequestParam(name = "query", required = false)String namaProduk, HttpServletResponse response) throws SQLException, IOException{
+    if (namaProduk != null) {
+        List<ReadCatalogResponseDTO> listCatalogFindByName = catalogRestService.retrieveRestAllCatalogByCatalogName(namaProduk);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(listCatalogFindByName);
+    }
+    List<ReadCatalogResponseDTO> listAllCatalog = catalogRestService.retrieveRestAllReadCatalogResponseDTO();
+    return ResponseEntity.status(HttpStatus.OK)
+            .body(listAllCatalog);
+}
+
+    @GetMapping("/catalog/view-all-by-price")
+    @ResponseBody public ResponseEntity<List<ReadCatalogResponseDTO>> retrieveAllCatalogByPrice(@RequestParam(name = "query", required = false)Integer hargaProduk){
+    if (hargaProduk != null) {
+        List<ReadCatalogResponseDTO> listCatalogFindByPrice = catalogRestService.retrieveRestAllCatalogByCatalogPrice(hargaProduk);
+        return ResponseEntity.status(HttpStatus.OK).body(listCatalogFindByPrice);
+    }
+    List<ReadCatalogResponseDTO> listAllCatalog = catalogRestService.retrieveRestAllReadCatalogResponseDTO();
+    return ResponseEntity.status(HttpStatus.OK).body(listAllCatalog);
+    }
+
+    @DeleteMapping(value = "/catalog/{id}")
+    public String deleteProduct(@PathVariable UUID id) {
+        catalogRestService.deleteCatalog(id);
+        return "Product has been deleted";
+    }
 
 }
 

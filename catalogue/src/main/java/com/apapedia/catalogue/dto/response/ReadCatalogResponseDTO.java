@@ -1,21 +1,17 @@
-package com.apapedia.catalogue.dto.request;
+package com.apapedia.catalogue.dto.response;
 
-import com.apapedia.catalogue.model.Category;
-//import com.apapedia.catalogue.model.ImageData;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
 import java.util.UUID;
 
-@Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateCatalogueRequestDTO {
+@Builder
+@Data
+public class ReadCatalogResponseDTO {
     private UUID idCatalog;
     private UUID seller;
     private Integer price;

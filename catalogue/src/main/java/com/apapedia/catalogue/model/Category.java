@@ -28,6 +28,6 @@ public class Category {
     @Column(name = "category_name", nullable = false)
     private String categoryName;
 
-    @OneToMany(mappedBy = "categoryId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Catalog> listCatalog;
 }

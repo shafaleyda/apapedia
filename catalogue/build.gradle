@@ -32,6 +32,8 @@ dependencies {
 	implementation 'org.mapstruct:mapstruct:1.5.0.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.0.Final'
 	implementation 'com.github.javafaker:javafaker:1.0.2'
+
+	implementation 'com.cloudinary:cloudinary-http44:1.32.2'
 }
 
 tasks.named('test') {

@@ -1,10 +1,11 @@
-//package com.apapedia.catalogue.repository;
-//
-//import com.apapedia.catalogue.model.FileData;
-//import org.springframework.data.jpa.repository.JpaRepository;
-//
-//import java.util.Optional;
-//
-//public interface FileDataRepository extends JpaRepository<FileDataRepository, Integer> {
-//    Optional<FileData> findByName(String fileName);
-//}
+package com.apapedia.catalogue.repository;
+
+import com.apapedia.catalogue.model.ImageData;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface FileDataRepository extends JpaRepository<ImageData, Integer> {
+}
