@@ -11,7 +11,6 @@ public interface CatalogRestService {
     List<CatalogRest> retrieveRestAllReadCatalogResponseDTO(); 
     void deleteCatalog(UUID idCatalog);
     List<CatalogRest> retrieveRestAllCatalogByCatalogName(String catalogName);
-    List<CatalogRest> retrieveRestAllCatalogByCatalogPrice(Integer catalogPrice);
-    byte[] decompressImage(byte[] data); 
+    List<CatalogRest> retrieveRestAllCatalogByCatalogPrice(Integer minPrice, Integer maxPrice);
     void saveCatalog(Catalog catalog); 
 }

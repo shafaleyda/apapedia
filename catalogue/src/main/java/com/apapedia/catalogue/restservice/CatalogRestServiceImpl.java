@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 import java.util.ArrayList; 
 
@@ -89,10 +88,10 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     }
 
     @Override
-    public List<CatalogRest> retrieveRestAllCatalogByCatalogPrice(Integer catalogPrice) {
+    public List<CatalogRest> retrieveRestAllCatalogByCatalogPrice(Integer minPrice, Integer maxPrice) {
         List<CatalogRest> result = new ArrayList<>(); 
         
-        for (Catalog cat: catalogDb.findByPriceOrderByPriceAsc(catalogPrice)) {
+        for (Catalog cat: catalogDb.findByPriceBetween(minPrice, maxPrice)) {
             Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
             
             if (catalog.isPresent()) {
@@ -112,23 +111,6 @@ public class CatalogRestServiceImpl implements CatalogRestService{
         }
         
         return result;
-    }
-
-    @Override
-    public byte[] decompressImage(byte[] data) {
-        Inflater inflater = new Inflater();
-        inflater.setInput(data);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] tmp = new byte[4*1024];
-        try {
-            while (!inflater.finished()) {
-                int count = inflater.inflate(tmp);
-                outputStream.write(tmp, 0, count);
-            }
-            outputStream.close();
-        } catch (Exception exception) {
-        }
-        return outputStream.toByteArray();
     }
 
     @Override

@@ -56,10 +56,10 @@ public class CatalogRestController {
     } 
 
     @GetMapping("/catalog/view-all-by-price")
-    @ResponseBody public ResponseEntity<Dictionary<String, Object>> retrieveAllCatalogByPrice(@RequestParam(name = "query", required = false)Integer hargaProduk){
+    @ResponseBody public ResponseEntity<Dictionary<String, Object>> retrieveAllCatalogByPrice(@RequestParam Integer minPrice, @RequestParam Integer maxPrice){
         Dictionary<String, Object> responseData= new Hashtable<>();
-        if (hargaProduk.toString().length() > 0) {
-            List<CatalogRest> listCatalogFindByPrice = catalogRestService.retrieveRestAllCatalogByCatalogPrice(hargaProduk);
+        if (minPrice.toString().length() > 0 && maxPrice.toString().length() > 0) {
+            List<CatalogRest> listCatalogFindByPrice = catalogRestService.retrieveRestAllCatalogByCatalogPrice(minPrice, maxPrice);
             responseData.put("status", HttpStatus.OK.value());
             responseData.put("data", listCatalogFindByPrice);
             responseData.put("message", "success"); 
