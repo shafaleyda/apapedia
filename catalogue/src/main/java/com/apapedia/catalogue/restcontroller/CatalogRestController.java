@@ -28,12 +28,15 @@ import com.apapedia.catalogue.rest.CatalogRest;
 @RequestMapping("/api")
 public class CatalogRestController {
     @Autowired
-    private CatalogRestService catalogRestService; 
-    
+    private CatalogRestService catalogRestService;
+
+    @Autowired
+    private CatalogMapper catalogMapper;
+
     @DeleteMapping(value = "/catalog/{id}")
     public String deleteProduct(@PathVariable UUID id) {
         catalogRestService.deleteCatalog(id);
-        return "Product has been deleted"; 
+        return "Product has been deleted";
     }
 
     @GetMapping("/catalog/view-all-by-name")
@@ -62,15 +65,61 @@ public class CatalogRestController {
             List<CatalogRest> listCatalogFindByPrice = catalogRestService.retrieveRestAllCatalogByCatalogPrice(minPrice, maxPrice);
             responseData.put("status", HttpStatus.OK.value());
             responseData.put("data", listCatalogFindByPrice);
-            responseData.put("message", "success"); 
+            responseData.put("message", "success");
             return ResponseEntity.status(HttpStatus.OK)
-            .body(responseData);
-        } 
+                    .body(responseData);
+        }
         List<CatalogRest> listAllCatalog = catalogRestService.retrieveRestAllReadCatalogResponseDTO();
-            responseData.put("status", HttpStatus.OK.value());
-            responseData.put("data", listAllCatalog);
-            responseData.put("message", "success"); 
-            return ResponseEntity.status(HttpStatus.OK)
-            .body(responseData);
-    } 
+        responseData.put("status", HttpStatus.OK.value());
+        responseData.put("data", listAllCatalog);
+        responseData.put("message", "success");
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(responseData);
+    }
+
+    @PostMapping(value={"/catalog/create"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Catalog createRestCatalogue(@Valid @ModelAttribute CreateCatalogueRequestDTO catalogDTO,
+                                       BindingResult bindingResult,
+                                       @RequestParam("image") MultipartFile[] imageFiles)
+            throws IOException {
+        // Upload images and create a catalog
+        var catalog = catalogMapper.createCatalogRequestDTOToCatalogModel(catalogDTO);
+        catalogRestService.createRestCatalog(catalog, imageFiles);
+        return catalog;
+
+    }
 }
+
+
+//    @PostMapping(value={"/catalog/create"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+//    public Catalog createRestCatalogue(@Valid @ModelAttribute CreateCatalogueRequestDTO catalogDTO,
+//                                       BindingResult bindingResult,
+//                                       @RequestParam("image") MultipartFile[] imageFiles)
+//            throws IOException {
+//
+//        // Upload images and create a catalog
+//        var catalog = catalogMapper.createCatalogRequestDTOToCatalogModel(catalogDTO);
+//        catalogRestService.createRestCatalog(catalog, imageFiles);
+//        return catalog;
+//
+//    }
+//
+//    @PutMapping(value = "/catalog/{idCatalog}")
+//    private Catalog updateRestCatalog(
+//            @PathVariable("idCatalog") UUID idCatalog,
+//            @RequestBody UpdateCatalogRequestDTO updateCatalogRequestDTO) {
+//        try {
+//            return catalogRestService.updateCatalog(idCatalog, updateCatalogRequestDTO);
+//
+//        } catch (NoSuchElementException e) {
+//            throw new ResponseStatusException(
+//                    HttpStatus.NOT_FOUND, "Catalog No" + idCatalog + " Not Found!"
+//            );
+//
+//        } catch (UnsupportedOperationException e) {
+//            throw new ResponseStatusException(
+//                    HttpStatus.BAD_REQUEST, " "
+//            );
+//        }
+//    }
+
