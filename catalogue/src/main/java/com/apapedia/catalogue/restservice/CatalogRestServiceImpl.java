@@ -32,28 +32,28 @@ public class CatalogRestServiceImpl implements CatalogRestService{
 
     @Override
     public List<CatalogRest> retrieveRestAllReadCatalogResponseDTO() {
-        List<CatalogRest> result = new ArrayList<>();
+        List<CatalogRest> result = new ArrayList<>(); 
 
-        for (Catalog cat: retrieveRestAllCatalog()) {
-            Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
-
-            if (catalog.isPresent()) {
-                CatalogRest catalogRest = new CatalogRest();
-                catalogRest.setIdCatalog(catalog.get().getIdCatalog());
-                catalogRest.setSeller(catalog.get().getSeller());
-                catalogRest.setPrice(catalog.get().getPrice());
-                catalogRest.setProductName(catalog.get().getProductName());
-                catalogRest.setProductDescription(catalog.get().getProductDescription());
-                catalogRest.setCategoryId(catalog.get().getCategory().getIdCategory());
-                catalogRest.setCategoryName(catalog.get().getCategory().getCategoryName());
-                catalogRest.setStock(catalog.get().getStock());
-                catalogRest.setIsDeleted(catalog.get().getIsDeleted());
-                catalogRest.setImage(catalog.get().getImage());
-
-                result.add(catalogRest);
+            for (Catalog cat: retrieveRestAllCatalog()) {
+                Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
+                
+                if (catalog.isPresent()) {
+                    CatalogRest catalogRest = new CatalogRest(); 
+                    catalogRest.setIdCatalog(catalog.get().getIdCatalog());
+                    catalogRest.setSeller(catalog.get().getSeller());
+                    catalogRest.setPrice(catalog.get().getPrice());
+                    catalogRest.setProductName(catalog.get().getProductName());
+                    catalogRest.setProductDescription(catalog.get().getProductDescription());
+                    catalogRest.setCategoryId(catalog.get().getCategory().getIdCategory());
+                    catalogRest.setCategoryName(catalog.get().getCategory().getCategoryName());
+                    catalogRest.setStock(catalog.get().getStock());
+                    catalogRest.setIsDeleted(catalog.get().getIsDeleted());
+                    catalogRest.setImage(catalog.get().getImage());
+                    
+                    result.add(catalogRest);
+                }
             }
-        }
-        return result;
+        return result; 
     }
 
     @Override
@@ -67,13 +67,13 @@ public class CatalogRestServiceImpl implements CatalogRestService{
 
     @Override
     public List<CatalogRest> retrieveRestAllCatalogByCatalogName(String catalogName) {
-        List<CatalogRest> result = new ArrayList<>();
-
+        List<CatalogRest> result = new ArrayList<>(); 
+        
         for (Catalog cat: catalogDb.findByProductNameContainingIgnoreCaseOrderByProductNameAsc(catalogName)) {
             Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
 
             if (catalog.isPresent()) {
-                CatalogRest catalogRest = new CatalogRest();
+                CatalogRest catalogRest = new CatalogRest(); 
                 catalogRest.setIdCatalog(catalog.get().getIdCatalog());
                 catalogRest.setSeller(catalog.get().getSeller());
                 catalogRest.setPrice(catalog.get().getPrice());
@@ -87,19 +87,19 @@ public class CatalogRestServiceImpl implements CatalogRestService{
                 result.add(catalogRest);
             }
         }
-
+        
         return result;
     }
 
     @Override
     public List<CatalogRest> retrieveRestAllCatalogByCatalogPrice(Integer minPrice, Integer maxPrice) {
-        List<CatalogRest> result = new ArrayList<>();
-
+        List<CatalogRest> result = new ArrayList<>(); 
+        
         for (Catalog cat: catalogDb.findByPriceBetween(minPrice, maxPrice)) {
             Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
-
+            
             if (catalog.isPresent()) {
-                CatalogRest catalogRest = new CatalogRest();
+                CatalogRest catalogRest = new CatalogRest(); 
                 catalogRest.setIdCatalog(catalog.get().getIdCatalog());
                 catalogRest.setSeller(catalog.get().getSeller());
                 catalogRest.setPrice(catalog.get().getPrice());

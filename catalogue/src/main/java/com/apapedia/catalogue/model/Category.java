@@ -1,7 +1,7 @@
 package com.apapedia.catalogue.model;
 
 import java.util.UUID;
-import java.util.List;
+import java.util.List; 
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -20,12 +20,12 @@ public class Category {
     @Id
     @Column(name = "id_category")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idCategory;
+    private Integer idCategory; 
 
     @NotNull
     @Column(name = "category_name", nullable = false)
-    private String categoryName;
+    private String categoryName; 
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Catalog> listCatalog;
+    private List<Catalog> listCatalog; 
 }

@@ -9,9 +9,9 @@ import java.util.UUID;
 import java.util.List;
 
 public interface CatalogDb extends JpaRepository<Catalog, UUID>{
-    List<Catalog> findAll();
-    List<Catalog> findByProductNameContainingIgnoreCaseOrderByProductNameAsc(String catalogName);
-    List<Catalog> findByPriceOrderByPriceAsc(Integer price);
-    List<Catalog> findByPriceBetween(Integer minPrice, Integer maxPrice);
+        List<Catalog> findAll();
+        List<Catalog> findByProductNameContainingIgnoreCaseOrderByProductNameAsc(String catalogName);
+        List<Catalog> findByPriceOrderByPriceAsc(Integer price);
+        List<Catalog> findByPriceBetween(Integer minPrice, Integer maxPrice);
 }
 

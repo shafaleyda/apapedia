@@ -27,23 +27,23 @@ import org.hibernate.annotations.Where;
 public class Catalog {
     @Id
     @Column(name = "id_catalog")
-    private UUID idCatalog = UUID.randomUUID();
+    private UUID idCatalog = UUID.randomUUID(); 
 
     @NotNull
     @Column(name = "seller")
-    private UUID seller;
+    private UUID seller; 
 
     @NotNull
     @Column(name = "price", nullable = false)
-    private Integer price;
+    private Integer price; 
 
     @NotNull
     @Column(name = "product_name", nullable = false)
-    private String productName;
+    private String productName; 
 
     @NotNull
     @Column(name = "product_description", nullable = false)
-    private String productDescription;
+    private String productDescription; 
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category", referencedColumnName = "id_category")
@@ -51,11 +51,11 @@ public class Catalog {
 
     @NotNull
     @Column(name = "stock", nullable = false)
-    private Integer stock;
+    private Integer stock; 
 
     @Lob
     @Column(name = "image", nullable = false)
-    private String image;
+	private String image;
 
     @NotNull
     @Column(name = "is_deleted", nullable = false)

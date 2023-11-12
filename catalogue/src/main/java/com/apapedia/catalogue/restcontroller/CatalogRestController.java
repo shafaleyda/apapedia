@@ -1,29 +1,28 @@
 package com.apapedia.catalogue.restcontroller;
 
-import com.apapedia.catalogue.dto.mapper.CatalogMapper;
-import com.apapedia.catalogue.dto.request.CreateCatalogueRequestDTO;
-import com.apapedia.catalogue.model.Catalog;
-import jakarta.validation.Valid;
-import org.springframework.http.MediaType;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ResponseBody;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.UUID;
 import java.sql.SQLException;
 import java.util.List;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashMap; 
+import java.util.Map; 
 import java.util.Hashtable;
 import java.util.Dictionary;
 
 import com.apapedia.catalogue.restservice.CatalogRestService;
 import com.apapedia.catalogue.rest.CatalogRest;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api")
@@ -47,17 +46,17 @@ public class CatalogRestController {
             List<CatalogRest> listCatalogFindByName = catalogRestService.retrieveRestAllCatalogByCatalogName(namaProduk);
             responseData.put("status", HttpStatus.OK.value());
             responseData.put("data", listCatalogFindByName);
-            responseData.put("message", "success");
+            responseData.put("message", "success"); 
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(responseData);
-        }
+            .body(responseData);
+        } 
         List<CatalogRest> listAllCatalog = catalogRestService.retrieveRestAllReadCatalogResponseDTO();
-        responseData.put("status", HttpStatus.OK.value());
-        responseData.put("data", listAllCatalog);
-        responseData.put("message", "success");
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(responseData);
-    }
+            responseData.put("status", HttpStatus.OK.value());
+            responseData.put("data", listAllCatalog);
+            responseData.put("message", "success"); 
+            return ResponseEntity.status(HttpStatus.OK)
+            .body(responseData);
+    } 
 
     @GetMapping("/catalog/view-all-by-price")
     @ResponseBody public ResponseEntity<Dictionary<String, Object>> retrieveAllCatalogByPrice(@RequestParam Integer minPrice, @RequestParam Integer maxPrice){
