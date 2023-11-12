@@ -1,7 +1,8 @@
 package com.apapedia.catalogue.service;
 
-import com.apapedia.catalogue.model.ImageData;
-import com.apapedia.catalogue.repository.StorageRepository;
+//import com.apapedia.catalogue.model.ImageData;
+//import com.apapedia.catalogue.repository.StorageRepository;
+import com.apapedia.catalogue.config.StorageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,49 +14,77 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.util.UUID;
+import java.util.stream.Stream;
+
 import org.springframework.util.StringUtils;
 
 @Service
 public class StorageService {
 
-    private Path fileStorageLocation;
+    private StorageProperties properties = new StorageProperties();
+    Path rootLocation = Paths.get(properties.getLocation());
 
-    @Autowired
-    private StorageRepository repository;
-
-    @Autowired
-    private ImageData imageDb;
-
-    @Autowired
-    public void FileStorageService(FileStorage fileStorageProperties) {
-        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
+    public String store(MultipartFile file) {
         try {
-            Files.createDirectories(this.fileStorageLocation);
-        } catch (Exception ex) {
-            throw new RuntimeException("Couldn't create the directory where the upload files will be saved.", ex);
-        }
-    }
-
-    public StorageService(Path fileStorageLocation) {
-        this.fileStorageLocation = fileStorageLocation;
-    }
-
-    public String storeFile(MultipartFile file) {
-        // Normalize file name
-        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        try {
-            // Check if the file's name contains valid  characters or not
-            if (fileName.contains("..")) {
-                throw new RuntimeException("Sorry! File name which contains invalid path sequence " + fileName);
+            if (file.isEmpty()) {
+                throw new RuntimeException("Failed to store empty file.");
             }
-            // Copy file to the target place (Replacing existing file with the same name)
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-            return fileName;
-        } catch (IOException ex) {
-            ex.printStackTrace();
+
+            String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+            String uploadedFileName = UUID.randomUUID().toString() + "." + extension;
+
+            Path destinationFile = rootLocation.resolve(
+                            Paths.get(uploadedFileName))
+                    .normalize().toAbsolutePath();
+
+            try (InputStream inputStream = file.getInputStream()) {
+                Files.copy(inputStream, destinationFile,
+                        StandardCopyOption.REPLACE_EXISTING);
+
+                final String baseUrl =
+                        ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+
+                return baseUrl+"/fileUpload/files/"+uploadedFileName;
+            }
         }
-        return null;
+        catch (IOException e) {
+            throw new RuntimeException("Failed to store file.", e);
+        }
+    }
+
+    public Stream<Path> loadAll() {
+        try {
+            return Files.walk(this.rootLocation, 1)
+                    .filter(path -> !path.equals(this.rootLocation))
+                    .map(this.rootLocation::relativize);
+        }
+        catch (IOException e) {
+            throw new RuntimeException("Failed to read stored files", e);
+        }
+
+    }
+
+    public Resource load(String filename) {
+        try {
+            Path file = rootLocation.resolve(filename);
+            Resource resource = new UrlResource(file.toUri());
+
+            if (resource.exists() || resource.isReadable()) {
+                return resource;
+            } else {
+                throw new RuntimeException("Could not read the file!");
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Error: " + e.getMessage());
+        }
     }
 }
 

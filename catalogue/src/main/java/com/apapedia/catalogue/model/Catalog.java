@@ -1,14 +1,18 @@
 package com.apapedia.catalogue.model;
 
-import java.util.List;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import org.hibernate.annotations.Where;
 
 @Getter
@@ -50,21 +54,10 @@ public class Catalog {
     private Integer stock;
 
     @Lob
-    @Column(name = "image", length = 1000)
-    @Basic(fetch = FetchType.EAGER)
-    private byte[] image;
+    @Column(name = "image", nullable = false)
+    private String image;
 
     @NotNull
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = Boolean.FALSE;
-
-
-    // @ManyToOne(fetch = FetchType.EAGER)
-    // @JoinColumn(name = "seller", referencedColumnName = "id_user")
-    // private User seller;
-
-
-    //    @OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-//    @JoinTable(name="image", joinColumns={@JoinColumn(name="id_catalog")},inverseJoinColumns={@JoinColumn(name="id_image")})
-//    private Set<ImageData> image;
 }

@@ -34,16 +34,16 @@ public class CatalogController {
         return "form-add-catalog";
     }
 
-    @PostMapping(value={"/catalog/create"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public String createCatalogue(@Valid @ModelAttribute CreateCatalogueRequestDTO catalogDTO,
-                                  BindingResult bindingResult,
-                                  @RequestParam("image") MultipartFile[] imageFiles,
-                                  Model model)
-            throws IOException {
-
-        var catalog = catalogMapper.createCatalogRequestDTOToCatalogModel(catalogDTO);
-        catalogRestService.createRestCatalog(catalog, imageFiles, jsonObject);
-        return "success-create-catalog";
-    }
+//    @PostMapping(value={"/catalog/create"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+//    public String createCatalogue(@Valid @ModelAttribute CreateCatalogueRequestDTO catalogDTO,
+//                                  BindingResult bindingResult,
+//                                  @RequestParam("image") MultipartFile[] imageFiles,
+//                                  Model model)
+//            throws IOException {
+//
+//        var catalog = catalogMapper.createCatalogRequestDTOToCatalogModel(catalogDTO);
+//        catalogRestService.createRestCatalog(catalog, imageFiles, jsonObject);
+//        return "success-create-catalog";
+//    }
 
 }

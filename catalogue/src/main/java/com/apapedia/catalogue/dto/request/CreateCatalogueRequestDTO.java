@@ -24,6 +24,7 @@ public class CreateCatalogueRequestDTO {
     private UUID categoryId;
     private String categoryName;
     private Integer stock;
-    private byte[] image;
+//    private byte[] image;
+    private String image;
     private Boolean isDeleted;
 }
