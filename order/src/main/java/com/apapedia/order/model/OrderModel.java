@@ -27,6 +27,7 @@ public class OrderModel {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @NotNull
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 

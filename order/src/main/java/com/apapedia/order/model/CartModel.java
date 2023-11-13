@@ -27,10 +27,16 @@ public class CartModel {
     private UUID userId;
 
     @NotNull
+    @Size(max = 100)
     @Column(name = "total_price", nullable = false)
-    private Long totalPrice = 0L;
+    private Integer totalPrice;
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<CartItemModel> ListCartItem;
+    private List<CartItemModel> listCartItem;
+
+    // user yang bisa berbelanja hanyalah customer
+    // @OneToOne(cascade = CascadeType.ALL) 
+    // @JoinColumn(name = "customer_id", referencedColumnName = "id")
+    // private UUID customerId; 
 }
