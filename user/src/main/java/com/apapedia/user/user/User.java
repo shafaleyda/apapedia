@@ -40,6 +40,9 @@ public class User implements UserDetails {
   @Column(name = "email", nullable = false, unique = true)
   private String email;
 
+  @Column(name = "balance", nullable = false)
+  private int balance = 0;
+
   @Column(name = "address", nullable = false)
   private String address;
 
