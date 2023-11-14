@@ -4,14 +4,14 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import static com.apapedia.user.user.Permission.ADMIN_CREATE;
-import static com.apapedia.user.user.Permission.ADMIN_DELETE;
-import static com.apapedia.user.user.Permission.ADMIN_READ;
-import static com.apapedia.user.user.Permission.ADMIN_UPDATE;
-import static com.apapedia.user.user.Permission.MANAGER_CREATE;
-import static com.apapedia.user.user.Permission.MANAGER_DELETE;
-import static com.apapedia.user.user.Permission.MANAGER_READ;
-import static com.apapedia.user.user.Permission.MANAGER_UPDATE;
+import static com.apapedia.user.user.Permission.SELLER_CREATE;
+import static com.apapedia.user.user.Permission.SELLER_DELETE;
+import static com.apapedia.user.user.Permission.SELLER_READ;
+import static com.apapedia.user.user.Permission.SELLER_UPDATE;
+import static com.apapedia.user.user.Permission.CUSTOMER_CREATE;
+import static com.apapedia.user.user.Permission.CUSTOMER_DELETE;
+import static com.apapedia.user.user.Permission.CUSTOMER_READ;
+import static com.apapedia.user.user.Permission.CUSTOMER_UPDATE;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,24 +22,20 @@ import java.util.stream.Collectors;
 public enum Role {
 
   USER(Collections.emptySet()),
-  ADMIN(
+  SELLER(
           Set.of(
-                  ADMIN_READ,
-                  ADMIN_UPDATE,
-                  ADMIN_DELETE,
-                  ADMIN_CREATE,
-                  MANAGER_READ,
-                  MANAGER_UPDATE,
-                  MANAGER_DELETE,
-                  MANAGER_CREATE
+                  SELLER_READ,
+                  SELLER_UPDATE,
+                  SELLER_DELETE,
+                  SELLER_CREATE
           )
   ),
-  MANAGER(
+  CUSTOMER(
           Set.of(
-                  MANAGER_READ,
-                  MANAGER_UPDATE,
-                  MANAGER_DELETE,
-                  MANAGER_CREATE
+                  CUSTOMER_READ,
+                  CUSTOMER_UPDATE,
+                  CUSTOMER_DELETE,
+                  CUSTOMER_CREATE
           )
   )
 
