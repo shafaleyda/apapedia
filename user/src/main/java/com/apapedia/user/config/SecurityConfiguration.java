@@ -13,16 +13,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
-import static com.apapedia.user.user.Permission.ADMIN_CREATE;
-import static com.apapedia.user.user.Permission.ADMIN_DELETE;
-import static com.apapedia.user.user.Permission.ADMIN_READ;
-import static com.apapedia.user.user.Permission.ADMIN_UPDATE;
-import static com.apapedia.user.user.Permission.MANAGER_CREATE;
-import static com.apapedia.user.user.Permission.MANAGER_DELETE;
-import static com.apapedia.user.user.Permission.MANAGER_READ;
-import static com.apapedia.user.user.Permission.MANAGER_UPDATE;
-import static com.apapedia.user.user.Role.ADMIN;
-import static com.apapedia.user.user.Role.MANAGER;
+import static com.apapedia.user.user.Permission.SELLER_CREATE;
+import static com.apapedia.user.user.Permission.SELLER_DELETE;
+import static com.apapedia.user.user.Permission.SELLER_READ;
+import static com.apapedia.user.user.Permission.SELLER_UPDATE;
+import static com.apapedia.user.user.Permission.CUSTOMER_CREATE;
+import static com.apapedia.user.user.Permission.CUSTOMER_DELETE;
+import static com.apapedia.user.user.Permission.CUSTOMER_READ;
+import static com.apapedia.user.user.Permission.CUSTOMER_UPDATE;
+import static com.apapedia.user.user.Role.SELLER;
+import static com.apapedia.user.user.Role.CUSTOMER;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -57,11 +57,11 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(WHITE_LIST_URL)
                                 .permitAll()
-                                .requestMatchers("/api/v1/management/**").hasAnyRole(ADMIN.name(), MANAGER.name())
-                                .requestMatchers(GET, "/api/v1/management/**").hasAnyAuthority(ADMIN_READ.name(), MANAGER_READ.name())
-                                .requestMatchers(POST, "/api/v1/management/**").hasAnyAuthority(ADMIN_CREATE.name(), MANAGER_CREATE.name())
-                                .requestMatchers(PUT, "/api/v1/management/**").hasAnyAuthority(ADMIN_UPDATE.name(), MANAGER_UPDATE.name())
-                                .requestMatchers(DELETE, "/api/v1/management/**").hasAnyAuthority(ADMIN_DELETE.name(), MANAGER_DELETE.name())
+                                // .requestMatchers("/api/v1/management/**").hasAnyRole(SELLER.name(), CUSTOMER.name())
+                                // .requestMatchers(GET, "/api/v1/management/**").hasAnyAuthority(SELLER_READ.name(), CUSTOMER_READ.name())
+                                // .requestMatchers(POST, "/api/v1/management/**").hasAnyAuthority(SELLER_CREATE.name(), CUSTOMER_CREATE.name())
+                                // .requestMatchers(PUT, "/api/v1/management/**").hasAnyAuthority(SELLER_UPDATE.name(), CUSTOMER_UPDATE.name())
+                                // .requestMatchers(DELETE, "/api/v1/management/**").hasAnyAuthority(SELLER_DELETE.name(), CUSTOMER_DELETE.name())
                                 .anyRequest()
                                 .authenticated()
                 )
