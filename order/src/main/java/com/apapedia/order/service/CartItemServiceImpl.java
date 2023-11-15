@@ -22,4 +22,14 @@ public class CartItemServiceImpl implements CartItemService{
     public CartItemModel getCartItemById(UUID id){
         return cartItemDb.findById(id).get();
     }
+
+    @Override
+    public CartItemModel updateCartItem(CartItemModel cartItem){
+        return cartItemDb.save(cartItem);
+    }
+
+    @Override
+    public void deleteCartItem(CartItemModel cartItem){
+        cartItemDb.delete(cartItem);
+    }
 }

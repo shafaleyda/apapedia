@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -27,9 +27,8 @@ public class CartModel {
     private UUID userId;
 
     @NotNull
-    @Size(max = 100)
     @Column(name = "total_price", nullable = false)
-    private Integer totalPrice;
+    private int totalPrice;
 
     @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
