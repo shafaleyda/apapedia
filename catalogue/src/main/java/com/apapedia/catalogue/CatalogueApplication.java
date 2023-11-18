@@ -99,6 +99,6 @@ public class CatalogueApplication {
 	public ObjectMapper getObjectMapper() {
 		return new ObjectMapper();
 	}
-
-
 }
+
+

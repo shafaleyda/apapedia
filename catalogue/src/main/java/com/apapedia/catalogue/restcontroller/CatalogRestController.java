@@ -153,6 +153,9 @@ public class CatalogRestController {
 
 
 
+
+
+
 //      @PostMapping(value={"/catalog/create"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
 //    public Catalog createRestCatalogue(@Valid @RequestBody CreateCatalogueRequestDTO catalogDTO,
 //                                       BindingResult bindingResult,

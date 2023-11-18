@@ -236,45 +236,9 @@ public class CatalogRestServiceImpl implements CatalogRestService{
         }
         return catalogRestList;
     }
-//    @Override
-//    public Catalog createRestCatalog(CreateCatalogueRequestDTO catalogDTO,
-//                                         MultipartFile imageFiles) {
-//        Catalog catalogRest = new Catalog();
-//        var DTO = catalogDTO;
-//        try {
-//            if (imageFiles == null) {
-//                catalogRest.setImage(null);
-//            } else {
-//                fileStoreService.store(imageFiles);
-//                catalogRest.setImage(Base64.getEncoder().encodeToString(imageFiles.getBytes()));
-//            }
-//            catalogRest.setIdCatalog(catalogDTO.getIdCatalog());
-//            catalogRest.setSeller(catalogDTO.getSeller());
-//            catalogRest.setPrice(catalogDTO.getPrice());
-//            catalogRest.setProductName(catalogDTO.getProductName());
-//            catalogRest.setProductDescription(catalogDTO.getProductDescription());
-//            // add set categoryId and categoryName here
-//
-//            // add stock increment here
-//
-//            catalogRest.setStock(catalogDTO.getStock());
-//            catalogRest.setIsDeleted(catalogDTO.getIsDeleted());
-//            return catalogDb.save(catalogRest);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
-
 
     @Override
     public CatalogRest getRestCatalogById(String idCatalog){
-    //        for (Catalog catalog: retrieveRestAllCatalog()) {
-    //            if (catalog.getIdCatalog().equals(idCatalog)){
-    //                return catalog;
-    //            }
-    //        }
-    //        return null;
         Optional<Catalog> catalog = catalogDb.findById(UUID.fromString(idCatalog));
         if (catalog.isEmpty()) {
             return new CatalogRest();
@@ -305,3 +269,43 @@ public class CatalogRestServiceImpl implements CatalogRestService{
         return outputStream.toByteArray();
     }
 }
+
+
+//    @Override
+//    public Catalog createRestCatalog(CreateCatalogueRequestDTO catalogDTO,
+//                                         MultipartFile imageFiles) {
+//        Catalog catalogRest = new Catalog();
+//        var DTO = catalogDTO;
+//        try {
+//            if (imageFiles == null) {
+//                catalogRest.setImage(null);
+//            } else {
+//                fileStoreService.store(imageFiles);
+//                catalogRest.setImage(Base64.getEncoder().encodeToString(imageFiles.getBytes()));
+//            }
+//            catalogRest.setIdCatalog(catalogDTO.getIdCatalog());
+//            catalogRest.setSeller(catalogDTO.getSeller());
+//            catalogRest.setPrice(catalogDTO.getPrice());
+//            catalogRest.setProductName(catalogDTO.getProductName());
+//            catalogRest.setProductDescription(catalogDTO.getProductDescription());
+//            // add set categoryId and categoryName here
+//
+//            // add stock increment here
+//
+//            catalogRest.setStock(catalogDTO.getStock());
+//            catalogRest.setIsDeleted(catalogDTO.getIsDeleted());
+//            return catalogDb.save(catalogRest);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
+
+//    @Override
+//    public CatalogRest getRestCatalogById(String idCatalog){
+//        //        for (Catalog catalog: retrieveRestAllCatalog()) {
+//        //            if (catalog.getIdCatalog().equals(idCatalog)){
+//        //                return catalog;
+//        //            }
+//        //        }
+//        //        return null;

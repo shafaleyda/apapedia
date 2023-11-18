@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @Transactional
 public interface CatalogRestService {
-
     List<Catalog> retrieveRestAllCatalog();
     List<CatalogRest> retrieveRestAllReadCatalogResponseDTO();
     void deleteCatalog(UUID idCatalog);
