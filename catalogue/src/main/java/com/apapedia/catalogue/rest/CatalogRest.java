@@ -10,6 +10,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class CatalogRest {
     private UUID idCatalog;
     private UUID seller;

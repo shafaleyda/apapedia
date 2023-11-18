@@ -2,14 +2,12 @@ package com.apapedia.catalogue.restservice;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.zip.Inflater;
-import java.util.ArrayList;
+import java.util.*;
 
-import com.apapedia.catalogue.dto.request.UpdateCatalogRequestDTO;
+import com.apapedia.catalogue.dto.request.CreateCatalogueRequestDTO;
 import com.apapedia.catalogue.model.Category;
+import com.apapedia.catalogue.repository.CategoryDb;
+import com.apapedia.catalogue.service.FileStoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
@@ -25,9 +23,39 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     @Autowired
     private CatalogDb catalogDb;
 
+    @Autowired
+    private CategoryDb categoryDb;
+
+    @Autowired
+    private FileStoreService fileStoreService;
+
     @Override
     public List<Catalog> retrieveRestAllCatalog() {
         return catalogDb.findAll();
+    }
+
+    @Override
+    public List<CatalogRest> getAllCatalogOrderByProductName() {
+        List<CatalogRest> result = new ArrayList<>();
+
+        List<Catalog> getAllCatalog = catalogDb.findAllByIsDeletedFalseOrderByProductNameAsc();
+
+        for (Catalog catalog: getAllCatalog) {
+            CatalogRest catalogRest = new CatalogRest();
+            catalogRest.setIdCatalog(catalog.getIdCatalog());
+            catalogRest.setSeller(catalog.getSeller());
+            catalogRest.setPrice(catalog.getPrice());
+            catalogRest.setProductName(catalog.getProductName());
+            catalogRest.setProductDescription(catalog.getProductDescription());
+            catalogRest.setCategoryId(catalog.getCategory().getIdCategory());
+            catalogRest.setCategoryName(catalog.getCategory().getCategoryName());
+            catalogRest.setStock(catalog.getStock());
+            catalogRest.setIsDeleted(catalog.getIsDeleted());
+            catalogRest.setImage(catalog.getImage());
+
+            result.add(catalogRest);
+        }
+        return result;
     }
 
     @Override
@@ -117,15 +145,157 @@ public class CatalogRestServiceImpl implements CatalogRestService{
         return result;
     }
 
+    // TODO PERBAIKAN API CREATE REST CATALOG
+    @Override
+    public CatalogRest createRestCatalog(CreateCatalogueRequestDTO catalogDTO,
+                                         MultipartFile imageFiles) throws Exception {
+
+        Optional<Category> category = categoryDb.findByIdCategory(catalogDTO.getCategoryId());
+        if (category.isEmpty()) {
+            throw new Exception("category not found");
+        }
+
+        Catalog catalog = Catalog.builder()
+                .idCatalog(catalogDTO.getIdCatalog())
+                .seller(catalogDTO.getSeller())
+                .price(catalogDTO.getPrice())
+                .productName(catalogDTO.getProductName())
+                .productDescription(catalogDTO.getProductDescription())
+                .category(category.get())
+                .stock(catalogDTO.getStock())
+                .isDeleted(false)
+                .build();
+
+        try {
+            if (imageFiles == null) {
+                catalog.setImage(null);
+            } else {
+                fileStoreService.storeFile(imageFiles);
+                catalog.setImage(Base64.getEncoder().encodeToString(imageFiles.getBytes()));
+            }
+
+            Catalog response = catalogDb.save(catalog);
+            return CatalogRest.builder()
+                    .idCatalog(response.getIdCatalog())
+                    .seller(response.getSeller())
+                    .price(response.getPrice())
+                    .productName(response.getProductName())
+                    .productDescription(response.getProductDescription())
+                    .categoryId(response.getCategory().getIdCategory())
+                    .categoryName(response.getCategory().getCategoryName())
+                    .stock(response.getStock())
+                    .image(response.getImage())
+                    .build();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    // TODO PERBAIKAN UPDATE CATALOG API
+    @Override
+    public Catalog updateRestCatalog(CreateCatalogueRequestDTO catalog, MultipartFile imageFiles) throws Exception {
+
+        Optional<Catalog> catalogData = catalogDb.findByIdCatalogAndIsDeletedFalse(catalog.getIdCatalog());
+        if (catalogData.isEmpty()) {
+            throw new Exception("not found catalog");
+        }
+
+        Optional<Category> category = categoryDb.findByIdCategory(catalog.getCategoryId());
+        if (category.isEmpty()) {
+            throw new Exception("not found catalog");
+        }
+
+        catalogData.get().setSeller(catalog.getSeller());
+        catalogData.get().setPrice(catalog.getPrice());
+        catalogData.get().setProductName(catalog.getProductName());
+        catalogData.get().setProductDescription(catalog.getProductDescription());
+        catalogData.get().setCategory(category.get());
+        catalogData.get().setStock(catalog.getStock());
+        catalogData.get().setImage(catalog.getImage() != null ? catalog.getImage() : catalogData.get().getImage());
+
+        return catalogData.get();
+    }
+
+    @Override
+    public List<CatalogRest> getListCatalogBySellerId(String sellerId) {
+        List<CatalogRest> catalogRestList = new ArrayList<>();
+        List<Catalog> catalogList = catalogDb.findBySellerAndIsDeletedFalse(UUID.fromString(sellerId));
+        for (Catalog catalog : catalogList) {
+            CatalogRest catalogRest = CatalogRest.builder()
+                    .idCatalog(catalog.getIdCatalog())
+                    .seller(catalog.getSeller())
+                    .price(catalog.getPrice())
+                    .productName(catalog.getProductName())
+                    .productDescription(catalog.getProductDescription())
+                    .categoryId(catalog.getCategory().getIdCategory())
+                    .categoryName(catalog.getCategory().getCategoryName())
+                    .stock(catalog.getStock())
+                    .image(catalog.getImage())
+                    .build();
+            catalogRestList.add(catalogRest);
+        }
+        return catalogRestList;
+    }
+//    @Override
+//    public Catalog createRestCatalog(CreateCatalogueRequestDTO catalogDTO,
+//                                         MultipartFile imageFiles) {
+//        Catalog catalogRest = new Catalog();
+//        var DTO = catalogDTO;
+//        try {
+//            if (imageFiles == null) {
+//                catalogRest.setImage(null);
+//            } else {
+//                fileStoreService.store(imageFiles);
+//                catalogRest.setImage(Base64.getEncoder().encodeToString(imageFiles.getBytes()));
+//            }
+//            catalogRest.setIdCatalog(catalogDTO.getIdCatalog());
+//            catalogRest.setSeller(catalogDTO.getSeller());
+//            catalogRest.setPrice(catalogDTO.getPrice());
+//            catalogRest.setProductName(catalogDTO.getProductName());
+//            catalogRest.setProductDescription(catalogDTO.getProductDescription());
+//            // add set categoryId and categoryName here
+//
+//            // add stock increment here
+//
+//            catalogRest.setStock(catalogDTO.getStock());
+//            catalogRest.setIsDeleted(catalogDTO.getIsDeleted());
+//            return catalogDb.save(catalogRest);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
+
+
+    @Override
+    public CatalogRest getRestCatalogById(String idCatalog){
+    //        for (Catalog catalog: retrieveRestAllCatalog()) {
+    //            if (catalog.getIdCatalog().equals(idCatalog)){
+    //                return catalog;
+    //            }
+    //        }
+    //        return null;
+        Optional<Catalog> catalog = catalogDb.findById(UUID.fromString(idCatalog));
+        if (catalog.isEmpty()) {
+            return new CatalogRest();
+        }
+        return CatalogRest.builder()
+                .idCatalog(catalog.get().getIdCatalog())
+                .seller(catalog.get().getSeller())
+                .price(catalog.get().getPrice())
+                .productName(catalog.get().getProductName())
+                .productDescription(catalog.get().getProductDescription())
+                .categoryId(catalog.get().getCategory().getIdCategory())
+                .categoryName(catalog.get().getCategory().getCategoryName())
+                .stock(catalog.get().getStock())
+                .image(catalog.get().getImage())
+                .build();
+    }
+
     @Override
     public void saveCatalog(Catalog catalog) {
         catalogDb.save(catalog);
     }
-
-    @Override
-    public void createRestCatalog(Catalog catalog, MultipartFile[] imageFiles) throws IOException {
-        catalogDb.save(catalog);
-    };
 
     private byte[] concatenateImages(List<byte[]> images) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -134,39 +304,9 @@ public class CatalogRestServiceImpl implements CatalogRestService{
         }
         return outputStream.toByteArray();
     }
-
-    @Override
-    public Catalog updateRestCatalog (
-            UUID idCatalog,
-            UpdateCatalogRequestDTO updateCatalogRequestDTO) {
-        Catalog catalog = getRestCatalogById(idCatalog);
-        Category category = catalog.getCategory();
-
-        var catalogDTO = updateCatalogRequestDTO;
-
-        catalog.setProductName(catalogDTO.getProductName());
-        catalog.setPrice(catalogDTO.getPrice());
-        catalog.setProductDescription(catalogDTO.getProductDescription());
-        catalog.setStock(catalogDTO.getStock());
-        catalog.setImage(catalogDTO.getImage());
-        return catalogDb.save(catalog);
-    }
-
-    @Override
-    public Catalog getRestCatalogById(UUID idCatalog){
-        for (Catalog catalog: retrieveRestAllCatalog()) {
-            if (catalog.getIdCatalog().equals(idCatalog)){
-                return catalog;
-            }
-        }
-        return null;
-    }
-
-
 //    @Override
 //    public byte[] decompressImage(byte[] data) {
 //        return new byte[0];
 //    }
-
 
 }

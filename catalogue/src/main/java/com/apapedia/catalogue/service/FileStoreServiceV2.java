@@ -3,37 +3,32 @@
 
 //package com.apapedia.catalogue.service;
 //
-////import com.apapedia.catalogue.model.ImageData;
-////import com.apapedia.catalogue.repository.StorageRepository;
-//import com.apapedia.catalogue.config.StorageProperties;
-//import org.springframework.beans.factory.annotation.Autowired;
+//import com.apapedia.catalogue.config.FileStorageProperties;
+//import org.apache.commons.io.FilenameUtils;
+//import org.springframework.core.io.Resource;
+//import org.springframework.core.io.UrlResource;
 //import org.springframework.stereotype.Service;
+//import org.springframework.util.StringUtils;
 //import org.springframework.web.multipart.MultipartFile;
-//import com.apapedia.catalogue.utils.*;
+//import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+//
 //import java.io.IOException;
+//import java.io.InputStream;
+//import java.net.MalformedURLException;
 //import java.nio.file.Files;
 //import java.nio.file.Path;
 //import java.nio.file.Paths;
 //import java.nio.file.StandardCopyOption;
-//import java.util.Objects;
-//
-//import org.apache.commons.io.FilenameUtils;
-//import org.springframework.core.io.Resource;
-//import org.springframework.core.io.UrlResource;
-//import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-//
-//import java.io.InputStream;
-//import java.net.MalformedURLException;
 //import java.util.UUID;
 //import java.util.stream.Stream;
 //
-//import org.springframework.util.StringUtils;
-//
 //@Service
-//public class StorageService {
+//public class FileStoreService {
 //
-//    private StorageProperties properties = new StorageProperties();
-//    Path rootLocation = Paths.get(properties.getLocation());
+//    private FileStorageProperties properties = new FileStorageProperties();
+//    Path rootLocation = Paths.get(properties.getUploadDir());
+//
+//
 //
 //    public String store(MultipartFile file) {
 //        try {
@@ -41,7 +36,9 @@
 //                throw new RuntimeException("Failed to store empty file.");
 //            }
 //
-//            String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+////            String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+//            String extension = StringUtils.cleanPath(file.getOriginalFilename());
+//
 //            String uploadedFileName = UUID.randomUUID().toString() + "." + extension;
 //
 //            Path destinationFile = rootLocation.resolve(
@@ -90,17 +87,3 @@
 //        }
 //    }
 //}
-//
-//
-////    public String uploadImage(MultipartFile file) throws IOException {
-////        ImageData imageData = repository.save(ImageData.builder()
-////                .name(file.getOriginalFilename())
-////                .type(file.getContentType())
-////                .imageDb(new byte[]{ImageUtils.compressImage(file.getBytes())}).build());
-////        if (imageData != null) {
-////            return "file uploaded successfully";
-////        }
-////        return null;
-////    }
-//
-//
