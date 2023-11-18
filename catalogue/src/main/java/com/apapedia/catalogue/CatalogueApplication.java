@@ -100,4 +100,5 @@ public class CatalogueApplication {
 		return new ObjectMapper();
 	}
 
+
 }

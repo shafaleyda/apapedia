@@ -28,6 +28,8 @@ import com.apapedia.catalogue.rest.CatalogRest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+
+
 @RestController
 @RequestMapping("/api")
 public class CatalogRestController {

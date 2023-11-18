@@ -304,9 +304,4 @@ public class CatalogRestServiceImpl implements CatalogRestService{
         }
         return outputStream.toByteArray();
     }
-//    @Override
-//    public byte[] decompressImage(byte[] data) {
-//        return new byte[0];
-//    }
-
 }

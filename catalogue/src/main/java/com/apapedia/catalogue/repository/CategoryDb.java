@@ -11,3 +11,5 @@ public interface CategoryDb extends JpaRepository<Category, UUID> {
     Optional<Category> findByIdCategory(Integer id);
 
 }
+
+

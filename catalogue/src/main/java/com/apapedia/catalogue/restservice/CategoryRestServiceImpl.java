@@ -26,6 +26,4 @@ public class CategoryRestServiceImpl implements com.apapedia.catalogue.restservi
     public List<Category> retrieveAllCategory() {
         return categoryDb.findAll();
     }
-
-
 }

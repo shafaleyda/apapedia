@@ -23,3 +23,5 @@ public interface CatalogDb extends JpaRepository<Catalog, UUID>{
     Optional<Catalog> findByIdCatalogAndIsDeletedFalse(UUID id);
 }
 
+
+

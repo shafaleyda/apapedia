@@ -27,7 +27,7 @@ public interface CatalogRestService {
     Catalog updateRestCatalog(CreateCatalogueRequestDTO catalog, MultipartFile imageFiles) throws Exception;
     CatalogRest getRestCatalogById(String idCatalog);
     List<CatalogRest> getListCatalogBySellerId(String sellerId);
-
     void saveCatalog(Catalog catalog);
-
 }
+
+

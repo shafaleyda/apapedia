@@ -23,3 +23,4 @@ public class CatalogRest {
     private String image;
     private Boolean isDeleted;
 }
+

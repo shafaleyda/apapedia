@@ -8,3 +8,5 @@ import com.apapedia.catalogue.model.Catalog;
 public interface CatalogService {
     void saveCatalog(Catalog catalog);
 }
+
+
