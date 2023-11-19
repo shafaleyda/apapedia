@@ -1,16 +1,12 @@
 package com.apapedia.order.repository;
 
-import com.apapedia.order.model.OrderModel;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import jakarta.transaction.Transactional;
-
 import java.util.List;
 import java.util.UUID;
 
-@Repository
-@Transactional
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.apapedia.order.model.OrderModel;
+
 public interface OrderDb extends JpaRepository<OrderModel, UUID>{
     List<OrderModel> findAll();
 

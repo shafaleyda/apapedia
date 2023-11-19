@@ -1,24 +1,33 @@
 package com.apapedia.order.model;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-import java.time.LocalDateTime;
-import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-@Getter
 @Setter
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "order")
+@Table(name="orders")
 public class OrderModel {
     @Id
     private UUID id = UUID.randomUUID();
@@ -37,7 +46,7 @@ public class OrderModel {
 
     @NotNull
     @Column(name = "total_price", nullable = false)
-    private Long totalPrice;
+    private Integer totalPrice;
 
     @NotNull
     @Column(name = "customer", nullable = false)
@@ -47,7 +56,23 @@ public class OrderModel {
     @Column(name = "seller", nullable = false)
     private UUID seller;
 
-    @OneToMany(mappedBy = "order")
-    @JsonIgnore
-    private Set<OrderItemModel> ListOrderItem;
+    // @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    // @JsonIgnore
+    // private List<OrderItemModel> listOrderItem;
+
+    // asumsi berhubungan dengan tabel user
+    // @ManyToOne(fetch = FetchType.EAGER)
+    // @JoinColumn(name = "id_customer", referencedColumnName = "id")
+    // private UUID customer;
+
+    // @ManyToOne(fetch = FetchType.EAGER)
+    // @JoinColumn(name = "id_seller", referencedColumnName = "id")
+    // private UUID seller;
+
+    // untuk di user
+    // @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    // private List<Order> listOrder;
+
+    // @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    // private List<Order> listOrder;
 }
