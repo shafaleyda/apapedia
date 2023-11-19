@@ -57,7 +57,7 @@ public class CatalogRestController {
         return catalogRestService.getCatalogById(catalogId);
     }
 
-    // CREATE CATALOG API WITH SELLER ROLE
+    // TODO CREATE CATALOG API WITH SELLER ROLE
     @PostMapping(value = { "/catalog/create" }, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public CatalogRest createRestCatalogue(@RequestParam("model") String jsonObject,
                                            @RequestParam(value = "image", required = false) MultipartFile imageFile,
