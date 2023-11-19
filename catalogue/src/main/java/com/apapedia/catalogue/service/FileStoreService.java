@@ -1,86 +1,45 @@
 package com.apapedia.catalogue.service;
 
 import com.apapedia.catalogue.config.FileStorageProperties;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.UUID;
-import java.util.stream.Stream;
 
 @Service
 public class FileStoreService {
 
-    private FileStorageProperties properties = new FileStorageProperties();
-    Path rootLocation = Paths.get(properties.getUploadDir());
+    private final Path fileStorageLocation;
+    @Autowired
 
-
-
-    public String store(MultipartFile file) {
+    public FileStoreService(FileStorageProperties fileStorageProperties) {
+        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
         try {
-            if (file.isEmpty()) {
-                throw new RuntimeException("Failed to store empty file.");
-            }
-
-//            String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-            String extension = StringUtils.cleanPath(file.getOriginalFilename());
-
-            String uploadedFileName = UUID.randomUUID().toString() + "." + extension;
-
-            Path destinationFile = rootLocation.resolve(
-                            Paths.get(uploadedFileName))
-                    .normalize().toAbsolutePath();
-
-            try (InputStream inputStream = file.getInputStream()) {
-                Files.copy(inputStream, destinationFile,
-                        StandardCopyOption.REPLACE_EXISTING);
-
-                final String baseUrl =
-                        ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-
-                return baseUrl+"/fileUpload/files/"+uploadedFileName;
-            }
-        }
-        catch (IOException e) {
-            throw new RuntimeException("Failed to store file.", e);
+            Files.createDirectories(this.fileStorageLocation);
+        } catch (Exception ex) {
+            throw new RuntimeException("Couldn't create the directory where the upload files will be saved.", ex);
         }
     }
-
-    public Stream<Path> loadAll() {
+    public String storeFile(MultipartFile file) {
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         try {
-            return Files.walk(this.rootLocation, 1)
-                    .filter(path -> !path.equals(this.rootLocation))
-                    .map(this.rootLocation::relativize);
-        }
-        catch (IOException e) {
-            throw new RuntimeException("Failed to read stored files", e);
-        }
 
-    }
-
-    public Resource load(String filename) {
-        try {
-            Path file = rootLocation.resolve(filename);
-            Resource resource = new UrlResource(file.toUri());
-
-            if (resource.exists() || resource.isReadable()) {
-                return resource;
-            } else {
-                throw new RuntimeException("Could not read the file!");
+            if (fileName.contains("..")) {
+                throw new RuntimeException("Sorry! File name which contains invalid path sequence " + fileName);
             }
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Error: " + e.getMessage());
+
+            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            return fileName;
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
+        return "";
     }
 }

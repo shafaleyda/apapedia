@@ -21,7 +21,7 @@ public class UpdateCatalogRequestDTO{
     private Integer price;
     private String productName;
     private String productDescription;
-    private Integer categoryId;
+    private UUID categoryId;
     private String categoryName;
     private Integer stock;
     private String image;
