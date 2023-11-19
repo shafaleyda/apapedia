@@ -28,7 +28,7 @@ import com.apapedia.catalogue.restservice.CatalogRestService;
 import com.apapedia.catalogue.restservice.CategoryRestService;
 
 @SpringBootApplication()
-@ComponentScan(basePackages = "com.apapedia.catalogue")
+//@ComponentScan(basePackages = "com.apapedia.catalogue")
 public class CatalogueApplication {
 
 	public static void main(String[] args) {
