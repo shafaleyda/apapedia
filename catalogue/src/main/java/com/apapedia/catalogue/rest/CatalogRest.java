@@ -10,15 +10,16 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class CatalogRest {
-    private UUID idCatalog; 
-    private UUID seller; 
+    private UUID idCatalog;
+    private UUID seller;
     private Integer price;
-    private String productName; 
-    private String productDescription; 
-    private Integer categoryId; 
-    private String categoryName; 
-    private Integer stock; 
-    private String image; 
-    private Boolean isDeleted; 
+    private String productName;
+    private String productDescription;
+    private Integer categoryId;
+    private String categoryName;
+    private Integer stock;
+    private String image;
+    private Boolean isDeleted;
 }

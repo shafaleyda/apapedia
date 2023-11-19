@@ -1,31 +1,29 @@
-//package com.apapedia.catalogue.controller;
+//package com.apapedia.catalogue.restcontroller;
 //
 //import com.apapedia.catalogue.model.ImageData;
-//import com.apapedia.catalogue.service.StorageService;
+////import com.apapedia.catalogue.service.FileStorageService;
+//import com.apapedia.catalogue.service.FileStoreServiceV1;
+////import com.apapedia.catalogue.service.StorageService;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.core.io.Resource;
 //import org.springframework.http.HttpHeaders;
 //import org.springframework.http.HttpStatus;
 //import org.springframework.http.ResponseEntity;
-//import org.springframework.ui.Model;
 //import org.springframework.web.bind.annotation.*;
 //import org.springframework.web.multipart.MultipartFile;
 //import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 //
-//import java.io.IOException;
 //import java.nio.file.Path;
 //import java.util.List;
 //import java.util.stream.Collectors;
 //import java.util.stream.Stream;
-//
-//import
 //
 //@RestController
 //@RequestMapping("/fileUpload")
 //public class FileUploadController {
 //
 //    @Autowired
-//    StorageService fileStoreService;
+//    FileStoreServiceV1 fileStoreService;
 //
 //    @PostMapping("/")
 //    public String handleFileUpload(@RequestParam("file") MultipartFile file) {
