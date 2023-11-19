@@ -41,7 +41,7 @@ public class CartItemController {
         Mono<ProductRest> product = productMockService.getProductById(cartItemRequestDTO.getProductId());
         
         cartModel.getListCartItem().add(cartItemModel);
-        cartModel.setTotalPrice(cartModel.getTotalPrice() + (product.block().getPrice() * cartItemRequestDTO.getQuantity()));
+        cartModel.setTotalPrice((int) (cartModel.getTotalPrice() + (product.block().getPrice() * cartItemRequestDTO.getQuantity())));
         cartService.updateCart(cartModel);
         return cartItemModel;
     }

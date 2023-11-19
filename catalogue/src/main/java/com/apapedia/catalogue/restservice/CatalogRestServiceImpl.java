@@ -3,14 +3,13 @@ package com.apapedia.catalogue.restservice;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
-import java.util.zip.Inflater;
 
 import com.apapedia.catalogue.dto.request.CreateCatalogueRequestDTO;
 import com.apapedia.catalogue.dto.request.UpdateCatalogRequestDTO;
 import com.apapedia.catalogue.model.Category;
 import com.apapedia.catalogue.repository.CategoryDb;
+import com.apapedia.catalogue.service.FileStoreServiceV1;
 import com.apapedia.catalogue.service.FileStoreService;
-import com.apapedia.catalogue.service.FileStoreServiceV2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,11 +30,11 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     @Autowired
     private CategoryDb categoryDb;
 
-    @Autowired
-    private FileStoreService fileStoreService;
+//    @Autowired
+//    private FileStoreServiceV1 fileStoreService;
 
     @Autowired
-    private FileStoreServiceV2 fileStoreServiceV2;
+    private FileStoreService fileStoreService;
 
     @Override
     public List<Catalog> retrieveRestAllCatalog() {
@@ -196,7 +195,7 @@ public class CatalogRestServiceImpl implements CatalogRestService{
             if (imageFiles == null) {
                 catalog.setImage(null);
             } else {
-                fileStoreServiceV2.storeFile(imageFiles);
+                fileStoreService.storeFile(imageFiles);
                 catalog.setImage(Base64.getEncoder().encodeToString(imageFiles.getBytes()));
             }
 

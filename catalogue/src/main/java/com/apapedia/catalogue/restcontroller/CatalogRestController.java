@@ -5,22 +5,19 @@ import com.apapedia.catalogue.dto.request.CreateCatalogueRequestDTO;
 //import com.apapedia.catalogue.service.FileStorageService;
 //import com.apapedia.catalogue.service.StorageService;
 import com.apapedia.catalogue.model.Catalog;
-import com.apapedia.catalogue.service.FileStoreService;
+import com.apapedia.catalogue.service.FileStoreServiceV1;
 import com.apapedia.catalogue.utils.ApiScope;
 import com.apapedia.catalogue.utils.Constans;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.nio.file.Paths;
 import java.util.*;
 import java.sql.SQLException;
 import java.io.IOException;
@@ -33,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api")
 public class CatalogRestController {
     @Autowired
-    private FileStoreService fileStoreService;
+    private FileStoreServiceV1 fileStoreService;
 
     @Autowired
     private CatalogRestService catalogRestService;
@@ -42,6 +39,70 @@ public class CatalogRestController {
     private ObjectMapper objectMapper;
 
     private static final String AUTHORIZATION = "Authorization";
+
+
+    // TODO GET ALL CATALOG WITH CUSTOMER ROLE
+    @GetMapping(value="/catalog/all")
+    private List<CatalogRest> retrieveAllCatalogue(HttpServletRequest httpServletRequest){
+        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER);
+        return catalogRestService.getAllCatalogOrderByProductName();
+
+    }
+
+    // TODO GET CATALOG BY CATALOG ID WITH CUSTOMER AND SELLER ROLE
+    @GetMapping(value = "/catalog/{catalogId}")
+    public CatalogRest getCatalogById(@PathVariable(name = "catalogId") String catalogId,
+                                      HttpServletRequest httpServletRequest) {
+        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER_SELLER);
+        return catalogRestService.getCatalogById(catalogId);
+    }
+
+    // CREATE CATALOG API WITH SELLER ROLE
+    @PostMapping(value = { "/catalog/create" }, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public CatalogRest createRestCatalogue(@RequestParam("model") String jsonObject,
+                                           @RequestParam(value = "image", required = false) MultipartFile imageFile,
+                                           HttpServletRequest httpServletRequest) throws Exception {
+        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.SELLER);
+
+        CreateCatalogueRequestDTO createCatalogueRequestDTO = null;
+        try {
+            createCatalogueRequestDTO = objectMapper.readValue(jsonObject, CreateCatalogueRequestDTO.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return catalogRestService.createRestCatalog(createCatalogueRequestDTO, imageFile);
+    }
+
+    // TODO UPDATE CATALOG API WITH SELLER ROLE
+    @PutMapping(value = { "/catalog/update/{catalogId}" }, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Catalog editCatalog(@PathVariable(name = "catalogId") String catalogId,
+                               @RequestParam("model") String jsonObject,
+                               @RequestParam(value = "image", required = false) MultipartFile imageFile,
+                               HttpServletRequest httpServletRequest) throws Exception {
+
+        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.SELLER);
+        CreateCatalogueRequestDTO createCatalogueRequestDTO = null;
+        try {
+            createCatalogueRequestDTO = objectMapper.readValue(jsonObject, CreateCatalogueRequestDTO.class);
+            createCatalogueRequestDTO.setIdCatalog(UUID.fromString(catalogId));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return catalogRestService.editRestCatalog(createCatalogueRequestDTO, imageFile);
+    }
+
+    // TODO GET CATALOG BY SELLER ID WITH CUSTOMER AND SELLER ROLE
+    @GetMapping(value = {"/catalog/seller/{sellerId}"})
+    public List<CatalogRest> getListCatalogBySellerId(@PathVariable(name = "sellerId") String sellerId,
+                                                      HttpServletRequest httpServletRequest) {
+        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER_SELLER);
+        return catalogRestService.getListCatalogBySellerId(sellerId);
+    }
+
+
+    // -------------------------------------------------------------------------------------------------------------------------------------------
 
     @DeleteMapping(value = "/catalog/{id}")
     public String deleteProduct(@PathVariable UUID id) {
@@ -86,71 +147,8 @@ public class CatalogRestController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(responseData);
     }
-
-    // TODO GET ALL CATALOG API
-    @GetMapping(value="/catalog/all")
-    private List<CatalogRest> retrieveAllCatalogue(HttpServletRequest httpServletRequest){
-        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER);
-        return catalogRestService.getAllCatalogOrderByProductName();
-
-    }
-
-    // TODO GET CATALOG API BY ID
-    @GetMapping(value = "/catalog/{catalogId}")
-    public CatalogRest getCatalogById(@PathVariable(name = "catalogId") String catalogId,
-                                      HttpServletRequest httpServletRequest) {
-        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER_SELLER);
-        return catalogRestService.getCatalogById(catalogId);
-    }
-
-    // TODO CREATE CATALOG API
-    @PostMapping(value = { "/catalog/create" }, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public CatalogRest createRestCatalogue(@RequestParam("model") String jsonObject,
-                                       @RequestParam(value = "image", required = false) MultipartFile imageFile,
-                                           HttpServletRequest httpServletRequest) throws Exception {
-        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.SELLER);
-
-        CreateCatalogueRequestDTO createCatalogueRequestDTO = null;
-        try {
-            createCatalogueRequestDTO = objectMapper.readValue(jsonObject, CreateCatalogueRequestDTO.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        return catalogRestService.createRestCatalog(createCatalogueRequestDTO, imageFile);
-    }
-
-    // TODO UPDATE CATALOG API
-    @PutMapping(value = { "/catalog/update/{catalogId}" }, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public Catalog editCatalog(@PathVariable(name = "catalogId") String catalogId,
-                               @RequestParam("model") String jsonObject,
-                               @RequestParam(value = "image", required = false) MultipartFile imageFile,
-                               HttpServletRequest httpServletRequest) throws Exception {
-
-    ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.SELLER);
-        CreateCatalogueRequestDTO createCatalogueRequestDTO = null;
-        try {
-            createCatalogueRequestDTO = objectMapper.readValue(jsonObject, CreateCatalogueRequestDTO.class);
-            createCatalogueRequestDTO.setIdCatalog(UUID.fromString(catalogId));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        return catalogRestService.editRestCatalog(createCatalogueRequestDTO, imageFile);
-    }
-
-//   TODO GET CATALOG BY SELLER ID
-    @GetMapping(value = {"/catalog/seller/{sellerId}"})
-    public List<CatalogRest> getListCatalogBySellerId(@PathVariable(name = "sellerId") String sellerId,
-                                                      HttpServletRequest httpServletRequest) {
-        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER_SELLER);
-        return catalogRestService.getListCatalogBySellerId(sellerId);
-    }
-
-
-    // TOOD CREATE
-
 }
+
 
 //      @PostMapping(value={"/catalog/create"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
 //    public Catalog createRestCatalogue(@Valid @RequestBody CreateCatalogueRequestDTO catalogDTO,

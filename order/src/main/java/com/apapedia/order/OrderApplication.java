@@ -41,7 +41,7 @@ public class OrderApplication {
 				order.setCreatedAt(LocalDateTime.now());
 				order.setUpdatedAt(LocalDateTime.now());		
 				order.setStatus(0); 
-				order.setTotalPrice(Integer.valueOf((int) (Math.random() * 1000000)));				
+				order.setTotalPrice((long) (int) (Math.random() * 1000000));
 				order.setCustomer(UUID.randomUUID());
 				order.setSeller(UUID.randomUUID());
 				orderRestService.saveOrder(order);
