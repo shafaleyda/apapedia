@@ -35,8 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
-<<<<<<< HEAD
-=======
 # Nanti uncomment
 # .env
->>>>>>> 21a3c57a484476d288603227d2a57f6b9f4dc202
+
