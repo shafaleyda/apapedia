@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!--    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>-->
+    <!--    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous" />
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <title>Withdraw Page</title>
+</head>
+<body class="d-flex align-items-center justify-content-center" style="height: 80vh;">
+
+<div class="container">
+    <div class="card mt-5">
+        <div class="card-header">
+            <div class="row mt-2">
+                <div class="col align-content-start">
+                    <h2>Withdraw Seller Balance</h2>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="justify-content-center">
+
+                <!-- Withdraw Form -->
+                <form th:action="@{/seller/withdraw}" method="post" >
+                    <div class="mb-3 row justify-content-center text-center">
+                        <label for="withdrawAmount" class="form-label" >Withdraw Amount:</label>
+                        <input type="number" class="form-control form-control" id="withdrawAmount" name="withdrawAmount" style="width: 20em;" required/>
+                    </div>
+                    <div class="mb-3 text-center">
+                        <button type="submit" class="btn btn-primary">Confirm Withdraw</button>
+                        <a class="btn btn-danger" th:href="@{/profile}">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
