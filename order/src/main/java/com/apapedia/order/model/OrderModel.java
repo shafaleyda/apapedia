@@ -37,7 +37,7 @@ public class OrderModel {
 
     @NotNull
     @Column(name = "total_price", nullable = false)
-    private int totalPrice;
+    private Long totalPrice;
 
     @NotNull
     @Column(name = "customer", nullable = false)

@@ -31,25 +31,15 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-  public AuthenticationResponse register(RegisterRequest request) {
-    var user = User.builder()
-        .name(request.getName())
-        .username(request.getUsername())
-        .password(passwordEncoder.encode(request.getPassword()))
-        .email(request.getEmail())
-        .address(request.getAddress())
-        .role(request.getRole())
-        .build();
-
-    var savedUser = repository.save(user);
-    var jwtToken = jwtService.generateToken(user);
-    var refreshToken = jwtService.generateRefreshToken(user);
-    saveUserToken(savedUser, jwtToken);
-    return AuthenticationResponse.builder()
-        .accessToken(jwtToken)
-            .refreshToken(refreshToken)
-        .build();
-  }
+    public AuthenticationResponse register(RegisterRequest request) {
+        var user = User.builder()
+                .name(request.getName())
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .email(request.getEmail())
+                .address(request.getAddress())
+                .role(request.getRole())
+                .build();
 
         var savedUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
