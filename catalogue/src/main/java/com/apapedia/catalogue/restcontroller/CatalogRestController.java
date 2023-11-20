@@ -5,7 +5,7 @@ import com.apapedia.catalogue.dto.request.CreateCatalogueRequestDTO;
 //import com.apapedia.catalogue.service.FileStorageService;
 //import com.apapedia.catalogue.service.StorageService;
 import com.apapedia.catalogue.model.Catalog;
-import com.apapedia.catalogue.service.FileStoreServiceV1;
+import com.apapedia.catalogue.service.FileStoreService;
 import com.apapedia.catalogue.utils.ApiScope;
 import com.apapedia.catalogue.utils.Constans;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api")
 public class CatalogRestController {
     @Autowired
-    private FileStoreServiceV1 fileStoreService;
+    private FileStoreService fileStoreService;
 
     @Autowired
     private CatalogRestService catalogRestService;
