@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public enum Role {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   USER(Collections.emptySet()),
   SELLER(
           Set.of(
@@ -40,6 +41,8 @@ public enum Role {
           )
   )
 =======
+=======
+>>>>>>> 2160e5ce41fdfc53c6121668711502aa8061d87d
     USER(Collections.emptySet()),
     SELLER(
             Set.of(
@@ -57,7 +60,10 @@ public enum Role {
                     CUSTOMER_CREATE
             )
     )
+<<<<<<< HEAD
 >>>>>>> 3df004dc477b2fcdf40967613090d373b77d4980
+=======
+>>>>>>> 2160e5ce41fdfc53c6121668711502aa8061d87d
 
     ;
 

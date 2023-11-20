@@ -5,7 +5,7 @@ import org.springframework.data.domain.Sort;
 
 import com.apapedia.catalogue.dto.request.CreateCatalogueRequestDTO;
 import com.apapedia.catalogue.model.Catalog;
-import com.apapedia.catalogue.service.FileStoreServiceV1;
+import com.apapedia.catalogue.service.FileStoreService;
 import com.apapedia.catalogue.utils.ApiScope;
 import com.apapedia.catalogue.utils.Constans;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,10 +38,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class CatalogRestController {
     @Autowired
     private CatalogRestService catalogRestService; 
+    private FileStoreService fileStoreService;
 
      @Autowired
     private CatalogMapper catalogMapper;
-    private FileStoreServiceV1 fileStoreService;
+    // private FileStoreServiceV1 fileStoreService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -69,7 +70,7 @@ public class CatalogRestController {
     public CatalogRest createRestCatalogue(@RequestParam("model") String jsonObject,
                                            @RequestParam(value = "image", required = false) MultipartFile imageFile,
                                            HttpServletRequest httpServletRequest) throws Exception {
-        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.SELLER);
+        // ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.SELLER);
 
         CreateCatalogueRequestDTO createCatalogueRequestDTO = null;
         try {

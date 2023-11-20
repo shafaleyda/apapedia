@@ -32,6 +32,7 @@ public class User implements UserDetails {
     private String name;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   @Column(name = "username", nullable = false, unique = true)
   private String username;
 
@@ -44,6 +45,8 @@ public class User implements UserDetails {
   @Column(name = "balance", nullable = false)
   private int balance = 0;
 =======
+=======
+>>>>>>> 2160e5ce41fdfc53c6121668711502aa8061d87d
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
@@ -55,7 +58,10 @@ public class User implements UserDetails {
 
     @Column(name = "balance", nullable = false)
     private int balance = 0;
+<<<<<<< HEAD
 >>>>>>> 3df004dc477b2fcdf40967613090d373b77d4980
+=======
+>>>>>>> 2160e5ce41fdfc53c6121668711502aa8061d87d
 
     @Column(name = "address", nullable = false)
     private String address;
@@ -63,6 +69,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   @CreationTimestamp // Atribut ini akan diisi dengan waktu saat pertama kali entitas dibuat.
   @Column(name = "createdAt", updatable = false)
@@ -77,11 +84,16 @@ public class User implements UserDetails {
   @OneToMany(mappedBy = "user")
   private List<Token> tokens;
 =======
+=======
+>>>>>>> 2160e5ce41fdfc53c6121668711502aa8061d87d
     @CreationTimestamp // Atribut ini akan diisi dengan waktu saat pertama kali entitas dibuat.
     @Column(name = "createdAt", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+<<<<<<< HEAD
 >>>>>>> 3df004dc477b2fcdf40967613090d373b77d4980
+=======
+>>>>>>> 2160e5ce41fdfc53c6121668711502aa8061d87d
 
     @UpdateTimestamp // Atribut ini akan diisi dengan waktu saat entitas terakhir diperbarui.
     @Column(name = "updatedAt")

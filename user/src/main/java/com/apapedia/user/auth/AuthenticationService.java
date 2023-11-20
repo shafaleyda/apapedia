@@ -32,6 +32,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   public AuthenticationResponse register(RegisterRequest request) {
     var user = User.builder()
         .name(request.getName())
@@ -52,6 +53,8 @@ public class AuthenticationService {
         .build();
   }
 =======
+=======
+>>>>>>> 2160e5ce41fdfc53c6121668711502aa8061d87d
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
                 .name(request.getName())
@@ -61,7 +64,10 @@ public class AuthenticationService {
                 .address(request.getAddress())
                 .role(request.getRole())
                 .build();
+<<<<<<< HEAD
 >>>>>>> 3df004dc477b2fcdf40967613090d373b77d4980
+=======
+>>>>>>> 2160e5ce41fdfc53c6121668711502aa8061d87d
 
         var savedUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
