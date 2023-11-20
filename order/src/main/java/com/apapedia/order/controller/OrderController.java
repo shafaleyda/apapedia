@@ -1,22 +1,30 @@
 package com.apapedia.order.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
 import jakarta.validation.Valid;
 
+import com.apapedia.order.dto.OrderMapper;
+import com.apapedia.order.dto.request.CreateOrderRequestDTO;
+import com.apapedia.order.dto.request.UpdateOrderRequestDTO;
+import com.apapedia.order.dto.response.Product;
 import com.apapedia.order.model.OrderItemModel;
 import com.apapedia.order.model.OrderModel;
-import com.apapedia.order.rest.ProductRest;
-import com.apapedia.order.dto.request.CreateOrderRequestDTO;
 import com.apapedia.order.service.OrderItemService;
 import com.apapedia.order.service.OrderService;
-import com.apapedia.order.service.ProductMockService;
+import com.apapedia.order.service.ProductService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashSet;
 import java.util.UUID;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @RestController
@@ -28,7 +36,10 @@ public class OrderController {
     OrderService orderService;
 
     @Autowired
-    ProductMockService productMockService;
+    OrderMapper orderMapper;
+
+    @Autowired
+    ProductService productMockService;
 
     @PostMapping(value = "/order/create")
     private List<OrderModel> createOrder(@Valid @RequestBody CreateOrderRequestDTO orderRequestDTO){
@@ -38,7 +49,7 @@ public class OrderController {
             UUID productId = entry.getKey();
             Integer quantity = entry.getValue();
             //Use mock service to get product price
-            ProductRest product = productMockService.getProductById(productId).block();
+            Product product = productMockService.getProductById(productId).block();
 
             //Use this to check if automatically create new order model
             product.setSeller(UUID.randomUUID());
@@ -73,15 +84,53 @@ public class OrderController {
                 order.setUpdatedAt(LocalDateTime.now());
                 order.setTotalPrice(product.getPrice() * quantity);
                 order.setStatus(0);
-                orderService.createOrder(order);
+                orderService.saveOrder(order);
                 order.setListOrderItem(new HashSet<OrderItemModel>());
                 order.getListOrderItem().add(orderItem);
                 orderModels.add(order);
             }
             orderItem.setOrder(order);
             orderItemService.createOrderItem(orderItem);
-            orderService.createOrder(order);
+            orderService.saveOrder(order);
         }
         return orderModels;
+    }
+
+    @GetMapping(value = "/order/customer/{id}")
+    private List<OrderModel> retrieveCustomerOrder(@PathVariable("id") UUID id){
+        List<OrderModel> listOrder = orderService.listByCustomer(id);
+        return listOrder;
+    }
+
+    @GetMapping(value = "/order/seller/{id}")
+    private List<OrderModel> retrieveSellerOrder(@PathVariable("id") UUID id){
+        List<OrderModel> listOrder = orderService.listBySeller(id);
+        return listOrder;
+    }
+
+    @PutMapping("/order/update/{orderId}")
+    public OrderModel updateOrderStatus(@PathVariable("orderId") UUID id,
+            @Valid @RequestBody UpdateOrderRequestDTO orderDTO, BindingResult bindingResult) {
+    
+        System.out.println("Received request for orderId: " + id);
+        OrderModel oldOrder = orderService.getOrderByOrderId(id);
+    
+        if(bindingResult.hasFieldErrors()){
+            System.out.println("Invalid request body: " + bindingResult.getAllErrors());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request body has invalid type or missing field"); 
+        } else {
+            var order = orderMapper.updateOrderRequestDTOToOrder(orderDTO);
+            order.setId(id);
+            OrderModel orderUpdated = orderService.updateOrder(order, oldOrder); 
+    
+            System.out.println("Order updated successfully: " + orderUpdated);
+            return orderUpdated; 
+        }
+    }
+
+    @GetMapping("/order/salesChart/{id}")
+    public ResponseEntity<Map<LocalDate, Integer>> salesChart(@PathVariable("id") UUID id){
+        Map<LocalDate, Integer> mapTotalOrdersPerDay = orderService.getDailySales(id);
+        return ResponseEntity.ok(mapTotalOrdersPerDay);
     }
 }

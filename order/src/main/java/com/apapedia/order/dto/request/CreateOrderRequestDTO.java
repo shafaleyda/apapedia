@@ -18,4 +18,6 @@ public class CreateOrderRequestDTO {
     private HashMap<UUID,Integer> items;
 
     private UUID customer;
+
+    private int status;
 }

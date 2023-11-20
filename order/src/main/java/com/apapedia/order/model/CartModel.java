@@ -2,7 +2,6 @@ package com.apapedia.order.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,9 +27,8 @@ public class CartModel {
     private UUID userId;
 
     @NotNull
-    @Size(max = 100)
     @Column(name = "total_price", nullable = false)
-    private Integer totalPrice;
+    private int totalPrice;
 
     @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore

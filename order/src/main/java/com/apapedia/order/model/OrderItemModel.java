@@ -25,7 +25,7 @@ public class OrderItemModel {
 
     @NotNull
     @Column(name = "quantity", nullable = false)
-    private Integer quantity;
+    private int quantity;
 
     @NotNull
     @Column(name = "product_name", nullable = false)
@@ -33,7 +33,7 @@ public class OrderItemModel {
 
     @NotNull
     @Column(name = "product_price", nullable = false)
-    private Integer productPrice;
+    private int productPrice;
 
     @ManyToOne
     @JsonIgnore

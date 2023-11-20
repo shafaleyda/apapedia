@@ -9,7 +9,7 @@ import lombok.Setter;
 
 import java.util.UUID;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -33,11 +33,11 @@ public class OrderModel {
 
     @NotNull
     @Column(name = "status", nullable = false)
-    private Integer status;
+    private int status;
 
     @NotNull
     @Column(name = "total_price", nullable = false)
-    private Integer totalPrice;
+    private int totalPrice;
 
     @NotNull
     @Column(name = "customer", nullable = false)
@@ -49,5 +49,5 @@ public class OrderModel {
 
     @OneToMany(mappedBy = "order")
     @JsonIgnore
-    private List<OrderItemModel> ListOrderItem;
+    private Set<OrderItemModel> ListOrderItem;
 }
