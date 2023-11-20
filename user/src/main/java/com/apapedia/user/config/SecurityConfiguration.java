@@ -57,25 +57,11 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(WHITE_LIST_URL)
                                 .permitAll()
-<<<<<<< HEAD
-<<<<<<< HEAD
                                 // .requestMatchers("/api/v1/management/**").hasAnyRole(SELLER.name(), CUSTOMER.name())
                                 // .requestMatchers(GET, "/api/v1/management/**").hasAnyAuthority(SELLER_READ.name(), CUSTOMER_READ.name())
                                 // .requestMatchers(POST, "/api/v1/management/**").hasAnyAuthority(SELLER_CREATE.name(), CUSTOMER_CREATE.name())
                                 // .requestMatchers(PUT, "/api/v1/management/**").hasAnyAuthority(SELLER_UPDATE.name(), CUSTOMER_UPDATE.name())
                                 // .requestMatchers(DELETE, "/api/v1/management/**").hasAnyAuthority(SELLER_DELETE.name(), CUSTOMER_DELETE.name())
-=======
-=======
->>>>>>> 2160e5ce41fdfc53c6121668711502aa8061d87d
-                                 .requestMatchers("/api/v1/management/**").hasAnyRole(SELLER.name(), CUSTOMER.name())
-                                 .requestMatchers(GET, "/api/v1/management/**").hasAnyAuthority(SELLER_READ.name(), CUSTOMER_READ.name())
-                                 .requestMatchers(POST, "/api/v1/management/**").hasAnyAuthority(SELLER_CREATE.name(), CUSTOMER_CREATE.name())
-                                 .requestMatchers(PUT, "/api/v1/management/**").hasAnyAuthority(SELLER_UPDATE.name(), CUSTOMER_UPDATE.name())
-                                 .requestMatchers(DELETE, "/api/v1/management/**").hasAnyAuthority(SELLER_DELETE.name(), CUSTOMER_DELETE.name())
-<<<<<<< HEAD
->>>>>>> 3df004dc477b2fcdf40967613090d373b77d4980
-=======
->>>>>>> 2160e5ce41fdfc53c6121668711502aa8061d87d
                                 .anyRequest()
                                 .authenticated()
                 )

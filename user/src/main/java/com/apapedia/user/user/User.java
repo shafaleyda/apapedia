@@ -25,14 +25,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "_user")
 public class User implements UserDetails {
 
-    @Id
-    private final UUID id = UUID.randomUUID();
+  @Id
+  private final UUID id = UUID.randomUUID();
 
-    @Column(name = "name", nullable = false)
-    private String name;
+  @Column(name = "name", nullable = false)
+  private String name;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   @Column(name = "username", nullable = false, unique = true)
   private String username;
 
@@ -44,33 +42,13 @@ public class User implements UserDetails {
 
   @Column(name = "balance", nullable = false)
   private int balance = 0;
-=======
-=======
->>>>>>> 2160e5ce41fdfc53c6121668711502aa8061d87d
-    @Column(name = "username", nullable = false, unique = true)
-    private String username;
 
-    @Column(name = "password", nullable = false, unique = true)
-    private String password;
+  @Column(name = "address", nullable = false)
+  private String address;
 
-    @Column(name = "email", nullable = false, unique = true)
-    private String email;
+  @Enumerated(EnumType.STRING)
+  private Role role;
 
-    @Column(name = "balance", nullable = false)
-    private int balance = 0;
-<<<<<<< HEAD
->>>>>>> 3df004dc477b2fcdf40967613090d373b77d4980
-=======
->>>>>>> 2160e5ce41fdfc53c6121668711502aa8061d87d
-
-    @Column(name = "address", nullable = false)
-    private String address;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
-<<<<<<< HEAD
-<<<<<<< HEAD
   @CreationTimestamp // Atribut ini akan diisi dengan waktu saat pertama kali entitas dibuat.
   @Column(name = "createdAt", updatable = false)
   @Temporal(TemporalType.TIMESTAMP)
@@ -83,58 +61,39 @@ public class User implements UserDetails {
 
   @OneToMany(mappedBy = "user")
   private List<Token> tokens;
-=======
-=======
->>>>>>> 2160e5ce41fdfc53c6121668711502aa8061d87d
-    @CreationTimestamp // Atribut ini akan diisi dengan waktu saat pertama kali entitas dibuat.
-    @Column(name = "createdAt", updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
-<<<<<<< HEAD
->>>>>>> 3df004dc477b2fcdf40967613090d373b77d4980
-=======
->>>>>>> 2160e5ce41fdfc53c6121668711502aa8061d87d
 
-    @UpdateTimestamp // Atribut ini akan diisi dengan waktu saat entitas terakhir diperbarui.
-    @Column(name = "updatedAt")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedAt;
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return role.getAuthorities();
+  }
 
-    @OneToMany(mappedBy = "user")
-    private List<Token> tokens;
+  @Override
+  public String getPassword() {
+    return password;
+  }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return role.getAuthorities();
-    }
+  @Override
+  public String getUsername() {
+    return email;
+  }
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
 
-    @Override
-    public String getUsername() {
-        return email;
-    }
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
 }
