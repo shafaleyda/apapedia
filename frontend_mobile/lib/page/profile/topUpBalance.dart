@@ -3,11 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend_mobile/common/cookie_request.dart';
-// import 'package:provider/provider.dart';
 import 'package:frontend_mobile/page/profile/customer.dart';
 import 'package:frontend_mobile/page/profile/profile.dart';
-import 'package:http/http.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 class TopUpBalance extends StatefulWidget {

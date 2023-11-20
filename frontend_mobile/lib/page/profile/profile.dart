@@ -1,12 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend_mobile/common/cookie_request.dart';
 import 'package:frontend_mobile/main.dart';
-// import 'package:frontend_mobile/home.dart';
+import 'package:frontend_mobile/home.dart';
 import 'package:frontend_mobile/page/profile/customer.dart';
-import 'package:frontend_mobile/page/profile/update-profile.dart';
+import 'package:frontend_mobile/page/profile/updateProfile.dart';
 import 'package:provider/provider.dart';
-// import 'package:frontend_mobile/currency_format.dart';
 import 'package:frontend_mobile/page/profile/topUpBalance.dart';
 
 class ProfilePage extends StatefulWidget {

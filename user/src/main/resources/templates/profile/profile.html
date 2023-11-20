@@ -55,7 +55,7 @@
 
             <div class="card mt-5">
                 <div class="card-body">
-                <!-- Section: Apapay -->
+                    <!-- Section: Apapay -->
                     <div class="mb-4 row mt-4">
                         <h2>Apapay</h2>
                         <label class="col-sm-5 col-form-label" for="balance">User Balance:</label>
@@ -73,12 +73,12 @@
 
         </div>
     </div>
-<!--    <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-2 mt-4">-->
-<!--        <button class="btn btn-danger" type="button" id="signOut">Sign Out</button>-->
-<!--    </div>-->
+    <!--    <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-2 mt-4">-->
+    <!--        <button class="btn btn-danger" type="button" id="signOut">Sign Out</button>-->
+    <!--    </div>-->
     <div class="text-center mb-2 mt-4">
         <a class="btn btn-danger" th:href="@{/user/{id}/signout(id=${data.id})}">Sign Out</a>
-        <a type="button" class="btn btn-outline-danger" th:href="@{/user/{idUser}/delete(id=${data.id})}>Delete Account</a>
+        <a type="button" class="btn btn-outline-danger" th:href="@{/user/{idUser}/delete(id=${data.id})}>Delete Account"></a>
     </div>
 </div>
 

@@ -15,7 +15,7 @@ class Customer {
 
   factory Customer.fromJson(Map<String, dynamic> json) {
     return Customer(
-        // nama: json['nama'],
+      // nama: json['nama'],
         username: json['username'],
         email: json['email'],
         saldo: json['saldo']
