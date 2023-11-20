@@ -1,7 +1,7 @@
 package com.apapedia.order;
 
 import java.time.LocalDateTime;
-import java.util.Locale;
+// import java.util.Locale;
 import java.util.UUID;
 
 import org.springframework.boot.CommandLineRunner;
@@ -10,10 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import com.apapedia.order.dto.OrderMapper;
-import com.apapedia.order.dto.request.CreateOrderRequestDTO;
+// import com.apapedia.order.dto.request.CreateOrderRequestDTO;
 import com.apapedia.order.model.OrderModel;
-import com.apapedia.order.restservice.OrderRestService;
-import com.github.javafaker.Faker;
+import com.apapedia.order.service.OrderService;
+// import com.github.javafaker.Faker;
 
 import jakarta.transaction.Transactional;
 
@@ -28,7 +28,7 @@ public class OrderApplication {
 
 	@Bean
 	@Transactional
-	CommandLineRunner run(OrderRestService orderRestService, OrderMapper orderMapper){
+	CommandLineRunner run(OrderService orderRestService, OrderMapper orderMapper){
 		return args -> {
 			for (int i = 0; i < 10; i++) {
 				// var orderDTO = new CreateOrderRequestDTO();		
