@@ -1,18 +1,9 @@
 package com.apapedia.catalogue.restcontroller;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-//import com.apapedia.catalogue.dto.mapper.CatalogMapper;
+import org.springframework.data.domain.Sort;
+
 import com.apapedia.catalogue.dto.request.CreateCatalogueRequestDTO;
-//import com.apapedia.catalogue.service.FileStorageService;
-//import com.apapedia.catalogue.service.StorageService;
 import com.apapedia.catalogue.model.Catalog;
 import com.apapedia.catalogue.service.FileStoreServiceV1;
 import com.apapedia.catalogue.utils.ApiScope;
@@ -27,7 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ResponseBody;
+
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
@@ -60,7 +51,7 @@ public class CatalogRestController {
     // TODO GET ALL CATALOG WITH CUSTOMER ROLE
     @GetMapping(value="/catalog/all")
     private List<CatalogRest> retrieveAllCatalogue(HttpServletRequest httpServletRequest){
-        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER);
+        //ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER);
         return catalogRestService.getAllCatalogOrderByProductName();
 
     }
@@ -165,7 +156,19 @@ public class CatalogRestController {
             .body(responseData);
     }
     
-    @GetMapping("/catalog/view-all-by-")
+    @GetMapping("/catalog/view-all-sort-by")
+    @ResponseBody public ResponseEntity<Dictionary<String, Object>> retrieveAllSortBy(@RequestParam(defaultValue = "productName") String sortField, 
+                                                                                      @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection) {
+        Sort sort = Sort.by(sortDirection, sortField); 
+        Dictionary<String, Object> responseData= new Hashtable<>();
+
+        List<CatalogRest> listAllCatalogSortBy =catalogRestService.findAllSortBy(sort);
+            responseData.put("status", HttpStatus.OK.value());
+            responseData.put("data", listAllCatalogSortBy);
+            responseData.put("message", "success"); 
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(responseData);                                                                              
+    }
     
 
 

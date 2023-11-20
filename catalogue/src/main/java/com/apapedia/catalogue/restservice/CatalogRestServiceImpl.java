@@ -12,6 +12,7 @@ import com.apapedia.catalogue.service.FileStoreServiceV1;
 import com.apapedia.catalogue.service.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
@@ -308,5 +309,28 @@ public class CatalogRestServiceImpl implements CatalogRestService{
         catalogDb.save(catalog);
     }
 
+    @Override
+    public List<CatalogRest> findAllSortBy(Sort sort) {
 
+        List<CatalogRest> result = new ArrayList<>();
+
+        List<Catalog> getAllCatalogSortBy = catalogDb.findAll(sort);
+
+        for (Catalog catalog: getAllCatalogSortBy) {
+            CatalogRest catalogRest = new CatalogRest();
+            catalogRest.setIdCatalog(catalog.getIdCatalog());
+            catalogRest.setSeller(catalog.getSeller());
+            catalogRest.setPrice(catalog.getPrice());
+            catalogRest.setProductName(catalog.getProductName());
+            catalogRest.setProductDescription(catalog.getProductDescription());
+            catalogRest.setCategoryId(catalog.getCategory().getIdCategory());
+            catalogRest.setCategoryName(catalog.getCategory().getCategoryName());
+            catalogRest.setStock(catalog.getStock());
+            catalogRest.setIsDeleted(catalog.getIsDeleted());
+            catalogRest.setImage(catalog.getImage());
+
+            result.add(catalogRest);
+        }
+        return result;
+    }
 }
