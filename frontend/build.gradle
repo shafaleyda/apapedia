@@ -18,9 +18,6 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-//	implementation project(':catalogue')
-//	implementation project(':user')
-//	implementation project(':order')
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
@@ -28,3 +25,7 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+//	implementation project(':catalogue')
+//	implementation project(':user')
+//	implementation project(':order')
