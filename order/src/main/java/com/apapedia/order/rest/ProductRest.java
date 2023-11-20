@@ -1,4 +1,4 @@
-package com.apapedia.order.dto.response;
+package com.apapedia.order.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,7 +10,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Product {
+public class ProductRest {
     @JsonProperty("id")
     private UUID id;
 
@@ -18,7 +18,7 @@ public class Product {
     private String name;
 
     @JsonProperty("price")
-    private int price;
+    private Long price;
 
     @JsonProperty("stock")
     private int stock;
