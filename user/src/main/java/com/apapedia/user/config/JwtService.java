@@ -1,5 +1,6 @@
 package com.apapedia.user.config;
 
+import com.apapedia.user.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -51,7 +52,12 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+        User user = (User) userDetails;
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username", user.getName());
+        claims.put("role", user.getRole());
+        claims.put("email", user.getEmail());
+        return generateToken(claims, userDetails);
     }
 
     public String generateToken(

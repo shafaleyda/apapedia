@@ -13,19 +13,19 @@ import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
-public class CategoryRestServiceImpl implements CategoryRestService{
+public class CategoryRestServiceImpl implements com.apapedia.catalogue.restservice.CategoryRestService {
     @Autowired
     private CategoryDb categoryDb;
 
     @Override
     public void saveCategory(Category category) {
-        categoryDb.save(category); 
+        categoryDb.save(category);
     }
 
     @Override
     public List<Category> retrieveAllCategory() {
-        return categoryDb.findAll(); 
-    } 
+        return categoryDb.findAll();
+    }
 
-    
+
 }
