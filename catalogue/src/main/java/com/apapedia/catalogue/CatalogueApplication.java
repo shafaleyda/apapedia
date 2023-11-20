@@ -31,6 +31,7 @@ import com.apapedia.catalogue.restservice.CategoryRestService;
 //@ComponentScan(basePackages = "com.apapedia.catalogue")
 public class CatalogueApplication {
 
+	
 	public static void main(String[] args) {
 		SpringApplication.run(CatalogueApplication.class, args);
 	}
