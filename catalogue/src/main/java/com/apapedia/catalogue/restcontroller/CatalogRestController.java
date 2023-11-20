@@ -2,15 +2,21 @@ package com.apapedia.catalogue.restcontroller;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ResponseBody;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 import java.util.UUID;
 import java.sql.SQLException;
@@ -22,6 +28,9 @@ import java.util.Hashtable;
 import java.util.Dictionary;
 
 import com.apapedia.catalogue.restservice.CatalogRestService;
+import com.apapedia.catalogue.dto.mapper.CatalogMapper;
+import com.apapedia.catalogue.dto.request.CreateCatalogueRequestDTO;
+import com.apapedia.catalogue.model.Catalog;
 import com.apapedia.catalogue.rest.CatalogRest;
 
 @RestController
@@ -29,6 +38,9 @@ import com.apapedia.catalogue.rest.CatalogRest;
 public class CatalogRestController {
     @Autowired
     private CatalogRestService catalogRestService; 
+     @Autowired
+    private CatalogMapper catalogMapper;
+
     
     @DeleteMapping(value = "/catalog/{id}")
     public String deleteProduct(@PathVariable UUID id) {
@@ -73,4 +85,51 @@ public class CatalogRestController {
             return ResponseEntity.status(HttpStatus.OK)
             .body(responseData);
     } 
+
+
+    @PostMapping(value={"/catalog/create"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Catalog createRestCatalogue(@Valid @ModelAttribute CreateCatalogueRequestDTO catalogDTO,
+                                       BindingResult bindingResult,
+                                       @RequestParam("image") MultipartFile[] imageFiles)
+            throws IOException {
+        // Upload images and create a catalog
+        var catalog = catalogMapper.createCatalogRequestDTOToCatalogModel(catalogDTO);
+        catalogRestService.createRestCatalog(catalog, imageFiles);
+        return catalog;
+
+    }
 }
+
+
+//    @PostMapping(value={"/catalog/create"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+//    public Catalog createRestCatalogue(@Valid @ModelAttribute CreateCatalogueRequestDTO catalogDTO,
+//                                       BindingResult bindingResult,
+//                                       @RequestParam("image") MultipartFile[] imageFiles)
+//            throws IOException {
+//
+//        // Upload images and create a catalog
+//        var catalog = catalogMapper.createCatalogRequestDTOToCatalogModel(catalogDTO);
+//        catalogRestService.createRestCatalog(catalog, imageFiles);
+//        return catalog;
+//
+//    }
+//
+//    @PutMapping(value = "/catalog/{idCatalog}")
+//    private Catalog updateRestCatalog(
+//            @PathVariable("idCatalog") UUID idCatalog,
+//            @RequestBody UpdateCatalogRequestDTO updateCatalogRequestDTO) {
+//        try {
+//            return catalogRestService.updateCatalog(idCatalog, updateCatalogRequestDTO);
+//
+//        } catch (NoSuchElementException e) {
+//            throw new ResponseStatusException(
+//                    HttpStatus.NOT_FOUND, "Catalog No" + idCatalog + " Not Found!"
+//            );
+//
+//        } catch (UnsupportedOperationException e) {
+//            throw new ResponseStatusException(
+//                    HttpStatus.BAD_REQUEST, " "
+//            );
+//        }
+//    }
+
