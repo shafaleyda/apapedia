@@ -53,6 +53,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               // ------ TODO: ADD BOX FOR USER INFORMATION DETAIL SECTION ------
+                              const SizedBox(height: 24),
+                              Text('Information', textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleLarge),
                               Padding(
                                 padding: const EdgeInsets.all(12),
                                 child: Column(
@@ -115,25 +117,23 @@ class _ProfilePageState extends State<ProfilePage> {
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: Colors.blue,
-                                  onPrimary: Colors.white,
+                                  backgroundColor: Colors.blue,
+                                  foregroundColor: Colors.white,
                                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                 ),
                               ),
 
                               // ------ TODO: ADD BOX FOR APAPAY BALANCE SECTION ------
                               const SizedBox(height: 24),
-                              Divider(
+                              const Divider(
                                 thickness: 1,
                                 color: Colors.grey,
                                 height: 1,
                               ),
                               const SizedBox(height: 24),
-                              Text('Apapay', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6),
+                              Text('Apapay', textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleLarge),
                               const SizedBox(height: 24),
-                              Text('Balance: ' +
-                                      // snapshot.data!.saldo
-                                'Dummy 900'),
+                              const Text('Balance: ' 'Dummy 900'),
                               Padding(
                                   padding: const EdgeInsets.all(12),
                                   child: ElevatedButton(
@@ -143,16 +143,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 //TopUpBalance(customer: snapshot.data!)),
-                                                TopUpBalance()
+                                                const TopUpBalance()
                                         ),
                                       );
                                     },
-                                    child: const Text('+  '+ 'Top Up Balance'),
+                                    child: const Text('+  ' 'Top Up Balance'),
                                   )
                               ),
                               // ------ TODO: ADD BOX FOR SIGN OUT BUTTON AND DELETE ACCOUNT BUTTON SECTION ------
                               const SizedBox(height: 40),
-                              Divider(
+                              const Divider(
                                 thickness: 1,
                                 color: Colors.grey,
                                 height: 1,
@@ -169,8 +169,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   // print('Console Message Using Print');
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: Colors.red,
-                                  onPrimary: Colors.white,
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: Colors.white,
                                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                                 ),
                               ),
@@ -187,8 +187,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   // print('Console Message Using Print');
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: Colors.pink,
-                                  onPrimary: Colors.white,
+                                  backgroundColor: Colors.pink,
+                                  foregroundColor: Colors.white,
                                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                                 ),
                               ),

@@ -25,7 +25,7 @@ class _ProfileFormState extends State<ProfileForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Edit Profil"),
+        title: const Text("Update Profile Data"),
       ),
       body: Form(
         key: _formKey,
