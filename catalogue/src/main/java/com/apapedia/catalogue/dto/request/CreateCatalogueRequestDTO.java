@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.Set;
 import java.util.UUID;
 
@@ -21,10 +20,9 @@ public class CreateCatalogueRequestDTO {
     private Integer price;
     private String productName;
     private String productDescription;
-    private UUID categoryId;
+    private Integer categoryId;
     private String categoryName;
     private Integer stock;
-//    private byte[] image;
     private String image;
     private Boolean isDeleted;
 }
