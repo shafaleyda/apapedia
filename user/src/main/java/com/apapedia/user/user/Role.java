@@ -21,23 +21,23 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public enum Role {
 
-  USER(Collections.emptySet()),
-  SELLER(
-          Set.of(
-                  SELLER_READ,
-                  SELLER_UPDATE,
-                  SELLER_DELETE,
-                  SELLER_CREATE
-          )
-  ),
-  CUSTOMER(
-          Set.of(
-                  CUSTOMER_READ,
-                  CUSTOMER_UPDATE,
-                  CUSTOMER_DELETE,
-                  CUSTOMER_CREATE
-          )
-  )
+    USER(Collections.emptySet()),
+    SELLER(
+            Set.of(
+                    SELLER_READ,
+                    SELLER_UPDATE,
+                    SELLER_DELETE,
+                    SELLER_CREATE
+            )
+    ),
+    CUSTOMER(
+            Set.of(
+                    CUSTOMER_READ,
+                    CUSTOMER_UPDATE,
+                    CUSTOMER_DELETE,
+                    CUSTOMER_CREATE
+            )
+    )
 
     ;
 

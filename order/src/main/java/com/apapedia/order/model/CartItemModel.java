@@ -27,7 +27,7 @@ public class CartItemModel {
 
     @NotNull
     @Column(name = "quantity", nullable = false)
-    private int quantity;
+    private Integer quantity;
 
     @ManyToOne
     @JsonIgnore
