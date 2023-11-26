@@ -19,6 +19,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "order_item")
 public class OrderItemModel {
     @Id
+    private UUID id = UUID.randomUUID();
+
     @NotNull
     @Column(name = "product_id", nullable = false)
     private UUID productId;

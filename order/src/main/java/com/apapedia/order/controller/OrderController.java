@@ -50,7 +50,7 @@ public class OrderController {
             Product product = productMockService.getProductById(productId).block();
 
             //Use this to check if automatically create new order model
-            product.setSeller(UUID.randomUUID());
+            //product.setSeller(UUID.randomUUID());
 
             //Check if order already exist
             OrderModel order = null;
@@ -89,6 +89,7 @@ public class OrderController {
             }
             orderItem.setOrder(order);
             orderItemService.createOrderItem(orderItem);
+            System.out.println(orderRequestDTO.getCustomer());
             orderService.saveOrder(order);
         }
         return orderModels;

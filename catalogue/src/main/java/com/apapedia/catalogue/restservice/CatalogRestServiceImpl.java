@@ -8,8 +8,8 @@ import com.apapedia.catalogue.dto.request.CreateCatalogueRequestDTO;
 import com.apapedia.catalogue.dto.request.UpdateCatalogRequestDTO;
 import com.apapedia.catalogue.model.Category;
 import com.apapedia.catalogue.repository.CategoryDb;
-import com.apapedia.catalogue.service.FileStoreServiceV1;
 import com.apapedia.catalogue.service.FileStoreService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -219,27 +219,62 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     }
 
     @Override
-    public Catalog editRestCatalog(CreateCatalogueRequestDTO catalog, MultipartFile imageFiles) throws Exception {
+    public CatalogRest editRestCatalog(CreateCatalogueRequestDTO catalog, MultipartFile imageFiles) throws Exception {
 
         Optional<Catalog> catalogData = catalogDb.findByIdCatalogAndIsDeletedFalse(catalog.getIdCatalog());
+
+        // lebih baik kaya gini mengurangi if jadi ketika data tidak ada langsung throw tanpa harus membuat if
+        // code jadinya lebih bersih
+
+//        Catalog catalogData = catalogDb.findByIdCatalogAndIsDeletedFalse(catalog.getIdCatalog())
+//                .orElseThrow(() -> new EntityNotFoundException("Entity Catalog Not Found"));
+
         if (catalogData.isEmpty()) {
+            // bagusnya EntityNotFoundException
             throw new Exception("not found catalog");
         }
+
 
         Optional<Category> category = categoryDb.findByIdCategory(catalog.getCategoryId());
+
+        // lebih baik kaya gini mengurangi if jadi ketika data tidak ada langsung throw tanpa harus membuat if
+        // code jadinya lebih bersih
+
+//        Category categoryd = categoryDb.findByIdCategory(catalog.getCategoryId())
+//                .orElseThrow(() -> new EntityNotFoundException("Entity Category Not Found"));
+
+
         if (category.isEmpty()) {
+            // bagusnya EntityNotFoundException
             throw new Exception("not found catalog");
         }
 
+        if (!imageFiles.isEmpty()){
+            catalogData.get().setImage(Base64.getEncoder().encodeToString(imageFiles.getBytes()));
+        }
+
+        // coba pelajari https://orika-mapper.github.io/orika-docs/ lebih bagus untuk convert convert data
+        // agar tidak cape-cape set seperti ini
         catalogData.get().setSeller(catalog.getSeller());
         catalogData.get().setPrice(catalog.getPrice());
         catalogData.get().setProductName(catalog.getProductName());
         catalogData.get().setProductDescription(catalog.getProductDescription());
         catalogData.get().setCategory(category.get());
         catalogData.get().setStock(catalog.getStock());
-        catalogData.get().setImage(catalog.getImage() != null ? catalog.getImage() : catalogData.get().getImage());
 
-        return catalogData.get();
+        catalogDb.save(catalogData.get());
+
+        return CatalogRest.builder()
+                .idCatalog(catalogData.get().getIdCatalog())
+                .seller(catalogData.get().getSeller())
+                .price(catalogData.get().getPrice())
+                .productName(catalogData.get().getProductName())
+                .productDescription(catalogData.get().getProductDescription())
+                .categoryId(catalogData.get().getCategory().getIdCategory())
+                .categoryName(catalogData.get().getCategory().getCategoryName())
+                .stock(catalogData.get().getStock())
+                .image(catalogData.get().getImage())
+                .build();
     }
 
     private byte[] concatenateImages(List<byte[]> images) throws IOException {
