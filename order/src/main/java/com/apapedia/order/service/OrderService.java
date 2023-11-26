@@ -1,5 +1,6 @@
 package com.apapedia.order.service;
 
+import com.apapedia.order.dto.response.Order;
 import com.apapedia.order.model.OrderItemModel;
 import com.apapedia.order.model.OrderModel;
 
@@ -19,7 +20,7 @@ public interface OrderService {
 
     List<OrderModel> listByCustomer(UUID customer);
 
-    List<OrderModel> listBySeller(UUID seller);
+    List<Order> listBySeller(UUID seller);
 
     Map<LocalDate, Integer> getDailySales(UUID seller);
 

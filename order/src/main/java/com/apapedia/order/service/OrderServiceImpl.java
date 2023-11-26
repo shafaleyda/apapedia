@@ -2,12 +2,14 @@ package com.apapedia.order.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
 
 import com.apapedia.order.repository.OrderDb;
 import com.apapedia.order.repository.OrderItemDb;
 
 import jakarta.transaction.Transactional;
 
+import com.apapedia.order.dto.response.Order;
 import com.apapedia.order.model.OrderItemModel;
 import com.apapedia.order.model.OrderModel;
 
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -45,8 +48,16 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public List<OrderModel> listBySeller(UUID seller) {
-        return orderDb.findAllBySeller(seller);
+    public List<Order> listBySeller(UUID seller) {
+        List<OrderModel> orderModels = orderDb.findAllBySeller(seller);
+        return orderModels.stream()
+                .map(orderModel -> {
+                    Order orderDto = new Order();
+                    orderDto.setOrder(orderModel);
+                    orderDto.setListOrderItem(orderModel.getListOrderItem());
+                    return orderDto;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override

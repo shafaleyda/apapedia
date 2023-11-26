@@ -1,6 +1,7 @@
 package com.apapedia.order.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import jakarta.validation.Valid;
 import com.apapedia.order.dto.OrderMapper;
 import com.apapedia.order.dto.request.CreateOrderRequestDTO;
 import com.apapedia.order.dto.request.UpdateOrderRequestDTO;
+import com.apapedia.order.dto.response.Order;
 import com.apapedia.order.dto.response.Product;
 import com.apapedia.order.model.OrderItemModel;
 import com.apapedia.order.model.OrderModel;
@@ -115,17 +117,13 @@ public class OrderController {
     }
 
     @GetMapping(value = "/order/seller/{id}")
-    private ResponseEntity<Dictionary<String, Object>> retrieveSellerOrder(@PathVariable("id") UUID id, HttpServletRequest httpServletRequest){
-        // ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER_SELLER);
+    private ResponseEntity<Dictionary<String, Object>> retrieveSellerOrder(@PathVariable("id") UUID id, HttpServletRequest httpServletRequest) {
+        List<Order> listOrderDto = orderService.listBySeller(id);
 
-        List<OrderModel> listOrder = orderService.listBySeller(id);
-        for (OrderModel orderModel : listOrder) {
-            System.out.println("this is when retrieve" + orderModel.getListOrderItem());
-        }
         Dictionary<String, Object> responseData = new Hashtable<>();
         responseData.put("status", HttpStatus.OK.value());
         responseData.put("message", "success");
-        responseData.put("data", listOrder);
+        responseData.put("data", listOrderDto);
         return ResponseEntity.status(HttpStatus.OK).body(responseData);
     }
 
