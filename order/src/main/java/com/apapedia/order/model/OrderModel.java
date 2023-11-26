@@ -33,7 +33,7 @@ public class OrderModel {
 
     @NotNull
     @Column(name = "status", nullable = false)
-    private int status;
+    private Integer status;
 
     @NotNull
     @Column(name = "total_price", nullable = false)
