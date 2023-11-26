@@ -1,16 +1,16 @@
 package com.apapedia.order.dto.request;
 
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CreateCartItemRequestDTO {
-    private UUID productId;
+public class UpdateCartItemRequestDTO extends CreateCartItemRequestDTO{
+    private UUID id;
+
     private Integer quantity;
-    
 }

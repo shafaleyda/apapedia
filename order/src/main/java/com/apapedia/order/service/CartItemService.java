@@ -7,4 +7,8 @@ public interface CartItemService {
     CartItemModel createCartItem(CartItemModel cart);
 
     CartItemModel getCartItemById(UUID id);
+
+    CartItemModel updateCartItem(CartItemModel cart);
+
+    void deleteCartItem(CartItemModel cart);
 }
