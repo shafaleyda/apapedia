@@ -9,6 +9,6 @@ import java.util.List;
 @Service
 @Transactional
 public interface CategoryRestService {
-    void saveCategory(Category category);
-    List<Category> retrieveAllCategory();
+    void saveCategory(Category category); 
+    List<Category> retrieveAllCategory(); 
 }
