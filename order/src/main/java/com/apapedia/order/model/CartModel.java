@@ -28,7 +28,6 @@ public class CartModel {
     private UUID userId;
 
     @NotNull
-    @Size(max = 100)
     @Column(name = "total_price", nullable = false)
     private Integer totalPrice;
 

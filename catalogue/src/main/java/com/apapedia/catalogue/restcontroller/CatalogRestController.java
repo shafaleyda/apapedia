@@ -6,11 +6,10 @@ import org.springframework.data.domain.Sort;
 import com.apapedia.catalogue.dto.request.CreateCatalogueRequestDTO;
 import com.apapedia.catalogue.model.Catalog;
 import com.apapedia.catalogue.service.FileStoreService;
-import com.apapedia.catalogue.utils.ApiScope;
-import com.apapedia.catalogue.utils.Constans;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +46,13 @@ public class CatalogRestController {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private static final String AUTHORIZATION = "Authorization";
+//    private static final String AUTHORIZATION = "Authorization";
 
     // TODO GET ALL CATALOG WITH CUSTOMER ROLE
     @GetMapping(value="/catalog/all")
     private List<CatalogRest> retrieveAllCatalogue(HttpServletRequest httpServletRequest){
         //ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER);
+//        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER);
         return catalogRestService.getAllCatalogOrderByProductName();
 
     }
@@ -61,7 +61,7 @@ public class CatalogRestController {
     @GetMapping(value = "/catalog/{catalogId}")
     public CatalogRest getCatalogById(@PathVariable(name = "catalogId") String catalogId,
                                       HttpServletRequest httpServletRequest) {
-        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER_SELLER);
+//        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER_SELLER);
         return catalogRestService.getCatalogById(catalogId);
     }
 
@@ -71,6 +71,7 @@ public class CatalogRestController {
                                            @RequestParam(value = "image", required = false) MultipartFile imageFile,
                                            HttpServletRequest httpServletRequest) throws Exception {
         // ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.SELLER);
+//        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.SELLER);
 
         CreateCatalogueRequestDTO createCatalogueRequestDTO = null;
         try {
@@ -84,12 +85,17 @@ public class CatalogRestController {
 
     // TODO UPDATE CATALOG API WITH SELLER ROLE
     @PutMapping(value = { "/catalog/update/{catalogId}" }, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public Catalog editCatalog(@PathVariable(name = "catalogId") String catalogId,
-                               @RequestParam("model") String jsonObject,
-                               @RequestParam(value = "image", required = false) MultipartFile imageFile,
-                               HttpServletRequest httpServletRequest) throws Exception {
+    public CatalogRest editCatalog(@PathVariable(name = "catalogId") String catalogId,
+                                   @RequestParam("model") String jsonObject,
+                                   @RequestParam(value = "image", required = false) MultipartFile imageFile,
+                                   HttpServletRequest httpServletRequest) throws Exception {
 
-        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.SELLER);
+//        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.SELLER);
+
+
+        // coba pelajari https://orika-mapper.github.io/orika-docs/ lebih bagus untuk convert convert data
+        // https://restfulapi.net/resource-naming/ untuk naming juga bagus nya sesuai standar agar front-end mobile maupun web lebih mudah
+
         CreateCatalogueRequestDTO createCatalogueRequestDTO = null;
         try {
             createCatalogueRequestDTO = objectMapper.readValue(jsonObject, CreateCatalogueRequestDTO.class);
@@ -101,14 +107,22 @@ public class CatalogRestController {
         return catalogRestService.editRestCatalog(createCatalogueRequestDTO, imageFile);
     }
 
+
     // TODO GET CATALOG BY SELLER ID WITH CUSTOMER AND SELLER ROLE
     @GetMapping(value = {"/catalog/seller/{sellerId}"})
     public List<CatalogRest> getListCatalogBySellerId(@PathVariable(name = "sellerId") String sellerId,
                                                       HttpServletRequest httpServletRequest) {
-        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER_SELLER);
+//        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER_SELLER);
         return catalogRestService.getListCatalogBySellerId(sellerId);
     }
 
+    @GetMapping(value = "/images/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    ByteArrayResource downloadImage(@PathVariable String id) {
+        CatalogRest catalogRest = catalogRestService.getCatalogById(id);
+        byte[] image = Base64.getDecoder().decode(catalogRest.getImage());
+
+        return new ByteArrayResource(image);
+    }
 
     // -------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -120,7 +134,9 @@ public class CatalogRestController {
     }
 
     @GetMapping("/catalog/view-all-by-name")
-    @ResponseBody public ResponseEntity<Dictionary<String, Object>> retrieveAllCatalogByName(@RequestParam(name = "query", required = false)String namaProduk, HttpServletResponse response) throws SQLException, IOException{
+    @ResponseBody public ResponseEntity<Dictionary<String, Object>> retrieveAllCatalogByName(
+            @RequestParam(name = "query", required = false) String namaProduk,
+            HttpServletResponse response) throws SQLException, IOException{
         Dictionary<String, Object> responseData= new Hashtable<>();
         if (namaProduk.length() > 0){
             List<CatalogRest> listCatalogFindByName = catalogRestService.retrieveRestAllCatalogByCatalogName(namaProduk);
@@ -139,7 +155,8 @@ public class CatalogRestController {
     }
 
     @GetMapping("/catalog/view-all-by-price")
-    @ResponseBody public ResponseEntity<Dictionary<String, Object>> retrieveAllCatalogByPrice(@RequestParam Integer minPrice, @RequestParam Integer maxPrice){
+    @ResponseBody public ResponseEntity<Dictionary<String, Object>> retrieveAllCatalogByPrice(
+            @RequestParam Integer minPrice, @RequestParam Integer maxPrice){
         Dictionary<String, Object> responseData= new Hashtable<>();
         if (minPrice.toString().length() > 0 && maxPrice.toString().length() > 0) {
             List<CatalogRest> listCatalogFindByPrice = catalogRestService.retrieveRestAllCatalogByCatalogPrice(minPrice, maxPrice);

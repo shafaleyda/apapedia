@@ -10,7 +10,7 @@ import com.apapedia.catalogue.dto.response.ReadCatalogResponseDTO;
 //import com.apapedia.catalogue.model.ImageData;
 import org.mapstruct.Mapper;
 
-    import com.apapedia.catalogue.model.Catalog;
+import com.apapedia.catalogue.model.Catalog;
 import com.apapedia.catalogue.rest.CatalogRest;
 
 import org.mapstruct.Mapping;
@@ -21,7 +21,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Mapper(componentModel = "spring")
-    public interface CatalogMapper {
-        Catalog createCatalogRequestDTOToCatalogModel(CreateCatalogueRequestDTO createCatalogRequestDTO);
-        ReadCatalogResponseDTO catalogRestToReadCatalogResponseDTO(CatalogRest catalogRest); 
-    }
+public interface CatalogMapper {
+    Catalog createCatalogRequestDTOToCatalogModel(CreateCatalogueRequestDTO createCatalogRequestDTO);
+
+    CreateCatalogueRequestDTO createCatalogRequestDTOToCatalogModel(CatalogRest catalogRest);
+    ReadCatalogResponseDTO catalogRestToReadCatalogResponseDTO(CatalogRest catalogRest);
+}

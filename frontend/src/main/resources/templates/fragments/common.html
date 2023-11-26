@@ -1,20 +1,36 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org"></html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
 <head>
+    <!-- CSS Fragment -->
     <head th:fragment="css">
+        <!-- Bootstrap CSS -->
         <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+        <!-- DataTables CSS -->
+        <link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     </head>
+
+    <!-- JavaScript Fragment -->
     <head th:fragment="js">
-        <script
-            src="https://code.jquery.com/jquery-3.4.1.min.js"
-            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        <!-- jQuery -->
+        <script 
+            src="https://code.jquery.com/jquery-3.7.1.min.js" 
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" 
             crossorigin="anonymous"
-            ></script>
-            <script src="https://getbootstrap.com/docs/4/1/assets/js/vendor/popper.min js"></script>
-            <script th:src="@{/js/bootstrap.bundle.min.js}"></script> 
+        ></script>
+        <!-- Popper.js -->
+        <script src="https://getbootstrap.com/docs/4/1/assets/js/vendor/popper.min.js"></script>
+        <!-- Bootstrap JS -->
+        <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+        <!-- DataTables JS -->
+        <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     </head>
-    <title>Title</title>
+
+    <title>Home</title>
 </head>
+
 <body>
+
 </body>
+
 </html>
