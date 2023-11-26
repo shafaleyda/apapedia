@@ -44,7 +44,7 @@ public class CatalogueApplication {
 			var faker = new Faker(new Locale("in-ID"));
 			int minPrice = 10;
 			int maxPrice = 100;
-			URL imageUrl = new URL("https://i1.sndcdn.com/avatars-HotYazrSaPcn75Bp-A8d7zg-t500x500.jpg");
+			URL imageUrl = new URL("https://www.helium10.com/app/uploads/2020/04/vit-c.jpg");
 
 			List<String> categoryNameList = Arrays.asList("Aksesoris Fashion", "Buku & Alat Tulis", "Elektronik",
 					"Fashion Bayi & Anak", "Fashion Muslim", "Fotografi",
@@ -78,7 +78,20 @@ public class CatalogueApplication {
 				catalog.setProductDescription(productDescription);
 				catalog.setCategory(category);
 				catalog.setStock(stock);
+
+				try {
+					byte[] imageData = imageUrl.openStream().readAllBytes();
+					String fileName = StringUtils.cleanPath(Paths.get(imageUrl.getPath()).getFileName().toString());
+					if(fileName.contains(".."))
+					{
+						System.out.println("not a a valid file");
+					}
+					catalog.setImage(Base64.getEncoder().encodeToString(imageData));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				catalogRestService.saveCatalog(catalog);
+
 			}
 
 		};

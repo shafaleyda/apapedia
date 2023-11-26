@@ -182,7 +182,7 @@ public class CatalogController {
                     String dateStringKey = entry.getKey().toString();
                     salesChartStringKeys.put(dateStringKey, entry.getValue());
                 }
-                model.addAttribute("listCatalogChart", mapTotalOrdersPerDay);
+                model.addAttribute("listCatalogChart", salesChartStringKeys);
             }
             model.addAttribute("sortField", sortField);
             model.addAttribute("sortDirection", sortDirection);

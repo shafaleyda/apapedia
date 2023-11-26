@@ -52,9 +52,8 @@ public class CatalogRestController {
     @GetMapping(value="/catalog/all")
     private List<CatalogRest> retrieveAllCatalogue(HttpServletRequest httpServletRequest){
         //ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER);
-//        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER);
+        //ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER);
         return catalogRestService.getAllCatalogOrderByProductName();
-
     }
 
     // TODO GET CATALOG BY CATALOG ID WITH CUSTOMER AND SELLER ROLE
@@ -134,48 +133,28 @@ public class CatalogRestController {
     }
 
     @GetMapping("/catalog/view-all-by-name")
-    @ResponseBody public ResponseEntity<Dictionary<String, Object>> retrieveAllCatalogByName(
-            @RequestParam(name = "query", required = false) String namaProduk,
+    @ResponseBody public List<CatalogRest>  retrieveAllCatalogByName(
+            @RequestParam(name = "name", required = false) String namaProduk,
             HttpServletResponse response) throws SQLException, IOException{
         Dictionary<String, Object> responseData= new Hashtable<>();
         if (namaProduk.length() > 0){
             List<CatalogRest> listCatalogFindByName = catalogRestService.retrieveRestAllCatalogByCatalogName(namaProduk);
-            responseData.put("status", HttpStatus.OK.value());
-            responseData.put("data", listCatalogFindByName);
-            responseData.put("message", "success");
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(responseData);
-        }
-        List<CatalogRest> listAllCatalog = catalogRestService.retrieveRestAllReadCatalogResponseDTO();
-        responseData.put("status", HttpStatus.OK.value());
-        responseData.put("data", listAllCatalog);
-        responseData.put("message", "success");
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(responseData);
+            return listCatalogFindByName;
+        } return null;
     }
 
     @GetMapping("/catalog/view-all-by-price")
-    @ResponseBody public ResponseEntity<Dictionary<String, Object>> retrieveAllCatalogByPrice(
+    @ResponseBody public List<CatalogRest> retrieveAllCatalogByPrice(
             @RequestParam Integer minPrice, @RequestParam Integer maxPrice){
         Dictionary<String, Object> responseData= new Hashtable<>();
         if (minPrice.toString().length() > 0 && maxPrice.toString().length() > 0) {
             List<CatalogRest> listCatalogFindByPrice = catalogRestService.retrieveRestAllCatalogByCatalogPrice(minPrice, maxPrice);
-            responseData.put("status", HttpStatus.OK.value());
-            responseData.put("data", listCatalogFindByPrice);
-            responseData.put("message", "success"); 
-            return ResponseEntity.status(HttpStatus.OK)
-            .body(responseData);
-        } 
-        List<CatalogRest> listAllCatalog = catalogRestService.retrieveRestAllReadCatalogResponseDTO();
-            responseData.put("status", HttpStatus.OK.value());
-            responseData.put("data", listAllCatalog);
-            responseData.put("message", "success"); 
-            return ResponseEntity.status(HttpStatus.OK)
-            .body(responseData);
+            return listCatalogFindByPrice;
+        } return null;
     }
     
     @GetMapping("/catalog/view-all-sort-by")
-    @ResponseBody public ResponseEntity<Dictionary<String, Object>> retrieveAllSortBy(@RequestParam(defaultValue = "productName") String sortField, 
+    @ResponseBody public List<CatalogRest> retrieveAllSortBy(@RequestParam(defaultValue = "productName") String sortField,
                                                                                       @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection) {
         Sort sort = Sort.by(sortDirection, sortField); 
         Dictionary<String, Object> responseData= new Hashtable<>();
@@ -184,8 +163,7 @@ public class CatalogRestController {
             responseData.put("status", HttpStatus.OK.value());
             responseData.put("data", listAllCatalogSortBy);
             responseData.put("message", "success"); 
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(responseData);                                                                              
+        return listAllCatalogSortBy;
     }
     
 
