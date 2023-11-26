@@ -31,6 +31,7 @@ import com.apapedia.catalogue.restservice.CategoryRestService;
 //@ComponentScan(basePackages = "com.apapedia.catalogue")
 public class CatalogueApplication {
 
+	
 	public static void main(String[] args) {
 		SpringApplication.run(CatalogueApplication.class, args);
 	}
@@ -43,6 +44,7 @@ public class CatalogueApplication {
 			var faker = new Faker(new Locale("in-ID"));
 			int minPrice = 10;
 			int maxPrice = 100;
+			URL imageUrl = new URL("https://i1.sndcdn.com/avatars-HotYazrSaPcn75Bp-A8d7zg-t500x500.jpg");
 
 			List<String> categoryNameList = Arrays.asList("Aksesoris Fashion", "Buku & Alat Tulis", "Elektronik",
 					"Fashion Bayi & Anak", "Fashion Muslim", "Fotografi",
