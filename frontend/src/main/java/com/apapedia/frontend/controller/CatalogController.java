@@ -24,7 +24,7 @@ public class CatalogController {
         model.addAttribute("valid", Boolean.TRUE);
 
         //MASIH HARDCODE
-        String urlChart = "http://localhost:8081/order/salesChart/" + UUID.fromString("34356813-fcbd-4872-9ca4-ae26a81c092c");
+        String urlChart = "http://localhost:8080/order/salesChart/" + UUID.fromString("97b6a27f-d118-48ce-bf48-b46c6bef1c19");
         ResponseEntity<Map<LocalDate, Integer>> response = restTemplate.exchange(
                 urlChart,
                 HttpMethod.GET,
@@ -51,10 +51,14 @@ public class CatalogController {
             String url = "http://localhost:8082/api/catalog/view-all-by-name?name=" + name;
             List<Map<String, Object>> catalogData = restTemplate.getForObject(url, List.class);
 
-            if (catalogData.size() > 0) { //Ada catalog dengan nama yang dicari
-                model.addAttribute("catalogData", catalogData);
-                model.addAttribute("valid", Boolean.TRUE);
-            } else {
+            if (catalogData != null) {
+                if (catalogData.size() > 0) { //Ada catalog dengan nama yang dicari
+                    model.addAttribute("catalogData", catalogData);
+                    model.addAttribute("valid", Boolean.TRUE);
+                }
+            }
+
+            else {
                 if (name != null) {
                     model.addAttribute("enteredName", name);
                 }
@@ -62,9 +66,8 @@ public class CatalogController {
                 model.addAttribute("error", "Tidak ada produk yang sesuai pencarian Anda.");
             }
 
-
             //MASIH HARDCODE
-            String urlChart = "http://localhost:8081/order/salesChart/" + UUID.fromString("34356813-fcbd-4872-9ca4-ae26a81c092c");
+            String urlChart = "http://localhost:8080/order/salesChart/" + UUID.fromString("97b6a27f-d118-48ce-bf48-b46c6bef1c19");
             ResponseEntity<Map<LocalDate, Integer>> response = restTemplate.exchange(
                     urlChart,
                     HttpMethod.GET,
@@ -99,7 +102,7 @@ public class CatalogController {
         if (!(minPrice.equalsIgnoreCase("")) && !(maxPrice.equalsIgnoreCase(""))) {
             RestTemplate restTemplate = new RestTemplate();
             //MASIH HARDCODE
-            String urlChart = "http://localhost:8081/order/salesChart/" + UUID.fromString("34356813-fcbd-4872-9ca4-ae26a81c092c");
+            String urlChart = "http://localhost:8080/order/salesChart/" + UUID.fromString("97b6a27f-d118-48ce-bf48-b46c6bef1c19");
             ResponseEntity<Map<LocalDate, Integer>> response = restTemplate.exchange(
                     urlChart,
                     HttpMethod.GET,
@@ -167,7 +170,7 @@ public class CatalogController {
             model.addAttribute("valid", true);
 
             //MASIH HARDCODE
-            String urlChart = "http://localhost:8081/order/salesChart/" + UUID.fromString("34356813-fcbd-4872-9ca4-ae26a81c092c");
+            String urlChart = "http://localhost:8080/order/salesChart/" + UUID.fromString("34356813-fcbd-4872-9ca4-ae26a81c092c");
             ResponseEntity<Map<LocalDate, Integer>> response = restTemplate.exchange(
                     urlChart,
                     HttpMethod.GET,
