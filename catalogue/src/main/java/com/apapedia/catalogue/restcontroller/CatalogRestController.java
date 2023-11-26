@@ -61,7 +61,7 @@ public class CatalogRestController {
                                            @RequestParam(value = "image", required = false) MultipartFile imageFile,
                                            HttpServletRequest httpServletRequest) throws Exception {
 //        ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.SELLER);
-
+        System.out.println("masuk create catalog");
         CreateCatalogueRequestDTO createCatalogueRequestDTO = null;
         try {
             createCatalogueRequestDTO = objectMapper.readValue(jsonObject, CreateCatalogueRequestDTO.class);
