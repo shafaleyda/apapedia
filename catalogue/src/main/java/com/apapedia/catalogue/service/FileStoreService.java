@@ -31,7 +31,7 @@ public class FileStoreService {
         try {
 
             if (fileName.contains("..")) {
-                throw new RuntimeException("Sorry! File name which contains invalid path sequence " + fileName);
+                throw new RuntimeException("Sorry! File name contains invalid path sequence " + fileName);
             }
 
             Path targetLocation = this.fileStorageLocation.resolve(fileName);

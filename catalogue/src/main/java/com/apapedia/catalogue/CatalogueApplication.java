@@ -43,14 +43,13 @@ public class CatalogueApplication {
 			var faker = new Faker(new Locale("in-ID"));
 			int minPrice = 10;
 			int maxPrice = 100;
-			URL imageUrl = new URL("https://tinyjpg.com/images/social/website.jpg");
 
 			List<String> categoryNameList = Arrays.asList("Aksesoris Fashion", "Buku & Alat Tulis", "Elektronik",
 					"Fashion Bayi & Anak", "Fashion Muslim", "Fotografi",
 					"Hobi & Koleksi", "Jam Tangan", "Perawatan & Kecantikan",
 					"Makanan & Minuman", "Otomotif", "Perlengkapan Rumah", "Souvenir & Party Supplies");
 
-			//Faker category
+			//
 			for (int i = 0; i <= 12; i++){
 				var category = new Category();
 				var categoryName = categoryNameList.get(i);
@@ -77,18 +76,6 @@ public class CatalogueApplication {
 				catalog.setProductDescription(productDescription);
 				catalog.setCategory(category);
 				catalog.setStock(stock);
-
-				try {
-					byte[] imageData = imageUrl.openStream().readAllBytes();
-					String fileName = StringUtils.cleanPath(Paths.get(imageUrl.getPath()).getFileName().toString());
-					if(fileName.contains(".."))
-					{
-						System.out.println("not a a valid file");
-					}
-					catalog.setImage(Base64.getEncoder().encodeToString(imageData));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 				catalogRestService.saveCatalog(catalog);
 			}
 
