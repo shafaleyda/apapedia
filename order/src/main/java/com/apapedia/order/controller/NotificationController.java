@@ -1,10 +1,13 @@
 package com.apapedia.order.controller;
 
+import java.net.http.HttpHeaders;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -27,23 +30,31 @@ public class NotificationController {
     OrderService orderService;
 
     @PutMapping("order/releaseFunds")
-    public String releaseFundsToSeller(@Valid @RequestBody UpdateUserRequestDTO updateUserRequestDTO){
-
+    public String releaseFundsToSeller(Model model) {
         RestTemplate restTemplate = new RestTemplate();
+        final String uri = "http://user-service-host/user/iniuriyangupdatebalance";
 
-        // Call the update balance endpoint in the User service
-        ResponseEntity<User> responseEntity = restTemplate.exchange(
-                "http://user-service-host/user/iniuriyangupdatebalance",
-                HttpMethod.PUT,
-                new HttpEntity<>(updateUserRequestDTO),
-                User.class);
+        ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(
+            uri,
+            HttpMethod.PUT,
+            null,
+            new ParameterizedTypeReference<Map<String, Object>>() {
 
-        // Check the response and render HTML accordingly
-        if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            return "success-release-funds.html"; // Render HTML as needed
-        } else {
-            return "error.html"; // Render error HTML
+        });
+
+        Map<String, Object> myResponse = responseEntity.getBody();
+        Map<String, Object> result = (Map<String, Object>) myResponse.get("result");
+        Object priceObject = result.get("price");
+
+        if (priceObject instanceof Number) {
+            Long price = ((Number) priceObject).longValue();
+
+            model.addAttribute("orderAmount", price);
+            return "success-release-funds.html";
         }
+        return "error.html"; // Render error HTML
+
     }
+
 
 }

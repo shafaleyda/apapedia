@@ -1,5 +1,6 @@
 package com.apapedia.order.service;
 
+import com.apapedia.order.model.OrderItemModel;
 import com.apapedia.order.model.OrderModel;
 
 import java.time.LocalDate;
@@ -21,4 +22,8 @@ public interface OrderService {
     List<OrderModel> listBySeller(UUID seller);
 
     Map<LocalDate, Integer> getDailySales(UUID seller);
+
+    List<OrderItemModel> getListOrderItemById(UUID orderId);
+
+    Boolean getWithdrawnById(UUID id);
 }

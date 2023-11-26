@@ -4,9 +4,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.apapedia.order.repository.OrderDb;
+import com.apapedia.order.repository.OrderItemDb;
 
 import jakarta.transaction.Transactional;
 
+import com.apapedia.order.model.OrderItemModel;
 import com.apapedia.order.model.OrderModel;
 
 import java.time.LocalDate;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -22,6 +25,9 @@ import java.util.UUID;
 public class OrderServiceImpl implements OrderService{
     @Autowired
     OrderDb orderDb;
+
+    @Autowired
+    OrderItemDb orderItemDb;
 
     @Override
     public void saveOrder(OrderModel order){
@@ -55,8 +61,8 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public OrderModel updateOrder(OrderModel orderFromDTO, OrderModel oldOrder){
         OrderModel order = getOrderByOrderId(orderFromDTO.getId());
-        System.out.println(order);
-        System.out.println(orderFromDTO);
+        System.out.println(order.getStatus());
+        System.out.println(orderFromDTO.getStatus());
         if (order != null){
             order.setUpdatedAt(LocalDateTime.now());
             order.setStatus(orderFromDTO.getStatus());
@@ -94,10 +100,23 @@ public class OrderServiceImpl implements OrderService{
         for (OrderModel order : salesForMonth) {
             LocalDateTime orderDate = order.getCreatedAt();
             LocalDate date = orderDate.toLocalDate();
-            salesPerDayMap.merge(date, 1, Integer::sum);
+    
+            int quantitySold = order.getListOrderItem().stream()
+                    .mapToInt(OrderItemModel::getQuantity)
+                    .sum();
+    
+            salesPerDayMap.merge(date, quantitySold, Integer::sum);
         }
 
         return salesPerDayMap;
 
+    }
+
+    public List<OrderItemModel> getListOrderItemById(UUID orderId){
+        return orderItemDb.findByOrderId(orderId);
+    }
+
+    public Boolean getWithdrawnById(UUID id){
+        return getOrderByOrderId(id).isWithdrawn();
     }
 }

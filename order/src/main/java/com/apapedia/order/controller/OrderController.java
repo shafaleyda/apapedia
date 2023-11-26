@@ -2,11 +2,13 @@ package com.apapedia.order.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import com.apapedia.order.dto.OrderMapper;
@@ -19,6 +21,8 @@ import com.apapedia.order.service.OrderItemService;
 import com.apapedia.order.service.OrderService;
 import com.apapedia.order.service.ProductService;
 
+import io.netty.handler.codec.http.HttpObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +30,8 @@ import java.util.HashSet;
 import java.util.UUID;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 @RestController
 public class OrderController {
@@ -97,15 +103,30 @@ public class OrderController {
     }
 
     @GetMapping(value = "/order/customer/{id}")
-    private List<OrderModel> retrieveCustomerOrder(@PathVariable("id") UUID id){
+    private ResponseEntity<Dictionary<String, Object>> retrieveCustomerOrder(@PathVariable("id") UUID id, HttpServletRequest httpServletRequest){
+        // ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER_SELLER);
+
         List<OrderModel> listOrder = orderService.listByCustomer(id);
-        return listOrder;
+        Dictionary<String, Object> responseData = new Hashtable<>();
+        responseData.put("status", HttpStatus.OK.value());
+        responseData.put("message", "success");
+        responseData.put("data", listOrder);
+        return ResponseEntity.status(HttpStatus.OK).body(responseData);
     }
 
     @GetMapping(value = "/order/seller/{id}")
-    private List<OrderModel> retrieveSellerOrder(@PathVariable("id") UUID id){
+    private ResponseEntity<Dictionary<String, Object>> retrieveSellerOrder(@PathVariable("id") UUID id, HttpServletRequest httpServletRequest){
+        // ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER_SELLER);
+
         List<OrderModel> listOrder = orderService.listBySeller(id);
-        return listOrder;
+        for (OrderModel orderModel : listOrder) {
+            System.out.println("this is when retrieve" + orderModel.getListOrderItem());
+        }
+        Dictionary<String, Object> responseData = new Hashtable<>();
+        responseData.put("status", HttpStatus.OK.value());
+        responseData.put("message", "success");
+        responseData.put("data", listOrder);
+        return ResponseEntity.status(HttpStatus.OK).body(responseData);
     }
 
     @PutMapping("/order/update/{orderId}")
@@ -121,6 +142,7 @@ public class OrderController {
         } else {
             var order = orderMapper.updateOrderRequestDTOToOrder(orderDTO);
             order.setId(id);
+            order.setStatus(orderDTO.getStatus());;
             OrderModel orderUpdated = orderService.updateOrder(order, oldOrder); 
     
             System.out.println("Order updated successfully: " + orderUpdated);

@@ -47,7 +47,10 @@ public class OrderModel {
     @Column(name = "seller", nullable = false)
     private UUID seller;
 
+    @Transient
+    private boolean withdrawn;
+
     @OneToMany(mappedBy = "order")
     @JsonIgnore
-    private Set<OrderItemModel> ListOrderItem;
+    private Set<OrderItemModel> listOrderItem;
 }
