@@ -9,8 +9,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CreateCartItemRequestDTO {
-    private UUID productId;
-    private Integer quantity;
-    
+public class DeleteCartItemDTO {
+    private UUID cartItemId;
 }
