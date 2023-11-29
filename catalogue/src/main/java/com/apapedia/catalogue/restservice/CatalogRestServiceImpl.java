@@ -8,7 +8,6 @@ import com.apapedia.catalogue.dto.request.CreateCatalogueRequestDTO;
 import com.apapedia.catalogue.dto.request.UpdateCatalogRequestDTO;
 import com.apapedia.catalogue.model.Category;
 import com.apapedia.catalogue.repository.CategoryDb;
-import com.apapedia.catalogue.service.FileStoreServiceV1;
 import com.apapedia.catalogue.service.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,5 +1,4 @@
-package com.apapedia.user.auth;
-
+package com.apapedia.user.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthenticationRequest {
     private String email;
-    String password;
+    private String password;
 }
