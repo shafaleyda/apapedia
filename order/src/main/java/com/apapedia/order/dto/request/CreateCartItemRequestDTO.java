@@ -12,4 +12,5 @@ import java.util.UUID;
 public class CreateCartItemRequestDTO {
     private UUID productId;
     private Integer quantity;
+    
 }

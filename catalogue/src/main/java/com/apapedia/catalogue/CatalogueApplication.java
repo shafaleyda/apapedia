@@ -31,6 +31,7 @@ import com.apapedia.catalogue.restservice.CategoryRestService;
 //@ComponentScan(basePackages = "com.apapedia.catalogue")
 public class CatalogueApplication {
 
+	
 	public static void main(String[] args) {
 		SpringApplication.run(CatalogueApplication.class, args);
 	}
@@ -43,14 +44,14 @@ public class CatalogueApplication {
 			var faker = new Faker(new Locale("in-ID"));
 			int minPrice = 10;
 			int maxPrice = 100;
-			URL imageUrl = new URL("https://tinyjpg.com/images/social/website.jpg");
+			URL imageUrl = new URL("https://www.helium10.com/app/uploads/2020/04/vit-c.jpg");
 
 			List<String> categoryNameList = Arrays.asList("Aksesoris Fashion", "Buku & Alat Tulis", "Elektronik",
 					"Fashion Bayi & Anak", "Fashion Muslim", "Fotografi",
 					"Hobi & Koleksi", "Jam Tangan", "Perawatan & Kecantikan",
 					"Makanan & Minuman", "Otomotif", "Perlengkapan Rumah", "Souvenir & Party Supplies");
 
-			//Faker category
+			//
 			for (int i = 0; i <= 12; i++){
 				var category = new Category();
 				var categoryName = categoryNameList.get(i);
@@ -90,6 +91,7 @@ public class CatalogueApplication {
 					e.printStackTrace();
 				}
 				catalogRestService.saveCatalog(catalog);
+
 			}
 
 		};

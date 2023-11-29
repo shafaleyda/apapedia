@@ -11,6 +11,7 @@ import com.apapedia.catalogue.rest.CatalogRest;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Sort;
 
 @Service
 @Transactional
@@ -24,16 +25,12 @@ public interface CatalogRestService {
     List<CatalogRest> retrieveRestAllCatalogByCatalogName(String catalogName);
     List<CatalogRest> retrieveRestAllCatalogByCatalogPrice(Integer minPrice, Integer maxPrice);
 
-//    CatalogRest createRestCatalog(CreateCatalogueRequestDTO catalog, MultipartFile imageFiles) throws IOException;
+    //    CatalogRest createRestCatalog(CreateCatalogueRequestDTO catalog, MultipartFile imageFiles) throws IOException;
     CatalogRest createRestCatalog(CreateCatalogueRequestDTO catalog, MultipartFile imageFiles) throws Exception;
-    Catalog editRestCatalog(CreateCatalogueRequestDTO catalog, MultipartFile imageFiles) throws Exception;
+    CatalogRest editRestCatalog(CreateCatalogueRequestDTO catalog, MultipartFile imageFiles) throws Exception;
     Catalog updateRestCatalog(UUID id, UpdateCatalogRequestDTO updateCatalogRequestDTO);
     Catalog getRestCatalogById(UUID idCatalog);
-
     List<CatalogRest> getListCatalogBySellerId(String sellerId);
-
     void saveCatalog(Catalog catalog);
-
-//    byte[] decompressImage(byte[] data);
-
+    List<CatalogRest> findAllSortBy(Sort sort);
 }
