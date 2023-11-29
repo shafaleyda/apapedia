@@ -45,6 +45,7 @@ public class SecurityConfiguration {
             "/configuration/security",
             "/swagger-ui/**",
             "/webjars/**",
+        //     "/api/v1/seller/**",
             "/swagger-ui.html"};
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
@@ -55,13 +56,12 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers(WHITE_LIST_URL)
-                                .permitAll()
-                                // .requestMatchers("/api/v1/management/**").hasAnyRole(SELLER.name(), CUSTOMER.name())
-                                // .requestMatchers(GET, "/api/v1/management/**").hasAnyAuthority(SELLER_READ.name(), CUSTOMER_READ.name())
-                                // .requestMatchers(POST, "/api/v1/management/**").hasAnyAuthority(SELLER_CREATE.name(), CUSTOMER_CREATE.name())
-                                // .requestMatchers(PUT, "/api/v1/management/**").hasAnyAuthority(SELLER_UPDATE.name(), CUSTOMER_UPDATE.name())
-                                // .requestMatchers(DELETE, "/api/v1/management/**").hasAnyAuthority(SELLER_DELETE.name(), CUSTOMER_DELETE.name())
+                        req.requestMatchers(WHITE_LIST_URL).permitAll()
+                                .requestMatchers("/api/v1/seller/**").hasAnyRole(SELLER.name(), CUSTOMER.name())
+                                .requestMatchers(GET, "/api/v1/seller/**").hasAnyAuthority(SELLER_READ.name(), CUSTOMER_READ.name())
+                                .requestMatchers(POST, "/api/v1/sellerr/**").hasAnyAuthority(SELLER_CREATE.name(), CUSTOMER_CREATE.name())
+                                .requestMatchers(PUT, "/api/v1/sellerr/**").hasAnyAuthority(SELLER_UPDATE.name(), CUSTOMER_UPDATE.name())
+                                .requestMatchers(DELETE, "/api/v1/sellerr/**").hasAnyAuthority(SELLER_DELETE.name(), CUSTOMER_DELETE.name())
                                 .anyRequest()
                                 .authenticated()
                 )
