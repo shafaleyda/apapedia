@@ -170,7 +170,7 @@ public class CatalogController {
             model.addAttribute("valid", true);
 
             //MASIH HARDCODE
-            String urlChart = "http://localhost:8080/order/salesChart/" + UUID.fromString("34356813-fcbd-4872-9ca4-ae26a81c092c");
+            String urlChart = "http://localhost:8080/order/salesChart/" + UUID.fromString("97b6a27f-d118-48ce-bf48-b46c6bef1c19");
             ResponseEntity<Map<LocalDate, Integer>> response = restTemplate.exchange(
                     urlChart,
                     HttpMethod.GET,
