@@ -59,7 +59,7 @@ public class UserController {
 
         System.out.println("TEST 1");
         RestTemplate restTemplate = new RestTemplate();
-        String apiUrl = "http://localhost:8080/api/authentication/register";
+        String apiUrl = "http://localhost:8081/api/authentication/register";
 
         System.out.println("TEST 2");
 

@@ -153,4 +153,6 @@ public class OrderController {
         Map<LocalDate, Integer> mapTotalOrdersPerDay = orderService.getDailySales(id);
         return ResponseEntity.ok(mapTotalOrdersPerDay);
     }
+
+   
 }
