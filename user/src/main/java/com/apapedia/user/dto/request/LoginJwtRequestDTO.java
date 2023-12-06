@@ -1,7 +1,5 @@
 package com.apapedia.user.dto.request;
 
-import java.util.UUID;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateUserRequestDTO extends RegisterSellerRequestDTO {
-    private UUID id;
+public class LoginJwtRequestDTO {
+    private String username;
+    private String name;
+
 }
+
