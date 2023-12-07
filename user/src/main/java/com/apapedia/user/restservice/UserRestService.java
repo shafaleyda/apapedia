@@ -9,6 +9,8 @@ import com.apapedia.user.model.User;
 public interface UserRestService {
 
     User getUserById(UUID id);
+    
+    User getUserLoggedIn();
 
     User signUp(User user);
 
@@ -19,4 +21,7 @@ public interface UserRestService {
     void deleteUser(UUID id);
     
     void updateBalance(int amount, User user);
+
+    String getToken(String username, String name);
+
 } 

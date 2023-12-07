@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +28,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "_users")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User implements UserDetails{
+public class User implements UserDetails {
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue
@@ -63,23 +65,27 @@ public class User implements UserDetails{
 
     @NotNull
     @Column(name = "updatedAt", nullable = false)
-    private LocalDateTime updatedAt; 
+    private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    // @Override
+    // public Collection<? extends GrantedAuthority> getAuthorities() {
+    // List<GrantedAuthority> authorities = new ArrayList<>();
+    // if (this instanceof Seller) {
+    // authorities.add(new SimpleGrantedAuthority("SELLER"));
+    // } else if (this instanceof Customer) {
+    // authorities.add(new SimpleGrantedAuthority("CUSTOMER"));
+    // }
+    // return authorities;
+    // }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        if (this instanceof Seller) {
-            authorities.add(new SimpleGrantedAuthority("SELLER"));
-        } else if (this instanceof Customer) {
-            authorities.add(new SimpleGrantedAuthority("CUSTOMER"));
-        }
-        return authorities;
+        return role.getAuthorities();
     }
 
-    
     public String getEmail() {
         return this.email;
     }
@@ -103,6 +109,5 @@ public class User implements UserDetails{
     public boolean isEnabled() {
         return true;
     }
-
 
 }

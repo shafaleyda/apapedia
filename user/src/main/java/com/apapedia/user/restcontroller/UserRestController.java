@@ -41,6 +41,16 @@ public class UserRestController {
         return user;
     }
 
+
+    @GetMapping("/user-loggedin")
+    private User getUserLoggedIn() {
+        User user = userRestService.getUserLoggedIn();
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There are no users logged in");
+        }
+        return user;
+    }
+
     @GetMapping(value = "/all")
     private List<User> getAllUser() {
         return userRestService.getAllUser();
