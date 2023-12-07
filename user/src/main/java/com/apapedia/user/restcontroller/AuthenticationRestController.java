@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.apapedia.user.dto.*;
 import com.apapedia.user.dto.request.AuthenticationRequest;
+import com.apapedia.user.dto.request.RegisterCustomerRequestDTO;
 import com.apapedia.user.dto.request.RegisterRequest;
+import com.apapedia.user.dto.request.RegisterSellerRequestDTO;
 import com.apapedia.user.dto.response.AuthenticationResponse;
 import com.apapedia.user.service.AuthenticationService;
 
@@ -22,17 +24,26 @@ public class AuthenticationRestController {
     private final AuthenticationService service;
 
     
-    @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(
-        @RequestBody RegisterRequest request
+    @PostMapping("/register/customer")
+    public ResponseEntity<AuthenticationResponse> registerCustomer(
+        @RequestBody RegisterCustomerRequestDTO request
     ) throws Exception {
-        return ResponseEntity.ok(service.register(request));
+        return ResponseEntity.ok(service.registerCustomer(request));
+    }
+
+    @PostMapping("/register/seller")
+    public ResponseEntity<AuthenticationResponse> registerSeller(
+        @RequestBody RegisterSellerRequestDTO request
+    ) throws Exception {
+        System.out.println("CP 1");
+        return ResponseEntity.ok(service.registerSeller(request));
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
         @RequestBody AuthenticationRequest request
     ) throws Exception {
+        System.out.println("CP 0");
         return ResponseEntity.ok(service.authenticate(request));
     }
 
