@@ -140,7 +140,7 @@ public class UserController {
     public String dashboardSeller(HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
 
         System.out.println("CP0");
-        // Retrieve cookies from the request
+        // Retrieve cookies from the request    
         Cookie[] cookies = httpServletRequest.getCookies();
 
         System.out.println(cookies);
@@ -159,7 +159,7 @@ public class UserController {
                     return "access-denied.html";
                 }
             }            
-        }
+        }           
         System.out.println("CP3");
         return "dashboard-authenticated.html";
     }
