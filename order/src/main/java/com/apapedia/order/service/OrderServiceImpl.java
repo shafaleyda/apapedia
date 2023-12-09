@@ -43,8 +43,17 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public List<OrderModel> listByCustomer(UUID customer) {
-        return orderDb.findAllByCustomer(customer);
+    public List<Order> listByCustomer(UUID customer) {
+        // return orderDb.findAllByCustomer(customer);
+        List<OrderModel> orderModels = orderDb.findAllByCustomer(customer);
+        return orderModels.stream()
+                .map(orderModel -> {
+                    Order orderDto = new Order();
+                    orderDto.setOrder(orderModel);
+                    orderDto.setListOrderItem(orderModel.getListOrderItem());
+                    return orderDto;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override

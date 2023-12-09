@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sf="http://www.w3.org/1999/xhtml" lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>BacaBaca</title>
@@ -52,18 +53,29 @@
         }
     </style>
 </head>
+
 <body>
-<div class="login-container">
-    <h2>Login</h2>
-    <form th:action="@{/login}" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required="required" />
+    <div class="login-container">
+        <h2>Login</h2>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required="required" />
+        <div th:if="${error}" style="color: red;">
+            <p th:text="${error}"></p>
+        </div>
+                
+        <form th:action="@{/}" th:object="${authDTO}" method="POST">
+            Email: <br>
+            <input required class="form-control" type="email" th:field="*{email}" />
+            <br><br>
 
-        <button type="submit">Login</button>
-    </form>
-</div>
+            Password: <br>
+            <input required class="form-control" type="password" th:field="*{password}" />
+            <br><br>
+
+            <button type="submit">Login</button>
+            
+            <p>Don't have an account yet? <a href="/register/seller" style="color:dodgerblue">register</a>.</p>
+        </form>
+    </div>
 </body>
+
 </html>
