@@ -7,17 +7,17 @@ import 'package:frontend_mobile/page/profile/customer.dart';
 import 'package:frontend_mobile/page/profile/profile.dart';
 import 'package:provider/provider.dart';
 
-class TopUpBalance extends StatefulWidget {
+class TopUpBalancePage extends StatefulWidget {
   // final Customer customer;
 
   // const TopUpBalance({Key? key, required this.customer}) : super(key: key);
-  const TopUpBalance({Key? key}) : super(key: key);
+  const TopUpBalancePage({Key? key}) : super(key: key);
 
   @override
-  State<TopUpBalance> createState() => _TopUpBalanceState();
+  State<TopUpBalancePage> createState() => _TopUpBalancePageState();
 }
 
-class _TopUpBalanceState extends State<TopUpBalance> {
+class _TopUpBalancePageState extends State<TopUpBalancePage> {
   final TextEditingController _saldoController = TextEditingController();
 
   @override
@@ -30,6 +30,27 @@ class _TopUpBalanceState extends State<TopUpBalance> {
     builder: (context) =>
         AlertDialog(title: Text(title), content: Text(text)),
   );
+
+  Future<String> topUpCustomerBalance(int amount) async {
+    try {
+      final String uriUpdateBalance = 'http://localhost:8081/api/user/d0b7fc03-7347-4104-a9a0-d9957e26553b/balance?amount=$amount';
+
+      http.Response balanceResponse = await http.put(
+        Uri.parse(uriUpdateBalance),
+      );
+
+      if (balanceResponse.statusCode == 200) {
+        String responseBody = balanceResponse.body;
+        return responseBody;
+      } else {
+        return 'error';
+      }
+
+    } catch (e) {
+      print('Caught an exception: $e');
+      return 'error';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,39 +75,17 @@ class _TopUpBalanceState extends State<TopUpBalance> {
                 controller: _saldoController,
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.digitsOnly
-                ], // Only numbers can be entered
+                ], 
               ),
               Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: ElevatedButton(
-                    onPressed: () {
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                              builder: (context) => const ProfilePage(),
-                            )
-                          );
+                    onPressed: () async {
+                      int amount = int.tryParse(_saldoController.text) ?? 0;
+                      var response = await topUpCustomerBalance(amount);
+                      print(response);
+                    
                     },
-                    // onPressed: () async {
-                    //   var response = await topUp(
-                    //       request, widget.customer, _saldoController.text);
-                    //
-                    //   if (response.statusCode == 200) {
-                    //     displayDialog(
-                    //         context, "Success", "Berhasil top up saldo sebesar " + _saldoController.text);
-                    //     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    //       builder: (context) => const ProfilePage(),
-                    //     ));
-                    //
-                    //   } else if (response.statusCode == 400) {
-                    //     displayDialog(context, "An Error Occurred",
-                    //         "Request body has invalid type or missing field.");
-                    //   } else if (response.statusCode == 403) {
-                    //     displayDialog(context, "An Error Occurred", "Forbidden");
-                    //   } else {
-                    //     displayDialog(context, "An Error Occurred",
-                    //         "");
-                    //   }
-                    // },
                       child: const Text('Top Up Balance')
                   )
               ),
@@ -97,16 +96,3 @@ class _TopUpBalanceState extends State<TopUpBalance> {
   }
 }
 
-// Future<http.Response> topUp(
-//     CookieRequest request, Customer customer, String saldoBaru) async {
-//   var body = jsonEncode({
-//     "username": customer.username,
-//     "email": customer.email,
-//     "saldo": customer.saldo + int.parse(saldoBaru),
-//   });
-//   const host =
-//   String.fromEnvironment('host', defaultValue: "http://localhost:8080");
-//   final response = await request.post(
-//       host + '/api/v1/customer/topUpBalance/' + request.username, body);
-//   return response;
-// }

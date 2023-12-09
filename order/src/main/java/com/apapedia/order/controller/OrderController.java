@@ -107,12 +107,12 @@ public class OrderController {
     @GetMapping(value = "/order/customer/{id}")
     private ResponseEntity<Dictionary<String, Object>> retrieveCustomerOrder(@PathVariable("id") UUID id, HttpServletRequest httpServletRequest){
         // ApiScope.validateAuthority(httpServletRequest.getHeader(AUTHORIZATION), Constans.CUSTOMER_SELLER);
+        List<Order> listOrderDto = orderService.listByCustomer(id);
 
-        List<OrderModel> listOrder = orderService.listByCustomer(id);
         Dictionary<String, Object> responseData = new Hashtable<>();
         responseData.put("status", HttpStatus.OK.value());
         responseData.put("message", "success");
-        responseData.put("data", listOrder);
+        responseData.put("data", listOrderDto);
         return ResponseEntity.status(HttpStatus.OK).body(responseData);
     }
 
@@ -153,4 +153,6 @@ public class OrderController {
         Map<LocalDate, Integer> mapTotalOrdersPerDay = orderService.getDailySales(id);
         return ResponseEntity.ok(mapTotalOrdersPerDay);
     }
+
+   
 }

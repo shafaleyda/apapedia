@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:frontend_mobile/page/profile/profile.dart';
+import 'package:frontend_mobile/page/order-history/order-history.dart';
 import 'package:frontend_mobile/page/profile/topUpBalance.dart';
+import 'package:frontend_mobile/page/profile/profile.dart';
 
 
 void main() {
