@@ -143,7 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 //TopUpBalance(customer: snapshot.data!)),
-                                                const TopUpBalance()
+                                                const TopUpBalancePage()
                                         ),
                                       );
                                     },
