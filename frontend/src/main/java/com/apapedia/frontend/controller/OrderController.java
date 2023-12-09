@@ -25,7 +25,7 @@ public class OrderController {
         RestTemplate restTemplate = new RestTemplate();
 
         // UUID id = loggedInSeller.getId();
-        final String uri = "http://localhost:8080/order/seller/dc4cf886-ab46-49a4-9fbb-458cfdd43f69"; // masih hardcode, belum ambil id
+        final String uri = "http://localhost:8080/order/seller/d0b7fc03-7347-4104-a9a0-d9957e26553b"; // masih hardcode, belum ambil id
 
         ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(
             uri,
@@ -60,51 +60,92 @@ public class OrderController {
     }
 
     @GetMapping("/withdraw")
-    public String viewCompletedOrders(Model model) { // consume api user #6 (belum ada)
-        RestTemplate restTemplate = new RestTemplate();
+    public String getWithdrawUser(Model model) {
+        try {
+            // final String uriGetSeller = "http://localhost:8081/api/user" + id;
+            final String uriGetSeller = "http://localhost:8081/api/user/d0b7fc03-7347-4104-a9a0-d9957e26553b";
 
-        // UUID id = loggedInSeller.getId();
-        final String uri = "http://localhost:8080/order/seller/dc4cf886-ab46-49a4-9fbb-458cfdd43f69"; // masih hardcode, belum ambil id
+            RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(
-            uri,
-            HttpMethod.GET,
-            null,
-            new ParameterizedTypeReference<Map<String, Object>>() {
-            });
+            ResponseEntity<Object> sellerResponse = restTemplate.exchange(
+                uriGetSeller,
+                HttpMethod.GET,
+                null,
+                Object.class
+            );
 
-        Map<String, Object> myResponse = responseEntity.getBody();
-        List<Map<String, Object>> ordersRaw = (List<Map<String, Object>>) myResponse.get("data");
-
-        if (!ordersRaw.isEmpty()) {
-            List<Map<String, Object>> orderList = new ArrayList<>();
-
-            for (Map<String, Object> orderDetails : ordersRaw) {
-                Map<String, Object> orderMap = (Map<String, Object>) orderDetails.get("order");
-                List<Map<String, Object>> listOrderItem = (List<Map<String, Object>>) orderDetails.get("listOrderItem");
-
-                Map<String, Object> orderDetailsMap = new HashMap<>();
-                orderDetailsMap.put("order", orderMap);
-                orderDetailsMap.put("listOrderItem", listOrderItem);
-
-                orderList.add(orderDetailsMap);
+            if (sellerResponse.getStatusCode().is2xxSuccessful()) {
+                // This is the seller object
+                Object seller = sellerResponse.getBody();
+                model.addAttribute("seller", seller);
+                return "withdraw-page";
+            } else {
+                return "error";
             }
-
-            model.addAttribute("orderList", orderList);
-            System.out.println(orderList);
-            return "withdraw-page";
+        } catch (Exception e) {
+            System.out.println("Caught an exception: " + e.getMessage());
+            e.printStackTrace();
+            return "error"; 
         }
-
-        return "error"; // Render error HTML
+    
     }
 
-    @PostMapping("/withdraw/{orderId}") //update balance here
-    public String withdrawOrderFunds(@PathVariable("orderId") String id, Model model) {
-        // api user #6 not available yet
-        // final String uri = "http://localhost:8080/user/updateBalance/" + id; 
-        return "successful";
-    }
+    @PostMapping("/withdraw") //update balance here
+    public String withdrawAllBalance(@RequestParam("amount") int amount, Model model) {
+        try {
+            // final String uriGetSeller = "http://localhost:8081/api/user" + id;
+            final String uriGetSeller = "http://localhost:8081/api/user/d0b7fc03-7347-4104-a9a0-d9957e26553b";
 
+            RestTemplate restTemplate = new RestTemplate();
+
+            ResponseEntity<Object> sellerResponse = restTemplate.exchange(
+                uriGetSeller,
+                HttpMethod.GET,
+                null,
+                Object.class
+            );
+
+            if (sellerResponse.getStatusCode().is2xxSuccessful()) {
+                // This is the seller object
+                Object seller = sellerResponse.getBody();
+                model.addAttribute("seller", seller);
+
+                if (amount == 0){
+                    return "withdraw-page";
+                }
+
+                // final String uriUpdateBalance = "http://localhost:8081/api/user" + id + "/balance?amount=" + amount; 
+                amount = -amount;
+                final String uriUpdateBalance = "http://localhost:8081/api/user/d0b7fc03-7347-4104-a9a0-d9957e26553b/balance?amount=" + amount; 
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+
+                ResponseEntity<String> balanceResponse = restTemplate.exchange(
+                    uriUpdateBalance,
+                    HttpMethod.PUT,
+                    null,  
+                    String.class
+                );
+
+                if (balanceResponse.getStatusCode().is2xxSuccessful()) {
+                    String responseBody = balanceResponse.getBody();
+                    model.addAttribute("message", responseBody);
+                    return "successful";
+                } else {
+                    return "error";
+                }
+
+            } else {
+                return "error";
+            }
+        } catch (Exception e) {
+            System.out.println("Caught an exception: " + e.getMessage());
+            e.printStackTrace();
+            return "error"; 
+        }
+    
+    }
 
     @PostMapping("/updateStatus/{orderId}")
     public String updateStatus(@PathVariable("orderId") String id, @RequestParam("status") int status, Model model) {
@@ -135,6 +176,5 @@ public class OrderController {
             return "error"; 
         }
     }
-
     
 }
