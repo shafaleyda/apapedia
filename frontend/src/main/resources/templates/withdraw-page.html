@@ -5,71 +5,96 @@
   <meta charset="UTF-8" />
   <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
   <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
-  <title>Order History</title>
+  <title>Withdraw Balance</title>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
       background-color: #f8f9fa;
-      margin: 0;
-      padding: 0;
     }
 
     .container {
-      margin-top: 50px;
+      font-family: 'Georgia', serif; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 150px;
+      max-width: 400px;
+      max-height: 500px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+      border-radius: 8px;
     }
 
     .card {
+      text-align: center;
+      margin-top: 20px;
       margin-bottom: 20px;
     }
 
     .card-body {
       display: flex;
       flex-direction: column;
-      align-items: left;
+      align-items: center;
       text-align: left;
     }
 
-    h2 {
-      color: #007bff;
+    h4 {
+      color: #333; 
+      font-size: 1em; 
+      font-weight: bold;
+      margin-bottom: 10px;
     }
 
     h6 {
       margin: 5px 0;
+      color: #6c757d;
     }
 
-    .btn-update-status {
-      margin-top: 10px;
+    .btn-withdraw {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .btn-withdraw:hover {
+      background-color: #0056b3;
+      color: #fff; 
+    }
+
+    .alert-danger {
+        margin-top: 0; 
+        margin-bottom: 0; 
     }
   </style>
 </head>
 
 <body>
+  <nav th:replace="~{fragments/navbar :: navbar(activePage='order')}"></nav>
   <div class="container">
-    <div class="text-center pt-5">
-      <h2>Order History</h2>
-    </div>
-    <div th:each="orderDetails : ${orderList}">
-      <div th:if="${orderDetails['order']['status'] == 5 and !orderDetails['order']['withdrawn']}" class="row justify-content-center m-2">
-        <div class="card" style="width: 30rem;">
-          <div class="card-body text-left">
-            <form th:action="@{/withdraw/{orderId}(orderId=${orderDetails['order']['id']})}" method="post" class="update-status-form text-left">
-              <div th:each="orderItem, iterStat : ${orderDetails['listOrderItem']}">
-                <h6 th:text="'Item ' + ${iterStat.count}"></h6>
-                <h6 th:text="'Product name: ' + ${orderItem['productName']}"></h6>
-                <h6 th:text="'Quantity: ' + ${orderItem['quantity']}"></h6>
-                <p></p>
-              </div>
-              <h6 th:text="'Product total price : ' + ${orderDetails['order']['totalPrice']}"></h6>
-              <h6 th:text="'Withdrawn status: ' + ${orderDetails['order']['withdrawn']}"></h6>
-              <button type="submit" class="btn btn-sm btn-warning btn-update-status">Withdraw funds</button>
-            </form>
-          </div>
+    <form th:action="@{/withdraw}" method="post" class="update-balance-form">
+      <div class="card">
+        <div class="card-body">
+          <h4>Withdraw Balance</h4>
+          <h6 th:text="'Your current balance: '"></h6>
+          <h5 th:text="${seller.balance}"></h5>
+          <input type="hidden" id="amount" name="amount" th:value="${seller.balance}" />
+        </div>
+        <button th:if="${seller.balance != 0}" type="submit" class="btn btn-primary btn-withdraw">Withdraw Funds</button>
+        <div th:if="${seller.balance == 0}" class="alert alert-danger" role="alert">
+          You can't withdraw your balance
         </div>
       </div>
-    </div>
+    </form>
   </div>
 </body>
-
-
 
 </html>

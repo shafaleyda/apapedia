@@ -16,6 +16,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 // import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.apapedia.user.config.JwtService;
 import com.apapedia.user.restservice.UserRestService;
 import com.apapedia.user.security.xml.Attributes;
 import com.apapedia.user.security.xml.ServiceResponse;
@@ -28,6 +29,9 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class PageController {
+        @Autowired
+        private JwtService jwtService;
+
         @Autowired
         private UserRestService userRestService;
 
@@ -101,6 +105,10 @@ public class PageController {
 
         @GetMapping("/failed-login")
         public String failedLogin() {
+                var token = jwtService.getToken();
+                var idUser = jwtService.extractUserId(token);
+                userRestService.deleteUser(idUser);
+                
                 return "failed-login.html";
         }
 
