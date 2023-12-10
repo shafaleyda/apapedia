@@ -14,11 +14,33 @@ class OrderHistoryPage extends StatefulWidget {
 }
 
 class _OrderHistoryPageState extends State<OrderHistoryPage> {
-  Future<List<Map<String, dynamic>>> fetchCustomerOrderHistory() async {
-    var url = Uri.parse(
-        'http://localhost:8080/order/customer/bd6513b7-8104-4f7e-88fa-7403ef88a742');
-
+  Future<Map<String, dynamic>> fetchLoggedInUser() async {
     try {
+      var url = Uri.parse('http://localhost:8081/api/user/user-loggedin');
+
+      http.Response response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> userLoggedIn = json.decode(response.body);
+        return userLoggedIn;
+      } else {
+        print(
+            'Failed to fetch logged-in user. Status code: ${response.statusCode}');
+        return {'error': 'error'};
+      }
+    } catch (e) {
+      print('Caught an exception: $e');
+      return {'error': 'error'};
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchCustomerOrderHistory() async {
+    try {
+      Map<String, dynamic> userLoggedIn = await fetchLoggedInUser();
+      String customerId = userLoggedIn['id'];
+
+      var url = Uri.parse('http://localhost:8080/order/customer/$customerId');
+
       var response = await http.get(url);
 
       if (response.statusCode == 200) {
@@ -30,10 +52,9 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
           List<Map<String, dynamic>> orderList = [];
 
           for (var orderDetails in ordersRaw) {
-            // Access the order details directly, no 'order' key
-            
             Map<String, dynamic> orderMap = orderDetails['order'];
-            List<Map<String, dynamic>> listOrderItem = List<Map<String, dynamic>>.from(orderDetails['listOrderItem']);
+            List<Map<String, dynamic>> listOrderItem =
+                List<Map<String, dynamic>>.from(orderDetails['listOrderItem']);
 
             Map<String, dynamic> orderDetailsMap = {
               'order': orderMap,
@@ -70,6 +91,21 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
       );
 
       if (response.statusCode == 200) {
+        Map<String, dynamic> responseBody = json.decode(response.body);
+        int updatedStatus = responseBody['status'];
+        String idSeller = responseBody['seller'];
+        int totalPrice = responseBody['totalPrice'];
+
+        print(updatedStatus);
+
+        if (updatedStatus == 5) {
+          final String uriUpdateBalance =
+              'http://localhost:8081/api/user/$idSeller/balance?amount=$totalPrice';
+
+          http.Response balanceResponse = await http.put(
+            Uri.parse(uriUpdateBalance),
+          );
+        }
         return 'successful';
       } else {
         print('Failed to update status. Status code: ${response.statusCode}');
@@ -129,13 +165,16 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Item ${orderDetails['listOrderItem'].indexOf(orderItem) + 1}'),
-                                  Text('Product name: ${orderItem['productName']}'),
+                                  Text(
+                                      'Item ${orderDetails['listOrderItem'].indexOf(orderItem) + 1}'),
+                                  Text(
+                                      'Product name: ${orderItem['productName']}'),
                                   Text('Quantity: ${orderItem['quantity']}'),
                                   SizedBox(height: 8.0),
                                 ],
                               ),
-                            Text('Product total price: ${orderDetails['order']['totalPrice']}'),
+                            Text(
+                                'Product total price: ${orderDetails['order']['totalPrice']}'),
                             SizedBox(height: 8.0),
                             Text(
                               'Order status: ${getStatusText(orderDetails['order']['status'])}',
@@ -167,14 +206,16 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                             ElevatedButton(
                               onPressed: () async {
                                 if (orderDetails['order']['status'] != 5) {
-                                  String result = await updateStatus(orderDetails['order']['id'], selectedStatus);
+                                  String result = await updateStatus(
+                                      orderDetails['order']['id'],
+                                      selectedStatus);
                                   print(result);
                                   setState(() {});
                                 }
-                              },                             
+                              },
                               child: orderDetails['order']['status'] == 5
-                                  ? Text('Selesai') 
-                                  : Text('Update Order Status'), 
+                                  ? Text('Selesai')
+                                  : Text('Update Order Status'),
                             ),
                           ],
                         ),
@@ -192,23 +233,20 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
 }
 
 String getStatusText(int statusCode) {
-    switch (statusCode) {
-      case 0:
-        return 'Menunggu konfirmasi';
-      case 1:
-        return 'Dikonfirmasi penjual';
-      case 2:
-        return 'Menunggu kurir';
-      case 3:
-        return 'Dalam perjalanan';
-      case 4:
-        return 'Barang diterima';
-      case 5:
-        return 'Selesai';
-      default:
-        return 'Unknown';
-    }
+  switch (statusCode) {
+    case 0:
+      return 'Menunggu konfirmasi';
+    case 1:
+      return 'Dikonfirmasi penjual';
+    case 2:
+      return 'Menunggu kurir';
+    case 3:
+      return 'Dalam perjalanan';
+    case 4:
+      return 'Barang diterima';
+    case 5:
+      return 'Selesai';
+    default:
+      return 'Unknown';
   }
-
-
-
+}

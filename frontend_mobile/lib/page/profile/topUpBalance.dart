@@ -31,9 +31,32 @@ class _TopUpBalancePageState extends State<TopUpBalancePage> {
         AlertDialog(title: Text(title), content: Text(text)),
   );
 
+  Future<Map<String, dynamic>> fetchLoggedInUser() async {
+    try {
+      var url = Uri.parse('http://localhost:8081/api/user/user-loggedin');
+
+      http.Response response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> userLoggedIn = json.decode(response.body);
+        return userLoggedIn;
+      } else {
+        print(
+            'Failed to fetch logged-in user. Status code: ${response.statusCode}');
+        return {'error': 'error'};
+      }
+    } catch (e) {
+      print('Caught an exception: $e');
+      return {'error': 'error'};
+    }
+  }
+
   Future<String> topUpCustomerBalance(int amount) async {
     try {
-      final String uriUpdateBalance = 'http://localhost:8081/api/user/d0b7fc03-7347-4104-a9a0-d9957e26553b/balance?amount=$amount';
+      Map<String, dynamic> userLoggedIn = await fetchLoggedInUser();
+      String customerId = userLoggedIn['id'];
+
+      final String uriUpdateBalance = 'http://localhost:8081/api/user/$customerId/balance?amount=$amount';
 
       http.Response balanceResponse = await http.put(
         Uri.parse(uriUpdateBalance),
