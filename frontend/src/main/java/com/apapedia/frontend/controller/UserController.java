@@ -1,4 +1,4 @@
-package com.apapedia.user.controller;
+package com.apapedia.frontend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,9 +11,8 @@ import org.springframework.ui.Model;
 import java.io.IOException;
 import java.net.URI;
 
-import com.apapedia.user.config.JwtService;
-import com.apapedia.user.dto.request.RegisterSellerRequestDTO;
-import com.apapedia.user.model.SellerCategory;
+import com.apapedia.frontend.dto.RegisterSellerRequestDTO;
+import com.apapedia.frontend.model.SellerCategory;
 import com.google.gson.JsonObject;
 
 import java.net.http.HttpResponse;
@@ -28,23 +27,17 @@ import java.net.http.HttpClient;
 @Controller
 public class UserController {
 
-    @Autowired
-    JwtService jwtService;
-
     @GetMapping("/")
-    public String registerForm(Model model) {
+    public String registerForm(Model model) throws IOException, InterruptedException {
+
         var sellerDTO = new RegisterSellerRequestDTO();
         model.addAttribute("sellerDTO", sellerDTO);
 
-        System.out.println("masuk regis form");
-
-        System.out.println(sellerDTO);
-
         var listCategory = SellerCategory.values();
-
+        
         model.addAttribute("listCategory", listCategory);
 
-        return "register.html";
+        return "user/register.html";
     }
 
     @PostMapping("/register/seller")
@@ -82,7 +75,7 @@ public class UserController {
             return "redirect:/failed-register";
         }
 
-        return "success-register.html";
+        return "user/success-register.html";
 
     }
 
@@ -93,33 +86,40 @@ public class UserController {
         Cookie[] cookies = httpServletRequest.getCookies();
 
         if (cookies == null) {
-            return "access-denied.html";
-
+            return "user/access-denied.html";
         }
 
         for (Cookie cookie : cookies) {
-            if ("jwtToken".equals(cookie.getName())) {
-                var token = jwtService.getToken();
-                if (token == null) {
-                    System.out.println("CP1");
-                    return "access-denied.html";
-                }
+            if (!("jwtToken".equals(cookie.getName()))) {
+                continue;
+            } else{
+                return "user/dashboard-authenticated.html";
             }
         }
-        return "dashboard-authenticated.html";
 
+        return "user/access-denied.html";
     }
 
     @GetMapping("/dashboard/seller/guest")
     public String dashboardSellerGuest() {
 
-        return "dashboard-non-authenticated.html";
+        return "user/dashboard-non-authenticated.html";
     }
 
     @GetMapping("/failed-register")
-    public String failedLogin() {
+    public String failedRegister() {
 
-        return "failed-register.html";
+        return "user/failed-register.html";
+    }
+
+    @GetMapping("/failed-login")
+    public String failedLogin() throws Exception {
+        return "user/failed-login.html";
+    }
+
+    @GetMapping("/access-denied")
+    public String failedEnter() throws Exception {
+        return "user/access-denied.html";
     }
 
 }

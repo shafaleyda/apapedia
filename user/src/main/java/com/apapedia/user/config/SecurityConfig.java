@@ -6,7 +6,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -16,16 +15,11 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 import static com.apapedia.user.model.Role.SELLER;
-import static com.apapedia.user.model.Role.CUSTOMER;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 import static com.apapedia.user.model.Permission.SELLER_CREATE;
 import static com.apapedia.user.model.Permission.SELLER_DELETE;
 import static com.apapedia.user.model.Permission.SELLER_READ;
 import static com.apapedia.user.model.Permission.SELLER_UPDATE;
-import static com.apapedia.user.model.Permission.CUSTOMER_CREATE;
-import static com.apapedia.user.model.Permission.CUSTOMER_DELETE;
-import static com.apapedia.user.model.Permission.CUSTOMER_READ;
-import static com.apapedia.user.model.Permission.CUSTOMER_UPDATE;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,14 +31,23 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
 
     private final AuthenticationProvider authenticationProvider;
-
     
     private static final String[] WHITE_LIST_URL = {
-        "/**",
-        // Disini buat tambahin url yg gaperlu otentifikasi
+        // // Disini buat tambahin url yg gaperlu otentifikasi
+
+        //USER SERVICE
         "/",
-        "/api/**",
-        "/register/**",
+        "/api/authentication/**",
+        "/api/auth/**",
+        "/validate-ticket",
+        "/login-sso",
+        "/logout-sso",
+        "/failed-register",
+        "/failed-login",
+        "/dashboard/seller/guest",
+        "/dashboard/seller",
+        "/register/seller",
+
     };
 
     
@@ -66,7 +69,10 @@ public class SecurityConfig {
                         .authenticated())
                         .logout((logout) -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                        .logoutSuccessUrl("/"))
+                        .logoutSuccessUrl("http://localhost:8085/")
+                        )   
+                        
+                        
 
         .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
         .authenticationProvider(authenticationProvider)
