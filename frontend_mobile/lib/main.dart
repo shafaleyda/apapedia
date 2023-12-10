@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_mobile/page/catalogue/catalogBar.dart';
+import 'package:frontend_mobile/page/catalogue/catalogHome.dart';
 import 'package:frontend_mobile/page/profile/profile.dart';
 import 'package:frontend_mobile/page/profile/topUpBalance.dart';
 
@@ -27,7 +29,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const ProfilePage(),
+      home: CatalogHome(),
     );
   }
 }

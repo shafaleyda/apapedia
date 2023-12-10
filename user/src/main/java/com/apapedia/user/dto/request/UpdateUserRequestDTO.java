@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateUserRequestDTO extends RegisterRequest {
+public class UpdateUserRequestDTO extends RegisterSellerRequestDTO {
     private UUID id;
 }

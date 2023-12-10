@@ -1,5 +1,10 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html xmlns:th="http://www.thymeleaf.org">
+=======
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sf="http://www.w3.org/1999/xhtml" lang="en">
+
+>>>>>>> d5ad28238b85070169a59303839aa867b07ee9f6
 <head>
     <meta charset="UTF-8">
     <title>BacaBaca</title>
@@ -13,6 +18,10 @@
             height: 100vh;
             margin: 0;
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> d5ad28238b85070169a59303839aa867b07ee9f6
         .login-container {
             background-color: #ffffff;
             padding: 20px;
@@ -21,16 +30,28 @@
             width: 300px;
             text-align: center;
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> d5ad28238b85070169a59303839aa867b07ee9f6
         h2 {
             color: #333333;
             margin-bottom: 20px;
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> d5ad28238b85070169a59303839aa867b07ee9f6
         label {
             display: block;
             text-align: left;
             margin-bottom: 8px;
             color: #555555;
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> d5ad28238b85070169a59303839aa867b07ee9f6
         input {
             width: 100%;
             padding: 10px;
@@ -39,6 +60,10 @@
             border: 1px solid #dddddd;
             border-radius: 4px;
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> d5ad28238b85070169a59303839aa867b07ee9f6
         button {
             background-color: #4CAF50;
             color: white;
@@ -47,11 +72,16 @@
             border-radius: 4px;
             cursor: pointer;
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> d5ad28238b85070169a59303839aa867b07ee9f6
         button:hover {
             background-color: #45a049;
         }
     </style>
 </head>
+<<<<<<< HEAD
 <body>
 <div class="login-container">
     <h2>Login</h2>
@@ -66,4 +96,31 @@
     </form>
 </div>
 </body>
+=======
+
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+
+        <div th:if="${error}" style="color: red;">
+            <p th:text="${error}"></p>
+        </div>
+                
+        <form th:action="@{/}" th:object="${authDTO}" method="POST">
+            Email: <br>
+            <input required class="form-control" type="email" th:field="*{email}" />
+            <br><br>
+
+            Password: <br>
+            <input required class="form-control" type="password" th:field="*{password}" />
+            <br><br>
+
+            <button type="submit">Login</button>
+            
+            <p>Don't have an account yet? <a href="/register/seller" style="color:dodgerblue">register</a>.</p>
+        </form>
+    </div>
+</body>
+
+>>>>>>> d5ad28238b85070169a59303839aa867b07ee9f6
 </html>
