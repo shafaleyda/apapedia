@@ -22,60 +22,74 @@ import java.util.List;
 public class OrderController {
     @GetMapping("/orderHistory")
     public String viewUserOrderHistory(Model model) {
-        RestTemplate restTemplate = new RestTemplate();
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String url = "http://localhost:8081/api/user/user-loggedin";
+            ResponseEntity<Map<String, Object>> sellerResponse = restTemplate.exchange(
+                url, 
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<Map<String, Object>>() {
+                });
 
-        // UUID id = loggedInSeller.getId();
-        final String uri = "http://localhost:8080/order/seller/d0b7fc03-7347-4104-a9a0-d9957e26553b"; // masih hardcode, belum ambil id
+            if (sellerResponse.getStatusCode().is2xxSuccessful()) {
+                Map<String, Object> userLoggedIn = sellerResponse.getBody();
+                String sellerId = (String) userLoggedIn.get("id");
 
-        ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(
-            uri,
-            HttpMethod.GET,
-            null,
-            new ParameterizedTypeReference<Map<String, Object>>() {
-            });
+                final String uri = "http://localhost:8080/order/seller/" + sellerId; 
 
-        Map<String, Object> myResponse = responseEntity.getBody();
-        List<Map<String, Object>> ordersRaw = (List<Map<String, Object>>) myResponse.get("data");
+                ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(
+                    uri,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<Map<String, Object>>() {
+                    });
 
-        if (!ordersRaw.isEmpty()) {
-            List<Map<String, Object>> orderList = new ArrayList<>();
+                Map<String, Object> myResponse = responseEntity.getBody();
+                List<Map<String, Object>> ordersRaw = (List<Map<String, Object>>) myResponse.get("data");
 
-            for (Map<String, Object> orderDetails : ordersRaw) {
-                Map<String, Object> orderMap = (Map<String, Object>) orderDetails.get("order");
-                List<Map<String, Object>> listOrderItem = (List<Map<String, Object>>) orderDetails.get("listOrderItem");
+                List<Map<String, Object>> orderList = new ArrayList<>();
+                if (!ordersRaw.isEmpty()) {
+                    for (Map<String, Object> orderDetails : ordersRaw) {
+                        Map<String, Object> orderMap = (Map<String, Object>) orderDetails.get("order");
+                        List<Map<String, Object>> listOrderItem = (List<Map<String, Object>>) orderDetails.get("listOrderItem");
 
-                Map<String, Object> orderDetailsMap = new HashMap<>();
-                orderDetailsMap.put("order", orderMap);
-                orderDetailsMap.put("listOrderItem", listOrderItem);
+                        Map<String, Object> orderDetailsMap = new HashMap<>();
+                        orderDetailsMap.put("order", orderMap);
+                        orderDetailsMap.put("listOrderItem", listOrderItem);
 
-                orderList.add(orderDetailsMap);
+                        orderList.add(orderDetailsMap);
+                    }
+                }
+
+                model.addAttribute("orderList", orderList);
+                System.out.println(orderList);
+                return "view-user-order";
+
+            } else{
+                return "error";
             }
 
-            model.addAttribute("orderList", orderList);
-            System.out.println(orderList);
-            return "view-user-order";
+        } catch (Exception e){
+            System.out.println("Caught an exception: " + e.getMessage());
+            e.printStackTrace();
+            return "error"; 
         }
-
-        return "error"; // Render error HTML
     }
 
     @GetMapping("/withdraw")
     public String getWithdrawUser(Model model) {
         try {
-            // final String uriGetSeller = "http://localhost:8081/api/user" + id;
-            final String uriGetSeller = "http://localhost:8081/api/user/d0b7fc03-7347-4104-a9a0-d9957e26553b";
-
             RestTemplate restTemplate = new RestTemplate();
-
-            ResponseEntity<Object> sellerResponse = restTemplate.exchange(
-                uriGetSeller,
+            String url = "http://localhost:8081/api/user/user-loggedin";
+            ResponseEntity<Map<String, Object>> sellerResponse = restTemplate.exchange(
+                url, 
                 HttpMethod.GET,
                 null,
-                Object.class
-            );
+                new ParameterizedTypeReference<Map<String, Object>>() {
+                });
 
             if (sellerResponse.getStatusCode().is2xxSuccessful()) {
-                // This is the seller object
                 Object seller = sellerResponse.getBody();
                 model.addAttribute("seller", seller);
                 return "withdraw-page";
@@ -93,30 +107,28 @@ public class OrderController {
     @PostMapping("/withdraw") //update balance here
     public String withdrawAllBalance(@RequestParam("amount") int amount, Model model) {
         try {
-            // final String uriGetSeller = "http://localhost:8081/api/user" + id;
-            final String uriGetSeller = "http://localhost:8081/api/user/d0b7fc03-7347-4104-a9a0-d9957e26553b";
-
             RestTemplate restTemplate = new RestTemplate();
-
-            ResponseEntity<Object> sellerResponse = restTemplate.exchange(
-                uriGetSeller,
+            String url = "http://localhost:8081/api/user/user-loggedin";
+            ResponseEntity<Map<String, Object>> sellerResponse = restTemplate.exchange(
+                url, 
                 HttpMethod.GET,
                 null,
-                Object.class
-            );
+                new ParameterizedTypeReference<Map<String, Object>>() {
+                });
 
             if (sellerResponse.getStatusCode().is2xxSuccessful()) {
                 // This is the seller object
                 Object seller = sellerResponse.getBody();
+                Map<String, Object> userLoggedIn = sellerResponse.getBody();
+                String sellerId = (String) userLoggedIn.get("id");
                 model.addAttribute("seller", seller);
 
                 if (amount == 0){
                     return "withdraw-page";
                 }
 
-                // final String uriUpdateBalance = "http://localhost:8081/api/user" + id + "/balance?amount=" + amount; 
                 amount = -amount;
-                final String uriUpdateBalance = "http://localhost:8081/api/user/d0b7fc03-7347-4104-a9a0-d9957e26553b/balance?amount=" + amount; 
+                final String uriUpdateBalance = "http://localhost:8081/api/user/" + sellerId + "/balance?amount=" + amount; 
 
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON);
@@ -176,5 +188,4 @@ public class OrderController {
             return "error"; 
         }
     }
-    
 }
