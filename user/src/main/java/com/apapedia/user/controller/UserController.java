@@ -124,7 +124,7 @@ public class UserController {
         jsonBody.addProperty("category", sellerDTO.getCategory().toString());
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/authentication/register/seller"))
+                .uri(URI.create("http://localhost:8081/api/authentication/register/seller"))
                 .header("content-type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody.toString()))
                 .build();
