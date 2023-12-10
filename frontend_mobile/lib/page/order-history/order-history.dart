@@ -166,13 +166,15 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                             SizedBox(height: 8.0),
                             ElevatedButton(
                               onPressed: () async {
-                                String result = await updateStatus(orderDetails['order']['id'], selectedStatus);
-                                print(result);
-                                setState(() {
-                                });
-                              },
-                              
-                              child: Text('Update Order Status'),
+                                if (orderDetails['order']['status'] != 5) {
+                                  String result = await updateStatus(orderDetails['order']['id'], selectedStatus);
+                                  print(result);
+                                  setState(() {});
+                                }
+                              },                             
+                              child: orderDetails['order']['status'] == 5
+                                  ? Text('Selesai') 
+                                  : Text('Update Order Status'), 
                             ),
                           ],
                         ),

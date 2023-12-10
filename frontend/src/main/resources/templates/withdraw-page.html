@@ -5,21 +5,20 @@
   <meta charset="UTF-8" />
   <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
   <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
-  <title>Order History</title>
+  <title>Withdraw Balance</title>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
       background-color: #f8f9fa;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 90vh;
     }
 
     .container {
+      font-family: 'Georgia', serif; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 150px;
       max-width: 400px;
+      max-height: 500px;
       padding: 20px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       background-color: #fff;
@@ -28,6 +27,7 @@
 
     .card {
       text-align: center;
+      margin-top: 20px;
       margin-bottom: 20px;
     }
 
@@ -39,7 +39,9 @@
     }
 
     h4 {
-      color: #007bff;
+      color: #333; 
+      font-size: 1em; 
+      font-weight: bold;
       margin-bottom: 10px;
     }
 
@@ -67,10 +69,16 @@
       background-color: #0056b3;
       color: #fff; 
     }
+
+    .alert-danger {
+        margin-top: 0; 
+        margin-bottom: 0; 
+    }
   </style>
 </head>
 
 <body>
+  <nav th:replace="~{fragments/navbar :: navbar(activePage='order')}"></nav>
   <div class="container">
     <form th:action="@{/withdraw}" method="post" class="update-balance-form">
       <div class="card">
