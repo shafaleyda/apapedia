@@ -33,12 +33,15 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
     
     private static final String[] WHITE_LIST_URL = {
-
+        // // Disini buat tambahin url yg gaperlu otentifikasi
 
         //USER SERVICE
         "/",
         "/api/authentication/**",
         "/api/auth/**",
+
+        "/api/user/**",
+
         "/validate-ticket",
         "/login-sso",
         "/logout-sso",
@@ -47,8 +50,7 @@ public class SecurityConfig {
         "/dashboard/seller/guest",
         "/dashboard/seller",
         "/register/seller",
-        "/api/catalog/view-all-by-name",
-        "/api/catalog/all",
+
     };
 
     
