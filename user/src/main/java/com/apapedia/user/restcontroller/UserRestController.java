@@ -10,7 +10,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.apapedia.user.config.JwtService;
 import com.apapedia.user.dto.request.UpdateUserRequestDTO;
 import com.apapedia.user.model.User;
-import com.apapedia.user.repository.UserDb;
 import com.apapedia.user.restservice.UserRestService;
 
 import jakarta.validation.Valid;
@@ -28,6 +27,9 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/user")
 public class UserRestController {
+
+    @Autowired
+    private JwtService jwtService;
 
     @Autowired
     private UserRestService userRestService;
@@ -69,10 +71,13 @@ public class UserRestController {
     }
 
     @DeleteMapping(value = "/delete/{id}")
-    private void deleteUser(@PathVariable("id") UUID id) {
+    private ResponseEntity<String> deleteUser(@PathVariable("id") UUID id) {
+
+        System.out.println("Masuk ke delete id");
 
         userRestService.deleteUser(id);
 
+        return ResponseEntity.status(HttpStatus.OK).body("User berhasil di delete!");
     }
 
     @PutMapping("/{id}/balance")
@@ -98,4 +103,24 @@ public class UserRestController {
         }
     }
 
+    @GetMapping(value = "/user-logout")
+    private ResponseEntity<String> logoutUser() {
+        try {
+            jwtService.isTokenValid(getToken(), getUserLoggedIn());
+            return ResponseEntity.ok("Token masih aktif");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Token udah ga aktif");
+        }
+    }
+
+    @GetMapping(value = "/token")
+    private String getToken() {
+        return jwtService.getToken();
+    }
+
+    @GetMapping(value = "/user-id")
+    private UUID getUserId() {
+        return jwtService.extractUserId(getToken());
+    }
 }
