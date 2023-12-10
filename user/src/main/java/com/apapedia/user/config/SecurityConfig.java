@@ -33,7 +33,7 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
     
     private static final String[] WHITE_LIST_URL = {
-        // // Disini buat tambahin url yg gaperlu otentifikasi
+
 
         //USER SERVICE
         "/",
@@ -47,7 +47,8 @@ public class SecurityConfig {
         "/dashboard/seller/guest",
         "/dashboard/seller",
         "/register/seller",
-
+        "/api/catalog/view-all-by-name",
+        "/api/catalog/all",
     };
 
     
@@ -64,7 +65,13 @@ public class SecurityConfig {
                         .requestMatchers(POST, "/api/v1/admin/**").hasAnyAuthority(SELLER_CREATE.name())
                         .requestMatchers(PUT, "/api/v1/admin/**").hasAnyAuthority(SELLER_UPDATE.name())
                         .requestMatchers(DELETE, "/api/v1/admin/**").hasAnyAuthority(SELLER_DELETE.name())
-
+                        
+                        //View all catalog (role seller)
+                        .requestMatchers(GET, "/api/catalog/seller-view-all-by-name").hasRole("SELLER")
+                        .requestMatchers(POST, "/api/catalog/create").hasRole("SELLER")
+                        .requestMatchers(GET, "/api/catalog/seller/**").hasRole("SELLER")
+                        .requestMatchers(GET, "/api/catalog/seller-view-all-by-price").hasRole("SELLER")
+                        .requestMatchers(GET, "/api/catalog/seller-view-all-sort-by").hasRole("SELLER")
                         .anyRequest()
                         .authenticated())
                         .logout((logout) -> logout
