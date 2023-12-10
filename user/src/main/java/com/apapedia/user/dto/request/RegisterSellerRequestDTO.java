@@ -1,6 +1,5 @@
 package com.apapedia.user.dto.request;
 
-import com.apapedia.user.model.Role;
 import com.apapedia.user.model.SellerCategory;
 
 import lombok.AllArgsConstructor;

@@ -8,14 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -69,17 +65,6 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    // @Override
-    // public Collection<? extends GrantedAuthority> getAuthorities() {
-    // List<GrantedAuthority> authorities = new ArrayList<>();
-    // if (this instanceof Seller) {
-    // authorities.add(new SimpleGrantedAuthority("SELLER"));
-    // } else if (this instanceof Customer) {
-    // authorities.add(new SimpleGrantedAuthority("CUSTOMER"));
-    // }
-    // return authorities;
-    // }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
