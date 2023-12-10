@@ -17,11 +17,11 @@
           <br>
           <form th:action="@{/register/seller}" th:object="${sellerDTO}" method="POST">
             Nama: <br>
-            <input class="form-control" type="text" th:field="*{name}" />
+            <input required class="form-control" type="text" th:field="*{name}" />
             <br><br>
 
             Username SSO: <br>
-            <input class="form-control" type="text" th:field="*{username}" />
+            <input required class="form-control" type="text" th:field="*{username}" />
             <br><br>
 
             Email: <br>
@@ -46,10 +46,8 @@
             <br><br> -->
 
             <button class="btn btn-primary" type="submit">Submit</button>
-            <a class="btn btn-secondary" href="/">Home</a>
-
-
-            <p>Udah punya akun? Langsung login aja disini <a href="/login-sso" style="color:dodgerblue">login</a>.</p>
+            <br><br>
+            <p>Udah punya akun? Langsung login aja disini <a href="http://localhost:8081/login-sso" style="color:dodgerblue">login</a>.</p>
           </form>
         </div>
       </div>

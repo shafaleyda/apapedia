@@ -1,4 +1,4 @@
-package com.apapedia.user.setting;
+package com.apapedia.frontend.setting;
 
 public class Setting {
     final public static String CLIENT_BASE_URL = "http://localhost:8081";
