@@ -40,6 +40,9 @@ public class SecurityConfig {
         "/",
         "/api/authentication/**",
         "/api/auth/**",
+
+        "/api/user/**",
+
         "/validate-ticket",
         "/login-sso",
         "/logout-sso",

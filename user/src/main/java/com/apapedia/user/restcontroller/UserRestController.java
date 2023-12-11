@@ -73,9 +73,6 @@ public class UserRestController {
 
     @DeleteMapping(value = "/delete/{id}")
     private ResponseEntity<String> deleteUser(@PathVariable("id") UUID id) {
-
-        System.out.println("Masuk ke delete id");
-
         userRestService.deleteUser(id);
 
         return ResponseEntity.status(HttpStatus.OK).body("User berhasil di delete!");

@@ -479,6 +479,7 @@ class _CatalogHomeState extends State<CatalogHome> {
           )
         ],
       ),
+      
     );
   }
 }

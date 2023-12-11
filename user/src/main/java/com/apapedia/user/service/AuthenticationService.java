@@ -93,9 +93,6 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest authReq) throws Exception {
-
-        System.out.println(">>>>>>>>>");
-
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authReq.getEmail(),
