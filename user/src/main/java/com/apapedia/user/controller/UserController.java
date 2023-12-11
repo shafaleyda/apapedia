@@ -36,10 +36,6 @@ public class UserController {
         var sellerDTO = new RegisterSellerRequestDTO();
         model.addAttribute("sellerDTO", sellerDTO);
 
-        System.out.println("masuk regis form");
-
-        System.out.println(sellerDTO);
-
         var listCategory = SellerCategory.values();
 
         model.addAttribute("listCategory", listCategory);
@@ -101,7 +97,6 @@ public class UserController {
             if ("jwtToken".equals(cookie.getName())) {
                 var token = jwtService.getToken();
                 if (token == null) {
-                    System.out.println("CP1");
                     return "access-denied.html";
                 }
             }
