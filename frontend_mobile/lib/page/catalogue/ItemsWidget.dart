@@ -14,7 +14,27 @@ class _ItemsWidgetState extends State<ItemsWidget> {
   @override
   void initState() {
     super.initState();
-    fetchData(); // Fetch data when the widget initializes
+    fetchData(); 
+  }
+
+  void filterCatalogByProductName(String productName) {
+    String urlCatalog = "http://localhost:8082";
+    String urlFilterByProductName = '$urlCatalog/api/catalog/view-all-by-name?name=$productName';
+
+    //Fetch API
+    http.get(Uri.parse(urlFilterByProductName)).then((response) {
+      if (response.statusCode == 200) {
+        List<dynamic> responseData = json.decode(response.body);
+        setState(() {
+          products = responseData;
+        });
+      } else {
+        print('Failed to load products: ${response.statusCode}');
+      }
+    }).catchError((error) {
+      // Handle any error that might occur during the HTTP request
+      print('Error loading products: $error');
+    });
   }
 
   Future<void> fetchData() async {

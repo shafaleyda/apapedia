@@ -1,12 +1,26 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:frontend_mobile/page/catalogue/ItemsWidget.dart';
+import 'package:http/http.dart' as http;
+import 'ItemsWidget.dart';
 
+
+// class CatalogAppBar extends StatefulWidget {
+//   @override
+//   _CatalogAppBarState createState() => _CatalogAppBarState();
+// }
 class CatalogAppBar extends StatelessWidget {
+
+  final ItemsWidget itemsWidget = new ItemsWidget();
+  List<dynamic> products = [];
+
   TextEditingController productNameController = TextEditingController();
   TextEditingController minPriceController = TextEditingController();
   TextEditingController maxPriceController = TextEditingController();
-
   String? selectedSortValue;
+  String urlCatalog = "http://localhost:8082";
 
   void _showFilterSearchDrawer(BuildContext context) {
     showModalBottomSheet(
@@ -15,22 +29,55 @@ class CatalogAppBar extends StatelessWidget {
         return Container(
           padding: EdgeInsets.all(20),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TextFormField(
-                controller: productNameController,
-                decoration:
-                    InputDecoration(labelText: 'Filter by Product Name'),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: productNameController,
+                      decoration:
+                          InputDecoration(labelText: 'Filter by Product Name'),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      String productName = productNameController.text;
+                      
+                    },
+                    child: Text('Search'),
+                  ),
+                ],
               ),
-              TextFormField(
-                controller: minPriceController,
-                decoration: InputDecoration(
-                    labelText: 'Filter by Range Price (Min Price)'),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: minPriceController,
+                      decoration: InputDecoration(
+                          labelText: 'Filter by Range Price (Min Price)'),
+                    ),
+                  ),
+                ],
               ),
-              TextFormField(
-                controller: maxPriceController,
-                decoration: InputDecoration(
-                    labelText: 'Filter by Range Price (Max Price)'),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: maxPriceController,
+                      decoration: InputDecoration(
+                          labelText: 'Filter by Range Price (Max Price)'),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      String minPrice = minPriceController.text;
+                      String maxPrice = maxPriceController.text;
+                      // Perform search by max price
+                    },
+                    child: Text('Search'),
+                  ),
+                ],
               ),
               SizedBox(height: 20),
               DropdownButton<String>(
@@ -47,33 +94,8 @@ class CatalogAppBar extends StatelessWidget {
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
-                   selectedSortValue = newValue;
+                  selectedSortValue = newValue;
                 },
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      String productName = productNameController.text;
-                      
-                    },
-                    child: Text('Search'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Perform search by price range
-                    },
-                    child: Text('Search'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Perform sorting based on dropdown value
-                    },
-                    child: Text('Sort'),
-                  ),
-                ],
               ),
             ],
           ),
