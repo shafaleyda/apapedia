@@ -8,9 +8,6 @@ import 'package:frontend_mobile/page/profile/profile.dart';
 import 'package:provider/provider.dart';
 
 class TopUpBalancePage extends StatefulWidget {
-  // final Customer customer;
-
-  // const TopUpBalance({Key? key, required this.customer}) : super(key: key);
   const TopUpBalancePage({Key? key}) : super(key: key);
 
   @override
@@ -27,9 +24,19 @@ class _TopUpBalancePageState extends State<TopUpBalancePage> {
 
   void displayDialog(context, title, text) => showDialog(
     context: context,
-    builder: (context) =>
-        AlertDialog(title: Text(title), content: Text(text)),
-  );
+        builder: (context) => AlertDialog(
+          title: Text(title),
+          content: Text(text),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
 
   Future<Map<String, dynamic>> fetchLoggedInUser() async {
     try {
@@ -64,21 +71,22 @@ class _TopUpBalancePageState extends State<TopUpBalancePage> {
 
       if (balanceResponse.statusCode == 200) {
         String responseBody = balanceResponse.body;
+        displayDialog(context, 'Success', 'Balance topped up successfully!');
         return responseBody;
       } else {
+        displayDialog(context, 'Error', 'Failed to top up balance!');
         return 'error';
       }
 
     } catch (e) {
       print('Caught an exception: $e');
+      displayDialog(context, 'Error', 'Failed to top up balance!');
       return 'error';
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // var request = context.read<CookieRequest>();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('TopUp Balance'),
@@ -112,7 +120,6 @@ class _TopUpBalancePageState extends State<TopUpBalancePage> {
                       child: const Text('Top Up Balance')
                   )
               ),
-              // )
             ],
           )),
     );
