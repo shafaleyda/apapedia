@@ -27,7 +27,6 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
   final _formKey = GlobalKey<FormState>();
 
   Future<bool> loginApi(String email, String password) async {
-    print("masuuk sini ");
     try {
       // Panggil API login dengan email dan password
       final response = await http.post(
@@ -43,7 +42,6 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
       );
 
       if (response.statusCode == 200) {
-        print("TEST 0");
         // Jika respons dari API adalah 200 OK, simpan token dan lakukan navigasi ke halaman BukuScreen
         final token = jsonDecode(response.body)['token'];
         await AuthService().saveTokenToStorage(token);
@@ -55,7 +53,6 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
         );
         return true;
       } else {
-        print("TEST 1");
         // Jika respons bukan 200 OK, tampilkan pesan kesalahan
         Map<String, dynamic> errorResponse = jsonDecode(response.body);
         String errorMessage = errorResponse['message'];

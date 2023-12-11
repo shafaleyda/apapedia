@@ -28,7 +28,6 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
 
   Future<bool> registerApi(String name, String username, String email,
       String password, String address) async {
-    print("masuuk sini ");
     try {
       // Panggil API register dengan name, username, email, password dan address
       final response = await http.post(
@@ -47,7 +46,6 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
       );
 
       if (response.statusCode == 200) {
-        print("TEST 0");
         // Jika respons dari API adalah 200 OK, simpan token dan lakukan navigasi ke halaman BukuScreen
         final token = jsonDecode(response.body)['token'];
         await AuthService().saveTokenToStorage(token);
@@ -59,7 +57,6 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
         );
         return true;
       } else {
-        print("TEST 1");
         // Jika respons bukan 200 OK, tampilkan pesan kesalahan
         Map<String, dynamic> errorResponse = jsonDecode(response.body);
         String errorMessage = errorResponse['message'];
