@@ -17,6 +17,7 @@ import com.apapedia.order.service.CartItemService;
 import com.apapedia.order.service.CartService;
 import com.apapedia.order.service.ProductService;
 
+@CrossOrigin
 @RestController
 public class CartItemController {
     @Autowired

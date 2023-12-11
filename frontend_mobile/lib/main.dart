@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_mobile/page/catalogue/catalogDetail.dart';
 import 'package:frontend_mobile/page/customer-login/login.dart';
 import 'package:frontend_mobile/page/catalogue/catalogHomeGuest.dart';
 import 'package:frontend_mobile/page/home.dart';
@@ -6,7 +7,6 @@ import 'package:frontend_mobile/page/profile/profile.dart';
 import 'package:frontend_mobile/page/order-history/order-history.dart';
 import 'package:frontend_mobile/page/profile/topUpBalance.dart';
 import 'package:frontend_mobile/page/profile/profile.dart';
-
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +19,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      routes: {
+        '/catalogDetail': (context) => catalogDetail(),
+        '/confirmOrder': (context) => catalogDetail(),
+      },
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -36,7 +40,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});

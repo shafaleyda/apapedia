@@ -99,11 +99,7 @@ public class UserController {
         for (Cookie cookie : cookies) {
             if (!("jwtToken".equals(cookie.getName()))) {
                 continue;
-<<<<<<< HEAD
             } else {
-=======
-            } else{
->>>>>>> 2d7f81c2bb5dc21d4394e96060d86226b7c03ff5
                 RestTemplate restTemplate = new RestTemplate();
                 String urlLogin = baseUrlUser + "/api/user/user-loggedin";
 

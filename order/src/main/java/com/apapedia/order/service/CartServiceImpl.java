@@ -43,4 +43,10 @@ public class CartServiceImpl implements CartService{
         }
         return cartDb.save(cart);
     }
+
+    @Override
+    public UUID getCartByIdUser(UUID idUser) {
+        return cartDb.findByUserId(idUser).get().getId(); 
+
+    }
 }

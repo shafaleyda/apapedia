@@ -389,23 +389,6 @@ class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
                             ),
                             child: Column(
                               children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFF4C53A5),
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: ElevatedButton(
-                                        onPressed: () {},
-                                        child: Text('Order Now'),
-                                      ),
-                                    ),
-                                  ],
-                                ),
                                 InkWell(
                                   onTap: () {},
                                   child: Container(

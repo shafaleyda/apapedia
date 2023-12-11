@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:frontend_mobile/service/auth_service.dart';
 import 'package:http/http.dart' as http;
@@ -18,33 +16,34 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
   List<dynamic> products = [];
   List<String> categoryNames = [];
   bool isWrappedVisible = false;
-  
-
-  @override
-  void initState() {
-    super.initState();
-    _getToken(); 
-    // fetchCategories();
-    // fetchCatalog();
-    isWrappedVisible = false;
-  }
-
   TextEditingController productNameController = TextEditingController();
   TextEditingController minPriceController = TextEditingController();
   TextEditingController maxPriceController = TextEditingController();
   String? selectedSortValue;
   String urlCatalog = "http://localhost:8082";
+  String urlOrder = "http://localhost:8080";
+  String urlUser = "http://localhost:8081";
+  String? idCart = null; 
+
+  @override
+  void initState() {
+    super.initState();
+    _getToken();
+    // fetchCategories();
+    // fetchCatalog();
+    isWrappedVisible = false;
+  }
 
   Future<void> _getToken() async {
-    AuthService authService = AuthService(); 
-    String? token = await authService.getTokenFromStorage(); 
+    AuthService authService = AuthService();
+    String? token = await authService.getTokenFromStorage();
 
-    print("token: $token"); 
+    print("token: $token");
     if (token != null) {
-      fetchCatalog(); 
-      fetchCategories(); 
+      fetchCatalog();
+      fetchCategories();
     } else {
-      print("Token not found"); 
+      print("Token not found");
     }
   }
 
@@ -76,101 +75,161 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: productNameController,
-                      decoration:
-                          InputDecoration(labelText: 'Filter by Product Name'),
+        return SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [
+                  Text(
+                    'Filter by Product Name',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.grey,
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      String productName = productNameController.text;
-                      filterCatalogByProductName(productName);
-                      Navigator.pop(context);
-                      //productNameController.dispose();
-                    },
-                    child: Text('Search'),
+                ]),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: TextFormField(
+                          controller: productNameController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Product Name",
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: minPriceController,
-                      decoration: InputDecoration(
-                          labelText: 'Filter by Range Price (Min Price)'),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          String productName = productNameController.text;
+                          filterCatalogByProductName(productName);
+                          Navigator.pop(context);
+                          //productNameController.dispose();
+                        },
+                        child: Text('Search'),
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(),
+                Row(children: [
+                  Text(
+                    'Filter by Product Range Price',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.grey,
                     ),
                   ),
-                  SizedBox(width: 10),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: maxPriceController,
-                      decoration: InputDecoration(
-                          labelText: 'Filter by Range Price (Max Price)'),
-                    ),
+                ]),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: TextFormField(
+                          controller: minPriceController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Min Price",
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      String minPrice = minPriceController.text;
-                      String maxPrice = maxPriceController.text;
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: TextFormField(
+                          controller: maxPriceController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Max Price",
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          String minPrice = minPriceController.text;
+                          String maxPrice = maxPriceController.text;
 
-                      int minPriceInt = int.parse(minPrice);
-                      int maxPriceInt = int.parse(maxPrice);
-                      filterCatalogByProductPrice(minPriceInt, maxPriceInt);
-                      Navigator.pop(context);
-                      // minPriceController.dispose();
-                      // maxPriceController.dispose();
-                    },
-                    child: Text('Search'),
+                          int minPriceInt = int.parse(minPrice);
+                          int maxPriceInt = int.parse(maxPrice);
+                          filterCatalogByProductPrice(minPriceInt, maxPriceInt);
+                          Navigator.pop(context);
+                        },
+                        child: Text('Search'),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              SizedBox(height: 20),
-              DropdownButton<String>(
-                hint: Text('Sort Catalog'),
-                items: [
-                  'Sort by Product Name (A - Z)',
-                  'Sort by Product Name (Z - A)',
-                  'Sort by Product Price (Min - Max)',
-                  'Sort by Product Price (Max - Min)'
-                ].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  if (newValue == 'Sort by Product Name (A - Z)') {
-                    sortCatalog('productName', 'ASC');
-                    Navigator.pop(context);
-                  } else if (newValue == 'Sort by Product Name (Z - A)') {
-                    sortCatalog('productName', 'DESC');
-                    Navigator.pop(context);
-                  } else if (newValue == 'Sort by Product Price (Min - Max)') {
-                    sortCatalog('price', 'ASC');
-                    Navigator.pop(context);
-                  } else {
-                    sortCatalog('price', 'DESC');
-                    Navigator.pop(context);
-                  }
-                  // selectedSortValue = newValue;
-                  // print(selectedSortValue);
-                },
-              ),
-            ],
+                ),
+                Divider(),
+                Row(children: [
+                  Text(
+                    'Sort Product',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ]),
+                DropdownButton<String>(
+                  hint: Text('Sort Catalog'),
+                  items: [
+                    'Sort by Product Name (A - Z)',
+                    'Sort by Product Name (Z - A)',
+                    'Sort by Product Price (Min - Max)',
+                    'Sort by Product Price (Max - Min)'
+                  ].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    if (newValue == 'Sort by Product Name (A - Z)') {
+                      sortCatalog('productName', 'ASC');
+                      Navigator.pop(context);
+                    } else if (newValue == 'Sort by Product Name (Z - A)') {
+                      sortCatalog('productName', 'DESC');
+                      Navigator.pop(context);
+                    } else if (newValue ==
+                        'Sort by Product Price (Min - Max)') {
+                      sortCatalog('price', 'ASC');
+                      Navigator.pop(context);
+                    } else {
+                      sortCatalog('price', 'DESC');
+                      Navigator.pop(context);
+                    }
+                    // selectedSortValue = newValue;
+                    // print(selectedSortValue);
+                  },
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -264,6 +323,120 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
     }
   }
 
+  Future<String?> getUserId() async {
+    final String apiUrl = '$urlUser/api/user/user-loggedin';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> userData = json.decode(response.body);
+        final String userId = userData['id'] as String;
+        print("BERHASIL USER ID");
+        return userId;
+      } else {
+        // Handle other status codes
+        print('Failed to fetch user data: ${response.statusCode}');
+        return null;
+      }
+    } catch (error) {
+      // Handle errors during the HTTP request
+      print('Error fetching user data: $error');
+      return null;
+    }
+  }
+
+  Future<bool> checkIfCartExists(String userId) async {
+    final String apiUrl = '$urlOrder/cart/customer/$userId'; 
+    print(apiUrl);
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        if(idCart == null) {
+          final String urlGetCartId = '$urlOrder/cart/get-user/$userId'; 
+          final cartIdFromApi = await http.get(Uri.parse(urlGetCartId));
+          idCart = json.decode(cartIdFromApi.body) as String; 
+        }
+        return true;
+      } else if (response.statusCode == 404) {
+        return false;
+      } else {
+        print('Failed to check cart existence: ${response.statusCode}');
+        final String urlCreateCart = '$urlOrder/cart/create';
+        final Map<String, dynamic> requestData = {
+          'userId': userId,
+        };
+
+        try {
+          final response = await http.post(
+            Uri.parse(urlCreateCart),
+            body: json.encode(requestData),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          );
+          if (response.statusCode == 200) {
+            print("BERHASIL CREATE CART");
+            return true;
+          } else {
+            // Handle other status codes
+            print('Failed to create cart: ${response.statusCode}');
+            return false;
+          }
+        } catch (error) {
+          print('Error create cart: $error');
+          return false;
+        }
+      }
+    } catch (error) {
+      print('Error checking cart existence: $error');
+      return false;
+    }
+  }
+
+  void addToCart(String idProduct) async {
+    getUserId().then((String? userId) async {
+      if (userId != null) {
+        if (await checkIfCartExists(userId)) {
+          final String urlAddItemCart = '$urlOrder/cart/$idCart/add';
+          final Map<String, dynamic> requestData = {
+            'productId': idProduct,
+            'quantity': 1,
+          };
+
+          try {
+            final response = await http.post(
+              Uri.parse(urlAddItemCart),
+              body: json.encode(requestData),
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            );
+
+            if (response.statusCode == 200) {
+              print('Added to cart successfully');
+            } else {
+              // Handle other status codes
+              print('Failed to add to cart: ${response.statusCode}');
+            }
+          } catch (error) {
+            // Handle errors during the HTTP request
+            print('Error adding to cart: $error');
+          }
+        }
+        print('User ID: $userId');
+        // Perform actions with the userId...
+      } else {
+        // Handle the case where userId is null
+        print('User ID is null');
+      }
+    }).catchError((error) {
+      // Handle errors if the future throws an exception
+      print('Error fetching user ID: $error');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var category;
@@ -276,9 +449,9 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
               padding: EdgeInsets.all(25),
               child: Row(children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 20),
+                  padding: EdgeInsets.only(left: 10),
                   child: Text(
-                    "APAPEDIA",
+                    "Catalog Page",
                     style: TextStyle(
                       fontSize: 23,
                       fontWeight: FontWeight.bold,
@@ -298,12 +471,13 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
                   ),
                 ),
               ])),
+          SizedBox(height: 5),
           Container(
             //temp height
             //height: 500,
             padding: EdgeInsets.only(top: 15),
             decoration: BoxDecoration(
-                color: Colors.grey,
+                color: Color.fromARGB(208, 255, 237, 210),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(35),
                   topRight: Radius.circular(35),
@@ -322,7 +496,7 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: Colors.grey,
                     ),
                   ),
                 ),
@@ -355,7 +529,8 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 5), // Adjust the margin as needed
+                      horizontal: 10,
+                      vertical: 5), // Adjust the margin as needed
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: ElevatedButton(
@@ -365,7 +540,8 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
                               !isWrappedVisible; // Toggle the visibility
                         });
                       },
-                      child: Text(isWrappedVisible ? 'Close' : 'Product Category'),
+                      child:
+                          Text(isWrappedVisible ? 'Close' : 'Product Category'),
                     ),
                   ),
                 ),
@@ -379,13 +555,12 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: Colors.grey,
                     ),
                   ),
                 ),
 
                 //Items
-                //ItemsWidget(),
                 Scrollbar(
                   child: SingleChildScrollView(
                     child: GridView.count(
@@ -394,98 +569,120 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
                       shrinkWrap: true,
                       children: [
                         for (var product in products)
-                          Container(
-                            padding:
-                                EdgeInsets.only(left: 15, right: 15, top: 5),
-                            margin: EdgeInsets.symmetric(
-                                vertical: 3, horizontal: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFF4C53A5),
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: Text(
-                                        "buat diskon",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.favorite_border,
-                                      color: Colors.red,
-                                    )
-                                  ],
-                                ),
-                                InkWell(
-                                  onTap: () {},
-                                  child: Container(
-                                    margin: EdgeInsets.all(10),
-                                    child: AspectRatio(
-                                      aspectRatio:
-                                          1, // Set the aspect ratio as needed
-                                      child: Image.memory(
-                                        base64Decode(product!['image']),
-                                        fit: BoxFit
-                                            .cover, // Adjust how the image fills the space
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.only(bottom: 8),
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(product['productName'],
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Color(0xFF4C53A5),
-                                        fontWeight: FontWeight.bold,
-                                      )),
-                                ),
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    product['productDescription'],
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Color(0xFF4C53A5),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 10),
-                                  child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          product['price'].toString(),
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xFF4C53A5),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, '/catalogDetail',
+                                  arguments: product['idCatalog'] as String);
+                            },
+                            child: Container(
+                              padding:
+                                  EdgeInsets.only(left: 15, right: 15, top: 5),
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 3, horizontal: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pushNamed(
+                                              context, '/confirmOrder',
+                                              arguments: product['idCatalog']
+                                                  as String);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          padding: EdgeInsets.all(5),
+                                          primary: Color(0xFF4C53A5),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
                                           ),
                                         ),
-                                        Icon(
+                                        child: Text(
+                                          "Order Now",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  InkWell(
+                                    onTap: () {},
+                                    child: Container(
+                                      margin: EdgeInsets.all(10),
+                                      child: AspectRatio(
+                                        aspectRatio:
+                                            1, // Set the aspect ratio as needed
+                                        child: Image.memory(
+                                          base64Decode(product!['image']),
+                                          fit: BoxFit
+                                              .cover, // Adjust how the image fills the space
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.only(bottom: 8),
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(product['productName'],
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Color(0xFF4C53A5),
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      product['productDescription'],
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: Color(0xFF4C53A5),
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        product['price'].toString(),
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF4C53A5),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text('Added to cart'),
+                                              duration: Duration(seconds: 2),
+                                            ),
+                                          );
+                                          addToCart(
+                                              product['idCatalog'] as String);
+                                        },
+                                        child: Icon(
                                           Icons.shopping_cart_checkout,
                                           color: Colors.red,
-                                        )
-                                      ]),
-                                )
-                              ],
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                           )
                       ],
@@ -497,7 +694,6 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
           )
         ],
       ),
-      
     );
   }
 }

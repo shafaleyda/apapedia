@@ -12,4 +12,6 @@ public interface CartService {
     Optional<CartModel> getCartByUserId(UUID userId);
 
     CartModel updateCart(CartModel cart);
+
+    UUID getCartByIdUser(UUID idUser); 
 }
