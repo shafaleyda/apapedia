@@ -73,7 +73,7 @@ public class JwtService {
     }
 
     public String generateToken(User userDetails) {
-        System.out.println(token);
+        System.out.println("halo km disini " + token);
         token = generateToken(new HashMap<>(), userDetails);
         return generateToken(new HashMap<>(), userDetails);
     }

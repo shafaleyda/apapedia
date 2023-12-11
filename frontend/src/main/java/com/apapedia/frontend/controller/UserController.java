@@ -1,31 +1,39 @@
 package com.apapedia.frontend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.ui.Model;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.http.HttpResponse;
+import java.net.http.HttpRequest;
+import java.net.http.HttpClient;
 
 import com.apapedia.frontend.dto.RegisterSellerRequestDTO;
 import com.apapedia.frontend.model.SellerCategory;
 import com.google.gson.JsonObject;
 
-import java.net.http.HttpResponse;
-
-import java.net.http.HttpRequest;
-
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import java.net.http.HttpClient;
+
+import java.util.*; 
+import java.time.LocalDate;
 
 @Controller
 public class UserController {
+    String baseUrlCatalogue = "http://localhost:8082"; 
+    String baseUrlOrder = "http://localhost:8080"; 
+    String baseUrlUser = "http://localhost:8081"; 
 
     @GetMapping("/")
     public String registerForm(Model model) throws IOException, InterruptedException {
@@ -80,8 +88,7 @@ public class UserController {
     }
 
     @GetMapping("/dashboard/seller")
-    public String dashboardSeller(HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
-
+    public String dashboardSeller(Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
         // Retrieve cookies from the request
         Cookie[] cookies = httpServletRequest.getCookies();
 
@@ -93,17 +100,61 @@ public class UserController {
             if (!("jwtToken".equals(cookie.getName()))) {
                 continue;
             } else{
-                return "seller-viewall-catalog";
+                RestTemplate restTemplate = new RestTemplate();
+                String urlLogin = baseUrlUser + "/api/user/user-loggedin";
+
+                ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
+                //System.out.println(userLoggedIn);
+
+                if(userLoggedIn.getStatusCode().is2xxSuccessful()) { //User login
+                    ResponseEntity<Map<String, Object>> userResponse = restTemplate.exchange(
+                            urlLogin, HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, Object>>() {});
+                    Map<String, Object> responseBody = userResponse.getBody();
+                    UUID seller = UUID.fromString(responseBody.get("id").toString());
+
+                    String url = baseUrlCatalogue + "/api/catalog/seller/" + seller.toString();
+
+                    //Catalog
+                    List<Map<String, Object>> catalogData = restTemplate.getForObject(url, List.class);
+
+                    model.addAttribute("catalogData", catalogData);
+                    model.addAttribute("valid", Boolean.TRUE);
+
+                    //Chart
+                    String urlChart = baseUrlOrder + "/order/salesChart/" + seller.toString();
+                    ResponseEntity<Map<LocalDate, Integer>> response = restTemplate.exchange(
+                            urlChart,
+                            HttpMethod.GET,
+                            null,
+                            new ParameterizedTypeReference<Map<LocalDate, Integer>>() {}
+                    );
+
+                    if (response.getStatusCode().is2xxSuccessful()) {
+                        Map<LocalDate, Integer> mapTotalOrdersPerDay = response.getBody();
+                        Map<String, Integer> salesChartStringKeys = new HashMap<>();
+                        for (Map.Entry<LocalDate, Integer> entry : mapTotalOrdersPerDay.entrySet()) {
+                            String dateStringKey = entry.getKey().toString();
+                            salesChartStringKeys.put(dateStringKey, entry.getValue());
+                        }
+                        model.addAttribute("listCatalogChart", mapTotalOrdersPerDay);
+                    }
+                }
+                return "catalog/seller-viewall-catalog";
             }
         }
-
         return "user/access-denied.html";
     }
 
     @GetMapping("/dashboard/seller/guest")
-    public String dashboardSellerGuest() {
+    public String dashboardSellerGuest(Model model) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = baseUrlCatalogue + "/api/catalog/all";
 
-        return "user/dashboard-non-authenticated.html";
+        List<Map<String, Object>> catalogData = restTemplate.getForObject(url, List.class);
+
+        model.addAttribute("catalogData", catalogData);
+        model.addAttribute("valid", Boolean.TRUE);
+        return "catalog/guest-viewall-catalog";
     }
 
     @GetMapping("/failed-register")
