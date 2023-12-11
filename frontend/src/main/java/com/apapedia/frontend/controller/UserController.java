@@ -93,7 +93,7 @@ public class UserController {
             if (!("jwtToken".equals(cookie.getName()))) {
                 continue;
             } else{
-                return "user/dashboard-authenticated.html";
+                return "seller-viewall-catalog";
             }
         }
 

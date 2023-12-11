@@ -234,14 +234,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
 
 String getStatusText(int statusCode) {
   switch (statusCode) {
-    case 0:
-      return 'Menunggu konfirmasi';
-    case 1:
-      return 'Dikonfirmasi penjual';
-    case 2:
-      return 'Menunggu kurir';
-    case 3:
-      return 'Dalam perjalanan';
     case 4:
       return 'Barang diterima';
     case 5:
