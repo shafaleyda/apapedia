@@ -1,0 +1,113 @@
+version: '3.3'
+services:
+  user-service:
+    image: apap-registry.cs.ui.ac.id/abc/apap-xxx
+    restart: always
+    ports:
+      - "10086:8080"
+    volumes:
+      - ./file-storage:/file-storage
+      - ./log:/log
+    env_file:
+      - user/.env
+    depends_on:
+      - user-db
+    networks:
+      - backend-network
+
+  catalog-service:
+    image: apap-registry.cs.ui.ac.id/abc/apap-xxx
+    restart: always
+    ports:
+      - "10087:8080"
+    volumes:
+      - ./file-storage:/file-storage
+      - ./log:/log
+    env_file:
+      - catalog/.env
+    depends_on:
+      - catalog-db 
+    networks:
+      - frontend-network
+
+  order-service:
+    image: apap-registry.cs.ui.ac.id/abc/apap-xxx
+    restart: always
+    ports:
+      - "10088:8080"
+    volumes:
+      - ./file-storage:/file-storage
+      - ./log:/log
+    env_file:
+      - order/.env
+    depends_on:
+      - order-db
+    networks:
+      - backend-network
+    
+  frontend-service:
+    image: apap-registry.cs.ui.ac.id/abc/apap-xxx
+    restart: always
+    ports:
+      - "10089:8080"
+    volumes:
+      - ./file-storage:/file-storage
+      - ./log:/log
+    env_file:
+      - frontend/.env
+    depends_on:
+      - user-service
+      - catalog-service
+      - order-service
+    networks:
+      - backend-network
+
+  user-db:
+    image: postgres:14-alpine
+    ports:
+      - '15086:5432'
+    restart: 'no'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret99
+    volumes:
+      - user-db:/var/lib/postgresql/data
+    networks:
+      - backend-network
+
+  catalog-db:
+    image: postgres:14-alpine
+    ports:
+      - '15087:5432'
+    restart: 'no'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret99
+    volumes:
+      - catalog-db:/var/lib/postgresql/data
+    networks:
+      - backend-network
+
+  order-db:
+    image: postgres:14-alpine
+    ports:
+      - '15088:5432'
+    restart: 'no'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret99
+    volumes:
+      - order-db:/var/lib/postgresql/data
+    networks:
+      - backend-network
+
+volumes:
+  user-db:
+  catalog-db:
+  order-db:
+
+networks:
+  frontend-network:
+    driver: bridge
+  backend-network:
+    driver: bridge
