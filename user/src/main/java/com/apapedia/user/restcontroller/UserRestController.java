@@ -46,6 +46,7 @@ public class UserRestController {
 
     @GetMapping("/user-loggedin")
     private User getUserLoggedIn() {
+        System.out.println("sini");
         User user = userRestService.getUserLoggedIn();
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There are no users logged in");
