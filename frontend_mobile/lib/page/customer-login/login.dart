@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_mobile/common/cookie_request.dart';
 import 'package:frontend_mobile/main.dart';
+import 'package:frontend_mobile/page/catalogue/catalogHome.dart';
 import 'package:frontend_mobile/page/customer-login/register.dart';
 import 'package:frontend_mobile/page/home.dart';
 import 'package:frontend_mobile/page/profile/customer.dart';
@@ -124,7 +125,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Text("Halo, Login dulu untuk lihat-lihat produk!",
+                        const Text("Halo, Yuk login!",
                             style: TextStyle(
                               fontSize: 24,
                             )),
@@ -275,7 +276,31 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                             ))
                       ],
                     ),
-                  )
+                  ),
+                  const SizedBox(height: 20), // Tambahkan jarak di sini
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      fixedSize:
+                          Size(MediaQuery.of(context).size.width * 0.8, 50),
+                      backgroundColor:
+                          Colors.grey, // Sesuaikan warna dengan kebutuhan
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CatalogHome(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Login as Guest',
+                      style: TextStyle(fontSize: 20, color: Colors.black),
+                    ),
+                  ),
                 ],
               ),
             ),
