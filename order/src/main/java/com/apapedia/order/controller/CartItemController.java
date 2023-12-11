@@ -42,4 +42,30 @@ public class CartItemController {
         return cartItemModel;
     }
 
+    @PutMapping(value = "/cart/{id}/update")
+    private CartItemModel updateCartItem(@Valid @RequestBody UpdateCartItemRequestDTO cartItemRequestDTO, @PathVariable(value = "id") UUID cartId){
+        CartItemModel cartItemModel = cartItemMapper.updateCartItemRequestDTOToCartItemModel(cartItemRequestDTO);
+        CartModel cartModel = cartService.getCartById(cartId);
+        CartItemModel cartItemModelToUpdate = cartItemService.getCartItemById(cartItemModel.getId());
+        cartItemModelToUpdate.setQuantity(cartItemModel.getQuantity());
+        cartItemModelToUpdate = cartItemService.updateCartItem(cartItemModelToUpdate);
+        cartService.updateCart(cartModel);
+        return cartItemModelToUpdate;
+    }
+
+    @GetMapping(value = "cart/customer/{user_id}")
+    private List<CartItemModel> getCartByUserId(@PathVariable(value = "user_id") UUID userId){
+        var cart = cartService.getCartByUserId(userId);
+        List<CartItemModel> cartItems = cart.get().getListCartItem();
+        return cartItems;
+    }
+
+    @DeleteMapping(value = "/cart/{id}/delete")
+    private void deleteCartItem(@PathVariable(value = "id") UUID id, @RequestBody DeleteCartItemDTO deleteCartItemDTO){
+        CartModel cartModel = cartService.getCartById(id);
+        CartItemModel cartItemModel = cartItemService.getCartItemById(deleteCartItemDTO.getCartItemId());
+        cartModel.getListCartItem().remove(cartItemModel);
+        cartService.updateCart(cartModel);
+        cartItemService.deleteCartItem(cartItemModel);
+    }
 }
