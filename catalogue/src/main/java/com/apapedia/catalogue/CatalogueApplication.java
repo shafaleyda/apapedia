@@ -31,6 +31,7 @@ import com.apapedia.catalogue.restservice.CategoryRestService;
 //@ComponentScan(basePackages = "com.apapedia.catalogue")
 public class CatalogueApplication {
 
+	
 	public static void main(String[] args) {
 		SpringApplication.run(CatalogueApplication.class, args);
 	}
@@ -39,45 +40,54 @@ public class CatalogueApplication {
 	@Transactional
 	CommandLineRunner run (CatalogRestService catalogRestService, CategoryRestService categoryRestService) {
 		return args -> {
-			Random random = new Random();
-			var faker = new Faker(new Locale("in-ID"));
-			int minPrice = 10;
-			int maxPrice = 100;
-
 			List<String> categoryNameList = Arrays.asList("Aksesoris Fashion", "Buku & Alat Tulis", "Elektronik",
 					"Fashion Bayi & Anak", "Fashion Muslim", "Fotografi",
 					"Hobi & Koleksi", "Jam Tangan", "Perawatan & Kecantikan",
 					"Makanan & Minuman", "Otomotif", "Perlengkapan Rumah", "Souvenir & Party Supplies");
 
-			//
-			for (int i = 0; i <= 12; i++){
+			if (categoryRestService.retrieveAllCategory().size() < 1) {
+				for (int i = 0; i <= 12; i++){
 				var category = new Category();
 				var categoryName = categoryNameList.get(i);
 				category.setCategoryName(categoryName);
 				categoryRestService.saveCategory(category);
+				}
 			}
-
+			
 			//Faker Catalog
-			for (int i = 0; i <= 9; i++){
-				var catalog = new Catalog();
+			// for (int i = 0; i <= 9; i++){
+			// 	var catalog = new Catalog();
 
-				var price = random.nextInt((maxPrice - minPrice) + 1) + minPrice;
-				var productName = faker.commerce().productName();
-				var productDescription = faker.commerce().material();
+			// 	var price = random.nextInt((maxPrice - minPrice) + 1) + minPrice;
+			// 	var productName = faker.commerce().productName();
+			// 	var productDescription = faker.commerce().material();
 
-				List<Category> listCategory = categoryRestService.retrieveAllCategory();
-				int randomIndex = random.nextInt(listCategory.size());
-				var category = listCategory.get(randomIndex);
-				var stock = random.nextInt(100);
+			// 	List<Category> listCategory = categoryRestService.retrieveAllCategory();
+			// 	int randomIndex = random.nextInt(listCategory.size());
+			// 	var category = listCategory.get(randomIndex);
+			// 	var stock = random.nextInt(100);
 
-				catalog.setSeller(UUID.randomUUID());
-				catalog.setPrice(price);
-				catalog.setProductName(productName);
-				catalog.setProductDescription(productDescription);
-				catalog.setCategory(category);
-				catalog.setStock(stock);
-				catalogRestService.saveCatalog(catalog);
-			}
+			// 	catalog.setSeller(UUID.randomUUID());
+			// 	catalog.setPrice(price);
+			// 	catalog.setProductName(productName);
+			// 	catalog.setProductDescription(productDescription);
+			// 	catalog.setCategory(category);
+			// 	catalog.setStock(stock);
+
+			// 	try {
+			// 		byte[] imageData = imageUrl.openStream().readAllBytes();
+			// 		String fileName = StringUtils.cleanPath(Paths.get(imageUrl.getPath()).getFileName().toString());
+			// 		if(fileName.contains(".."))
+			// 		{
+			// 			System.out.println("not a a valid file");
+			// 		}
+			// 		catalog.setImage(Base64.getEncoder().encodeToString(imageData));
+			// 	} catch (IOException e) {
+			// 		e.printStackTrace();
+			// 	}
+			// 	catalogRestService.saveCatalog(catalog);
+
+			// }
 
 		};
 	}

@@ -1,7 +1,6 @@
 package com.apapedia.user.user;
 
-import java.util.UUID;
-
+import com.apapedia.user.model.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

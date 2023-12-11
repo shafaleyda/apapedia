@@ -14,5 +14,5 @@ import lombok.NoArgsConstructor;
 public class UpdateOrderRequestDTO extends CreateOrderRequestDTO{
     private UUID id;
 
-    private Integer status;
+    private int status;
 }

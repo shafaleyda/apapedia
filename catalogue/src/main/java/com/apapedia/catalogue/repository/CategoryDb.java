@@ -7,7 +7,7 @@ import com.apapedia.catalogue.model.Category;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface CategoryDb extends JpaRepository<Category, UUID> {
+public interface CategoryDb extends JpaRepository<Category, Integer> {
 
     Optional<Category> findByIdCategory(Integer id);
 
