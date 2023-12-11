@@ -67,7 +67,7 @@ class CatalogHome extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF4C3A5),
+                      color: Colors.black,
                     ),
                   ),
                 ),
@@ -82,7 +82,7 @@ class CatalogHome extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF4C3A5),
+                      color: Colors.black,
                     ),
                   ),
                 ),

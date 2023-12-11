@@ -36,6 +36,7 @@ public class SecurityConfig {
 
 
         //USER SERVICE
+        "/**",
         "/",
         "/api/authentication/**",
         "/api/auth/**",
@@ -49,6 +50,7 @@ public class SecurityConfig {
         "/register/seller",
         "/api/catalog/view-all-by-name",
         "/api/catalog/all",
+        "/api/user/**"
     };
 
     

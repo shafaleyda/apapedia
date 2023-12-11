@@ -1,13 +1,52 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class CategoriesWidget extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+class CategoriesWidget extends StatefulWidget {
+  @override
+  _CategoriesWidgetState createState() => _CategoriesWidgetState(); 
+}
+
+class _CategoriesWidgetState extends State<CategoriesWidget> {
+  List<dynamic> categories = [];
+  
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData(); // Fetch data when the widget initializes
+  }
+
+  Future<void> fetchData() async {
+    String urlCatalog = "http://localhost:8082";
+    try {
+      final response = await http.get(Uri.parse('$urlCatalog/api/category/view-all'));
+      if (response.statusCode == 200) {
+        setState(() {
+          categories = json.decode(response.body); // Store the fetched products
+        });
+        categories.asMap().forEach((index, value) {
+          print("Index $index: $value['categoryName']");
+        });
+      } else {
+        // Handle errors if any
+        print("Failed to fetch data");
+      }
+    } catch (error) {
+      // Handle exceptions
+      print("Error: $error");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          for (int i=1; i < 8; i++)
+          for (var category in categories)
           Container(
             margin: EdgeInsets.symmetric(horizontal: 10),
             padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -18,17 +57,12 @@ class CategoriesWidget extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset(
-                  "images/image1.png",
-                  width: 40,
-                  height: 40,
-                ),
                 Text(
-                  "Product Name",
+                 category['categoryName'],
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: Color(0xFF4C3A5), 
+                    color: Colors.black, 
                   ),
                 )
               ],
@@ -39,3 +73,5 @@ class CategoriesWidget extends StatelessWidget {
     );
   }
 }
+
+  

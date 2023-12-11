@@ -1,5 +1,8 @@
 package com.apapedia.frontend.controller;
 
+import jakarta.servlet.http.Cookie;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpMethod;
@@ -8,73 +11,91 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import jakarta.servlet.http.HttpServletRequest;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 @Controller
 public class CatalogController {
+    @Autowired
+    UserController userController; 
 
     String baseUrlCatalogue = "http://localhost:8082"; 
     String baseUrlOrder = "http://localhost:8080"; 
     String baseUrlUser = "http://localhost:8081"; 
 
     //Guest - View All
-    @GetMapping("/catalog/viewall-guest")
-    public String viewAllCatalog(Model model){
-        RestTemplate restTemplate = new RestTemplate();
-        String url = baseUrlCatalogue + "/api/catalog/all";
+    // @GetMapping("/catalog/viewall-guest")
+    // public String viewAllCatalog(Model model){
+    //     RestTemplate restTemplate = new RestTemplate();
+    //     String url = baseUrlCatalogue + "/api/catalog/all";
 
-        List<Map<String, Object>> catalogData = restTemplate.getForObject(url, List.class);
+    //     List<Map<String, Object>> catalogData = restTemplate.getForObject(url, List.class);
 
-        model.addAttribute("catalogData", catalogData);
-        model.addAttribute("valid", Boolean.TRUE);
-        return "guest-viewall-catalog";
-    }
+    //     model.addAttribute("catalogData", catalogData);
+    //     model.addAttribute("valid", Boolean.TRUE);
+    //     return "catalog/guest-viewall-catalog";
+    // }
 
     //Seller - View All
-    @GetMapping("/catalog/viewall-seller")
-    public String sellerViewAllCatalog(Model model){
-        RestTemplate restTemplate = new RestTemplate();
-        String urlLogin = baseUrlUser + "/api/user/user-loggedin";
+    // @GetMapping("/catalog/viewall-seller")
+    // public String sellerViewAllCatalog(Model model, HttpServletRequest httpServletRequest){
+    //     // Retrieve cookies from the request
+    //     Cookie[] cookies = httpServletRequest.getCookies();
 
-        ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class); 
-        //System.out.println(userLoggedIn);
+    //     if (cookies == null) {
+    //         return "user/access-denied.html";
+    //     }
 
-        if(userLoggedIn.getStatusCode().is2xxSuccessful()) { //User login
-            ResponseEntity<Map<String, Object>> userResponse = restTemplate.exchange(
-                                                                urlLogin, HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, Object>>() {});
-            Map<String, Object> responseBody = userResponse.getBody();
-            UUID seller = UUID.fromString(responseBody.get("id").toString()); 
-            
-            String url = baseUrlCatalogue + "/api/catalog/seller/" + seller.toString();
+    //     for (Cookie cookie : cookies) {
+    //         if (!("jwtToken".equals(cookie.getName()))) {
+    //             continue;
+    //         } else{
+    //             RestTemplate restTemplate = new RestTemplate();
+    //             String urlLogin = baseUrlUser + "/api/user/user-loggedin";
 
-            //Catalog
-            List<Map<String, Object>> catalogData = restTemplate.getForObject(url, List.class);
+    //             ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
+    //             //System.out.println(userLoggedIn);
 
-            model.addAttribute("catalogData", catalogData);
-            model.addAttribute("valid", Boolean.TRUE);
+    //             if(userLoggedIn.getStatusCode().is2xxSuccessful()) { //User login
+    //                 ResponseEntity<Map<String, Object>> userResponse = restTemplate.exchange(
+    //                         urlLogin, HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, Object>>() {});
+    //                 Map<String, Object> responseBody = userResponse.getBody();
+    //                 UUID seller = UUID.fromString(responseBody.get("id").toString());
 
-            //Chart
-            String urlChart = baseUrlOrder + "/order/salesChart/" + seller.toString(); 
-            ResponseEntity<Map<LocalDate, Integer>> response = restTemplate.exchange(
-                    urlChart,
-                    HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<Map<LocalDate, Integer>>() {}
-            );
+    //                 String url = baseUrlCatalogue + "/api/catalog/seller/" + seller.toString();
 
-            if (response.getStatusCode().is2xxSuccessful()) {
-                Map<LocalDate, Integer> mapTotalOrdersPerDay = response.getBody();
-                Map<String, Integer> salesChartStringKeys = new HashMap<>();
-                for (Map.Entry<LocalDate, Integer> entry : mapTotalOrdersPerDay.entrySet()) {
-                    String dateStringKey = entry.getKey().toString();
-                    salesChartStringKeys.put(dateStringKey, entry.getValue());
-                }
-                model.addAttribute("listCatalogChart", mapTotalOrdersPerDay);
-            }
-        } 
-        return "seller-viewall-catalog";
-    }
+    //                 //Catalog
+    //                 List<Map<String, Object>> catalogData = restTemplate.getForObject(url, List.class);
+
+    //                 model.addAttribute("catalogData", catalogData);
+    //                 model.addAttribute("valid", Boolean.TRUE);
+
+    //                 //Chart
+    //                 String urlChart = baseUrlOrder + "/order/salesChart/" + seller.toString();
+    //                 ResponseEntity<Map<LocalDate, Integer>> response = restTemplate.exchange(
+    //                         urlChart,
+    //                         HttpMethod.GET,
+    //                         null,
+    //                         new ParameterizedTypeReference<Map<LocalDate, Integer>>() {}
+    //                 );
+
+    //                 if (response.getStatusCode().is2xxSuccessful()) {
+    //                     Map<LocalDate, Integer> mapTotalOrdersPerDay = response.getBody();
+    //                     Map<String, Integer> salesChartStringKeys = new HashMap<>();
+    //                     for (Map.Entry<LocalDate, Integer> entry : mapTotalOrdersPerDay.entrySet()) {
+    //                         String dateStringKey = entry.getKey().toString();
+    //                         salesChartStringKeys.put(dateStringKey, entry.getValue());
+    //                     }
+    //                     model.addAttribute("listCatalogChart", mapTotalOrdersPerDay);
+    //                 }
+    //             }
+    //             return "catalog/seller-viewall-catalog";
+    //         }
+    //     }
+    //     return "user/access-denied.html";
+    // }
 
     //Guest - Find By Name
     @GetMapping("/catalog/find-by-name")
@@ -95,15 +116,15 @@ public class CatalogController {
                 model.addAttribute("valid", Boolean.FALSE);
                 model.addAttribute("error", "Tidak ada produk yang sesuai pencarian Anda.");
             }
-            return "guest-viewall-catalog";
+            return "catalog/guest-viewall-catalog";
         } else {
-            return viewAllCatalog(model);
+            return userController.dashboardSellerGuest(model);
         }
     }
 
     //Seller - Find By Name
     @GetMapping("/catalog/find-by-name-seller")
-    public String sellerViewAllCatalogByName(@RequestParam(name = "name", required = false)String name, Model model){
+    public String sellerViewAllCatalogByName(@RequestParam(name = "name", required = false)String name, Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException{
         if (name.length() > 0) {
             RestTemplate restTemplate = new RestTemplate();
             
@@ -153,9 +174,9 @@ public class CatalogController {
                     model.addAttribute("listCatalogChart", mapTotalOrdersPerDay);
                 }
             }
-            return "seller-viewall-catalog";
+            return "catalog/seller-viewall-catalog";
         } else {
-            return sellerViewAllCatalog(model);
+            return userController.dashboardSeller(model, httpServletRequest);
         }
     }
 
@@ -177,7 +198,7 @@ public class CatalogController {
                     model.addAttribute("minPrice", minPrice);
                     model.addAttribute("maxPrice", maxPrice);
                 }
-                return "guest-viewall-catalog";
+                return "catalog/guest-viewall-catalog";
             }
 
             String url = baseUrlCatalogue + "/api/catalog/view-all-by-price?minPrice=" + minPrice + "&maxPrice=" + maxPrice;
@@ -194,9 +215,9 @@ public class CatalogController {
             model.addAttribute("minPrice", minPrice);
             model.addAttribute("maxPrice", maxPrice);
 
-            return "guest-viewall-catalog";
+            return "catalog/guest-viewall-catalog";
         } else {
-            return viewAllCatalog(model);
+            return userController.dashboardSellerGuest(model);
         }
     }
 
@@ -204,7 +225,7 @@ public class CatalogController {
     @GetMapping("/catalog/price-range-seller")
     public String sellerViewAllCatalogByPrice(@RequestParam(name = "minPrice", required = false)String minPrice,
                                         @RequestParam(name = "maxPrice", required = false)String maxPrice,
-                                        Model model){
+                                        Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException{
         if (!(minPrice.isEmpty()) && !(maxPrice.isEmpty())) {
             RestTemplate restTemplate = new RestTemplate();
             
@@ -249,7 +270,7 @@ public class CatalogController {
                         model.addAttribute("minPrice", minPrice);
                         model.addAttribute("maxPrice", maxPrice);
                     }
-                    return "seller-viewall-catalog";
+                    return "catalog/seller-viewall-catalog";
                 }
 
                 String url = baseUrlCatalogue + "/api/catalog/seller-view-all-by-price?minPrice=" + minPrice + "&maxPrice=" + maxPrice;
@@ -266,10 +287,10 @@ public class CatalogController {
                 model.addAttribute("minPrice", minPrice);
                 model.addAttribute("maxPrice", maxPrice);
 
-                return "seller-viewall-catalog";
+                return "catalog/seller-viewall-catalog";
             }
         } else {
-            return sellerViewAllCatalog(model);
+            return userController.dashboardSeller(model, httpServletRequest);
         }
         return null;
     }
@@ -290,9 +311,9 @@ public class CatalogController {
 
             model.addAttribute("sortField", sortField);
             model.addAttribute("sortDirection", sortDirection);
-            return "guest-viewall-catalog";
+            return "catalog/guest-viewall-catalog";
         } else {
-            return viewAllCatalog(model);
+            return userController.dashboardSellerGuest(model);
         }
     }
 
@@ -300,7 +321,7 @@ public class CatalogController {
     @GetMapping("/catalog/sort-by-seller")
     public String sellerSortAllCatalog(@RequestParam(defaultValue = "productName") String sortField,
                                  @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection,
-                                 Model model){
+                                 Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException{
         RestTemplate restTemplate = new RestTemplate();
 
         if (sortField != null && sortDirection != null) {
@@ -343,11 +364,11 @@ public class CatalogController {
                 
                 model.addAttribute("sortField", sortField);
                 model.addAttribute("sortDirection", sortDirection);
-                return "seller-viewall-catalog";
+                return "catalog/seller-viewall-catalog";
             }
 
         } else {
-            return sellerViewAllCatalog(model);
+            return userController.dashboardSeller(model, httpServletRequest);
         }
         return null;
     }
