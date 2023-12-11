@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 import com.apapedia.order.dto.OrderMapper;
 import com.apapedia.order.dto.request.CreateOrderRequestDTO;
@@ -36,6 +37,8 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 @RestController
+@CrossOrigin
+@RequiredArgsConstructor
 public class OrderController {
     @Autowired
     OrderItemService orderItemService;
@@ -60,7 +63,7 @@ public class OrderController {
             Product product = productMockService.getProductById(productId).block();
 
             //Use this to check if automatically create new order model
-            product.setSeller(UUID.randomUUID());
+            //product.setSeller(UUID.randomUUID());
 
             //Check if order already exist
             OrderModel order = null;

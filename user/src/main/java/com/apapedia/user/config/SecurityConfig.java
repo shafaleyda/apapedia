@@ -34,7 +34,6 @@ public class SecurityConfig {
     
     private static final String[] WHITE_LIST_URL = {
         // // Disini buat tambahin url yg gaperlu otentifikasi
-        "/**",
 
         //USER SERVICE
         "/",
