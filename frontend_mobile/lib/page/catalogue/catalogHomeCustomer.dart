@@ -1,26 +1,31 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:frontend_mobile/service/auth_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 // ignore: duplicate_import
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 
-class CatalogHome extends StatefulWidget {
+class CatalogHomeCustomer extends StatefulWidget {
   @override
-  _CatalogHomeState createState() => _CatalogHomeState();
+  _CatalogHomeCustomerState createState() => _CatalogHomeCustomerState();
 }
 
-class _CatalogHomeState extends State<CatalogHome> {
+class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
   List<dynamic> categories = [];
   List<dynamic> products = [];
   List<String> categoryNames = [];
   bool isWrappedVisible = false;
+  
 
   @override
   void initState() {
     super.initState();
-    fetchCategories();
-    fetchCatalog();
+    _getToken(); 
+    // fetchCategories();
+    // fetchCatalog();
     isWrappedVisible = false;
   }
 
@@ -29,6 +34,19 @@ class _CatalogHomeState extends State<CatalogHome> {
   TextEditingController maxPriceController = TextEditingController();
   String? selectedSortValue;
   String urlCatalog = "http://localhost:8082";
+
+  Future<void> _getToken() async {
+    AuthService authService = AuthService(); 
+    String? token = await authService.getTokenFromStorage(); 
+
+    print("token: $token"); 
+    if (token != null) {
+      fetchCatalog(); 
+      fetchCategories(); 
+    } else {
+      print("Token not found"); 
+    }
+  }
 
   Future<void> fetchCategories() async {
     try {
@@ -41,9 +59,9 @@ class _CatalogHomeState extends State<CatalogHome> {
               .map((category) => category['categoryName'].toString())
               .toList();
         });
-        categories.asMap().forEach((index, value) {
-          print("Index $index: $value['categoryName']");
-        });
+        // categories.asMap().forEach((index, value) {
+        //   print("Index $index: $value['categoryName']");
+        // });
       } else {
         // Handle errors if any
         print("Failed to fetch data");

@@ -207,7 +207,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    ProfilePage()),
+                                                    HomePage()),
                                           );
                                         } else {
                                           showDialog(
