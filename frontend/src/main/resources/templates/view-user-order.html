@@ -50,7 +50,7 @@
 </head>
 
 <body>
-  <nav th:replace="~{fragments/navbar :: navbar(activePage='order')}"></nav>
+  <nav th:replace="~{fragments/navbar-seller :: navbar(activePage='order')}"></nav>
   <div class="container">
     <div class="text-center pt-5">
       <h2>Order History</h2>
@@ -86,13 +86,14 @@
                           <option value="1">Dikonfirmasi penjual</option>
                           <option value="2">Menunggu kurir</option>
                           <option value="3">Dalam perjalanan</option>
-                          <option value="4">Barang diterima</option>
-                          <option value="5">Selesai</option>
                       </select>
                   </h6>
                   <div class="buttons">
                     <div th:if="${orderDetails['order']['status'] == 5}">
                       <button type="submit" class="btn btn-sm btn-danger" disabled>Selesai</button>
+                    </div>
+                    <div th:if="${orderDetails['order']['status'] == 4}">
+                      <button type="submit" class="btn btn-sm btn-danger" disabled>Barang diterima</button>
                     </div>
                     <div th:unless="${orderDetails['order']['status'] == 5}">
                       <button type="submit" class="btn btn-sm btn-primary">Update Order Status</button>
