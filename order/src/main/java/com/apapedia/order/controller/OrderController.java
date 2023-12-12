@@ -38,7 +38,6 @@ import java.util.Hashtable;
 
 @RestController
 @CrossOrigin
-@RequiredArgsConstructor
 public class OrderController {
     @Autowired
     OrderItemService orderItemService;
