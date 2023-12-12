@@ -19,6 +19,7 @@ import com.apapedia.order.service.ProductService;
 
 @CrossOrigin
 @RestController
+@CrossOrigin
 public class CartItemController {
     @Autowired
     CartItemMapper cartItemMapper;

@@ -14,6 +14,7 @@ import java.util.UUID;
 
 @CrossOrigin
 @RestController
+@CrossOrigin
 public class CartController {
     @Autowired
     CartMapper cartMapper;

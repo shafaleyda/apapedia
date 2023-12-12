@@ -3,6 +3,7 @@ import 'package:frontend_mobile/common/cookie_request.dart';
 import 'package:frontend_mobile/main.dart';
 import 'package:frontend_mobile/page/home.dart';
 import 'package:frontend_mobile/page/profile/customer.dart';
+import 'package:frontend_mobile/service/auth_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -14,6 +15,18 @@ class OrderHistoryPage extends StatefulWidget {
 }
 
 class _OrderHistoryPageState extends State<OrderHistoryPage> {
+
+  Future<List<Map<String, dynamic>>> _checkTokenAndFetchData() async {
+    AuthService authService = AuthService();
+    String? token = await authService.getTokenFromStorage();
+
+    if (token != null) {
+      return fetchCustomerOrderHistory();
+    } else {
+      return [];
+    }
+  }
+
   Future<Map<String, dynamic>> fetchLoggedInUser() async {
     try {
       var url = Uri.parse('http://localhost:8081/api/user/user-loggedin');
@@ -74,7 +87,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
       print('Error: $error');
     }
 
-    // Return an empty list if there's an error or no data
     return [];
   }
 
@@ -118,7 +130,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     }
   }
 
-  int selectedStatus = 0;
   List<int> selectedStatusList = [];
 
   @override
@@ -126,26 +137,26 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     return Scaffold(
       body: Container(
         child: FutureBuilder<List<Map<String, dynamic>>>(
-          future: fetchCustomerOrderHistory(),
+          future: _checkTokenAndFetchData(),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.none || snapshot.connectionState == ConnectionState.waiting) {
+            if (snapshot.connectionState == ConnectionState.none ||
+                snapshot.connectionState == ConnectionState.waiting) {
               return Center(
                 child: CircularProgressIndicator(),
               );
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-               return Center(
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
                       child: Container(
-                        width: 250,
                         decoration: BoxDecoration(
                           color: Color.fromARGB(208, 255, 237, 210),
                           borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         ),
                         padding: EdgeInsets.all(8.0),
-                        child: Center(  // Center the text horizontally and vertically
+                        child: Center(
                           child: Text(
                             "Make your first order!",
                             style: TextStyle(
@@ -164,7 +175,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
               return Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.fromLTRB(16.0, 32.0, 16.0, 12.0),
                     child: Text(
                       "Order History",
                       style: TextStyle(
@@ -182,75 +193,93 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                           selectedStatusList.add(0);
                         }
                         return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              side: BorderSide(color: Colors.blue),
-                            ),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  for (var orderItem in orderDetails['listOrderItem'])
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                            'Item ${orderDetails['listOrderItem'].indexOf(orderItem) + 1}'),
-                                        Text(
-                                            'Product name: ${orderItem['productName']}'),
-                                        Text('Quantity: ${orderItem['quantity']}'),
-                                        SizedBox(height: 8.0),
-                                      ],
-                                    ),
-                                  Text(
-                                      'Product total price: ${orderDetails['order']['totalPrice']}'),
-                                  SizedBox(height: 8.0),
-                                  Text(
-                                    'Order status: ${getStatusText(orderDetails['order']['status'])}',
-                                    style: TextStyle(color: Colors.blue),
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  Row(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Align(
+                            alignment: Alignment.topCenter,
+                            child: SizedBox(
+                              width: 600, 
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Container(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('Select status:'),
-                                      SizedBox(width: 8.0),
-                                      DropdownButton<int>(
-                                        value: selectedStatusList[index],
-                                        items: List.generate(
-                                          2,
-                                          (dropIndex) => DropdownMenuItem<int>(
-                                            value: dropIndex,
-                                            child: Text(getStatusText(dropIndex, forDropdown: true)),
-                                          ),
+                                      for (var orderItem
+                                          in orderDetails['listOrderItem'])
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                'Item ${orderDetails['listOrderItem'].indexOf(orderItem) + 1}'),
+                                            Text(
+                                                'Product name: ${orderItem['productName']}'),
+                                            Text(
+                                                'Quantity: ${orderItem['quantity']}'),
+                                            SizedBox(height: 8.0),
+                                          ],
                                         ),
-                                        onChanged: (value) {
-                                          setState(() {
-                                            selectedStatusList[index] = value!;
-                                          });
-                                        },
+                                      Text(
+                                          'Product total price: ${orderDetails['order']['totalPrice']}'),
+                                      SizedBox(height: 8.0),
+                                      Text(
+                                        'Order status: ${getStatusText(orderDetails['order']['status'])}',
+                                        style: TextStyle(color: Colors.blue),
                                       ),
+                                      SizedBox(height: 8.0),
+                                      Row(
+                                        children: [
+                                          Text('Update status:'),
+                                          SizedBox(width: 6.0),
+                                          DropdownButton<int>(
+                                            value: selectedStatusList[index],
+                                            items: List.generate(
+                                              2,
+                                              (dropIndex) => DropdownMenuItem<int>(
+                                                value: dropIndex,
+                                                child: Text(getStatusText(
+                                                    dropIndex,
+                                                    forDropdown: true)),
+                                              ),
+                                            ),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedStatusList[index] =
+                                                    value!;
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Center(
+                                        child: ElevatedButton(
+                                          onPressed:
+                                              orderDetails['order']['status'] == 5
+                                                  ? null
+                                                  : () async {
+                                                      String result =
+                                                          await updateStatus(
+                                                              orderDetails['order']
+                                                                  ['id'],
+                                                              selectedStatusList[
+                                                                  index]);
+                                                      print(result);
+                                                      setState(() {});
+                                                    },
+                                          child: orderDetails['order']['status'] == 5
+                                              ? Text('Selesai',
+                                                  style: TextStyle(
+                                                      color: Colors.red))
+                                              : Text('Update Order Status'),
+                                        ),
+                                      )
                                     ],
                                   ),
-                                  SizedBox(height: 8.0),
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      if (orderDetails['order']['status'] != 5) {
-                                        String result = await updateStatus(
-                                            orderDetails['order']['id'],
-                                            selectedStatusList[index]);
-                                        print(result);
-                                        setState(() {});
-                                      }
-                                    },
-                                    child: orderDetails['order']['status'] == 5
-                                        ? Text('Selesai')
-                                        : Text('Update Order Status'),
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
                           ),
@@ -298,4 +327,3 @@ String getStatusText(int statusCode, {bool forDropdown = false}) {
     }
   }
 }
-
