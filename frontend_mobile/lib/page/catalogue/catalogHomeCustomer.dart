@@ -23,7 +23,8 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
   String urlCatalog = "http://localhost:8082";
   String urlOrder = "http://localhost:8080";
   String urlUser = "http://localhost:8081";
-  String? idCart = null; 
+  String? idCart = null;
+  bool productStockExist = false;
 
   @override
   void initState() {
@@ -116,6 +117,7 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
                           String productName = productNameController.text;
                           filterCatalogByProductName(productName);
                           Navigator.pop(context);
+                          productNameController.clear();
                           //productNameController.dispose();
                         },
                         child: Text('Search'),
@@ -180,6 +182,8 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
                           int maxPriceInt = int.parse(maxPrice);
                           filterCatalogByProductPrice(minPriceInt, maxPriceInt);
                           Navigator.pop(context);
+                          minPriceController.clear();
+                          maxPriceController.clear();
                         },
                         child: Text('Search'),
                       ),
@@ -239,7 +243,6 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
   void filterCatalogByProductName(String productName) {
     print("FILTER BY PRODUCT NAME");
 
-    String urlCatalog = "http://localhost:8082";
     String urlFilterByProductName =
         '$urlCatalog/api/catalog/view-all-by-name?name=$productName';
 
@@ -262,7 +265,6 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
   void filterCatalogByProductPrice(int minPrice, int maxPrice) {
     print("FILTER BY PRODUCT PRICE");
 
-    String urlCatalog = "http://localhost:8082";
     String urlFilterByProductPrice =
         '$urlCatalog/api/catalog/view-all-by-price?minPrice=$minPrice&maxPrice=$maxPrice';
     print(urlFilterByProductPrice);
@@ -285,7 +287,6 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
   void sortCatalog(String sortField, String sortDirection) {
     print("FILTER BY PRODUCT PRICE");
 
-    String urlCatalog = "http://localhost:8082";
     String urlSort =
         '$urlCatalog/api/catalog/view-all-sort-by?sortField=$sortField&sortDirection=$sortDirection';
     print(urlSort);
@@ -306,7 +307,6 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
   }
 
   Future<void> fetchCatalog() async {
-    String urlCatalog = "http://localhost:8082";
     try {
       final response = await http.get(Uri.parse('$urlCatalog/api/catalog/all'));
       if (response.statusCode == 200) {
@@ -346,22 +346,23 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
     }
   }
 
-  Future<bool> checkIfCartExists(String userId) async {
-    final String apiUrl = '$urlOrder/cart/customer/$userId'; 
+  Future<bool> checkIfCartExists(String? userId) async {
+    final String apiUrl = '$urlOrder/cart/customer/$userId';
     print(apiUrl);
     try {
       final response = await http.get(Uri.parse(apiUrl));
-
       if (response.statusCode == 200) {
-        if(idCart == null) {
-          final String urlGetCartId = '$urlOrder/cart/get-user/$userId'; 
+        if (idCart == null) {
+          //Punya cart, tapi baru login
+          final String urlGetCartId = '$urlOrder/cart/get-user/$userId';
           final cartIdFromApi = await http.get(Uri.parse(urlGetCartId));
-          idCart = json.decode(cartIdFromApi.body) as String; 
+          idCart = json.decode(cartIdFromApi.body) as String;
         }
         return true;
       } else if (response.statusCode == 404) {
         return false;
       } else {
+        //Belum punya cart
         print('Failed to check cart existence: ${response.statusCode}');
         final String urlCreateCart = '$urlOrder/cart/create';
         final Map<String, dynamic> requestData = {
@@ -435,6 +436,35 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
       // Handle errors if the future throws an exception
       print('Error fetching user ID: $error');
     });
+  }
+
+  Future<bool> checkStock(String idProduct) async {
+    String urlGetProduct = '$urlCatalog/api/catalog/$idProduct';
+    print(urlGetProduct);
+
+    try {
+      final response = await http.get(Uri.parse(urlGetProduct));
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> productData = json.decode(response.body);
+        int productStock = productData['stock'];
+
+        print("Product stock $productStock");
+
+        if (productStock <= 0) {
+          return false; // Product out of stock
+        } else {
+          return true; // Product in stock
+        }
+      } else {
+        print('Failed to load products: ${response.statusCode}');
+        return false; // Return false for any other status code
+      }
+    } catch (error) {
+      // Handle any error that might occur during the HTTP request
+      print('Error loading products: $error');
+      return false; // Return false if an error occurs
+    }
   }
 
   @override
@@ -663,16 +693,28 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
                                         ),
                                       ),
                                       GestureDetector(
-                                        onTap: () {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: Text('Added to cart'),
-                                              duration: Duration(seconds: 2),
-                                            ),
-                                          );
-                                          addToCart(
-                                              product['idCatalog'] as String);
+                                        onTap: () async {
+                                          bool isStockAvailable = await checkStock(product['idCatalog']);
+                                          if (isStockAvailable) {
+                                            addToCart(
+                                                product['idCatalog'] as String);
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text('Added to cart'),
+                                                duration: Duration(seconds: 2),
+                                              ),
+                                            );
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                    'Product stock is limited.'),
+                                                duration: Duration(seconds: 2),
+                                              ),
+                                            );
+                                          }
                                         },
                                         child: Icon(
                                           Icons.shopping_cart_checkout,

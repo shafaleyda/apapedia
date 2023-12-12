@@ -412,7 +412,7 @@ public class CatalogController {
     @PostMapping(value = { "/catalog/create" }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public String addBarang(@ModelAttribute("catalogDTO") CreateCatalogueRequestDTO catalogDTO,
             @RequestParam("imageFile") MultipartFile imageFile,
-            Model model) throws IOException, InterruptedException {
+            Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
         RestTemplate restTemplate = new RestTemplate();
 
         catalogDTO.setSeller(UUID.randomUUID());
@@ -440,7 +440,7 @@ public class CatalogController {
                 requestEntity,
                 Catalogue.class);
 
-        return "redirect:/catalog/all";
+        return userController.dashboardSeller(model, httpServletRequest);
     }
 
     // Seller - Update Catalog GET
@@ -468,7 +468,7 @@ public class CatalogController {
     public String updateBarang(@PathVariable("id") String id,
             @ModelAttribute("catalogue") UpdateCatalogueRequestDTO catalogue,
             @RequestParam("imageFile") MultipartFile imageFile,
-            Model model) throws IOException, InterruptedException {
+            Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -497,7 +497,7 @@ public class CatalogController {
                 requestEntity,
                 Catalogue.class);
 
-        return "redirect:/catalog/viewall-seller";
+        return userController.dashboardSeller(model, httpServletRequest);
     }
 
 }
