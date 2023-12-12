@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:frontend_mobile/service/auth_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,9 +9,6 @@ import 'package:frontend_mobile/page/profile/profile.dart';
 import 'package:provider/provider.dart';
 
 class TopUpBalancePage extends StatefulWidget {
-  // final Customer customer;
-
-  // const TopUpBalance({Key? key, required this.customer}) : super(key: key);
   const TopUpBalancePage({Key? key}) : super(key: key);
 
   @override
@@ -25,11 +23,32 @@ class _TopUpBalancePageState extends State<TopUpBalancePage> {
     super.initState();
   }
 
+  Future<String> _checkTokenAndTopUp(int amount) async {
+    AuthService authService = AuthService();
+    String? token = await authService.getTokenFromStorage();
+
+    if (token != null) {
+      return topUpCustomerBalance(amount);
+    } else {
+      return "Token not found";
+    }
+  }
+
   void displayDialog(context, title, text) => showDialog(
-    context: context,
-    builder: (context) =>
-        AlertDialog(title: Text(title), content: Text(text)),
-  );
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(title),
+          content: Text(text),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
 
   Future<Map<String, dynamic>> fetchLoggedInUser() async {
     try {
@@ -56,29 +75,34 @@ class _TopUpBalancePageState extends State<TopUpBalancePage> {
       Map<String, dynamic> userLoggedIn = await fetchLoggedInUser();
       String customerId = userLoggedIn['id'];
 
-      final String uriUpdateBalance = 'http://localhost:8081/api/user/$customerId/balance?amount=$amount';
+      final String uriUpdateBalance =
+          'http://localhost:8081/api/user/$customerId/balance?amount=$amount';
 
+      if (amount == 0) {
+        displayDialog(context, 'Invalid', 'Enter a valid amount!');
+        return 'Top up not successful';
+      }
       http.Response balanceResponse = await http.put(
         Uri.parse(uriUpdateBalance),
       );
 
       if (balanceResponse.statusCode == 200) {
         String responseBody = balanceResponse.body;
+        displayDialog(context, 'Success', 'Balance topped up successfully!');
         return responseBody;
       } else {
+        displayDialog(context, 'Error', 'Failed to top up balance!');
         return 'error';
       }
-
     } catch (e) {
       print('Caught an exception: $e');
+      displayDialog(context, 'Error', 'Failed to top up balance!');
       return 'error';
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // var request = context.read<CookieRequest>();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('TopUp Balance'),
@@ -92,30 +116,25 @@ class _TopUpBalancePageState extends State<TopUpBalancePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextField(
-                decoration: const InputDecoration(
-                    labelText: "Amount of Balance"),
+                decoration:
+                    const InputDecoration(labelText: "Amount of Balance"),
                 keyboardType: TextInputType.number,
                 controller: _saldoController,
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.digitsOnly
-                ], 
+                ],
               ),
               Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: ElevatedButton(
-                    onPressed: () async {
-                      int amount = int.tryParse(_saldoController.text) ?? 0;
-                      var response = await topUpCustomerBalance(amount);
-                      print(response);
-                    
-                    },
-                      child: const Text('Top Up Balance')
-                  )
-              ),
-              // )
+                      onPressed: () async {
+                        int amount = int.tryParse(_saldoController.text) ?? 0;
+                        var response = await _checkTokenAndTopUp(amount);
+                        print(response);
+                      },
+                      child: const Text('Top Up Balance'))),
             ],
           )),
     );
   }
 }
-

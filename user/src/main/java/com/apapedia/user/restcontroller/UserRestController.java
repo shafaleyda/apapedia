@@ -46,6 +46,7 @@ public class UserRestController {
 
     @GetMapping("/user-loggedin")
     private User getUserLoggedIn() {
+        System.out.println("sini");
         User user = userRestService.getUserLoggedIn();
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There are no users logged in");
@@ -72,9 +73,6 @@ public class UserRestController {
 
     @DeleteMapping(value = "/delete/{id}")
     private ResponseEntity<String> deleteUser(@PathVariable("id") UUID id) {
-
-        System.out.println("Masuk ke delete id");
-
         userRestService.deleteUser(id);
 
         return ResponseEntity.status(HttpStatus.OK).body("User berhasil di delete!");

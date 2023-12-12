@@ -2,9 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_mobile/common/cookie_request.dart';
 import 'package:frontend_mobile/main.dart';
-import 'package:frontend_mobile/page/catalogue/catalogHome.dart';
-import 'package:frontend_mobile/page/customer-login/register.dart';
-import 'package:frontend_mobile/page/home.dart';
+import 'package:frontend_mobile/page/customer-login/login.dart';
 import 'package:frontend_mobile/page/profile/customer.dart';
 import 'package:frontend_mobile/page/profile/profile.dart';
 
@@ -16,29 +14,33 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class LoginFormScreen extends StatefulWidget {
+class RegisterFormScreen extends StatefulWidget {
   static const routeName = '/login';
-  const LoginFormScreen({super.key});
+  const RegisterFormScreen({super.key});
 
   @override
-  State<LoginFormScreen> createState() => _LoginFormScreenState();
+  State<RegisterFormScreen> createState() => _RegisterFormScreenState();
 }
 
-class _LoginFormScreenState extends State<LoginFormScreen> {
+class _RegisterFormScreenState extends State<RegisterFormScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  Future<bool> loginApi(String email, String password) async {
+  Future<bool> registerApi(String name, String username, String email,
+      String password, String address) async {
     try {
-      // Panggil API login dengan email dan password
+      // Panggil API register dengan name, username, email, password dan address
       final response = await http.post(
         Uri.parse(
-            "http://localhost:8081/api/authentication/authenticate"), // Ganti dengan URL endpoint login
+            "http://localhost:8081/api/authentication/register/customer"), // Ganti dengan URL endpoint register customer
         headers: <String, String>{
           'Content-Type': 'application/json',
         },
         body: jsonEncode(<String, String>{
+          'name': name,
+          'username': username,
           'email': email,
           'password': password,
+          'address': address
         }),
       );
 
@@ -76,13 +78,21 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
         });
   }
 
+  //name, username, password, email, address
+
+  TextEditingController nameController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
 
   @override
   void dispose() {
+    nameController.dispose();
+    usernameController.dispose();
     emailController.dispose();
     passwordController.dispose();
+    addressController.dispose();
     super.dispose();
   }
 
@@ -100,14 +110,14 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text("APAPEDIA",
+                  const Text("REGISTER",
                       style:
                           TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
                   const SizedBox(
                     height: 10,
                   ),
                   const Icon(
-                    Icons.shopify,
+                    Icons.app_registration_rounded,
                     size: 100,
                   ),
                   const SizedBox(
@@ -125,7 +135,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Text("Halo, Yuk login!",
+                        const Text("Silahkan registrasi akunmu dulu ya!",
                             style: TextStyle(
                               fontSize: 24,
                             )),
@@ -136,6 +146,46 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                                 children: [
                                   const SizedBox(
                                     height: 20,
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.8,
+                                    child: TextFormField(
+                                      controller: nameController,
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        labelText: "Nama",
+                                      ),
+                                      validator: (String? value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Masukkan nama anda';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.8,
+                                    child: TextFormField(
+                                      controller: usernameController,
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        labelText: "Username",
+                                      ),
+                                      validator: (String? value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Masukkan username anda';
+                                        }
+                                        return null;
+                                      },
+                                    ),
                                   ),
                                   const SizedBox(
                                     height: 20,
@@ -180,6 +230,25 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                                   const SizedBox(
                                     height: 20,
                                   ),
+                                  SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.8,
+                                      child: TextFormField(
+                                        controller: addressController,
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          labelText: 'Address',
+                                        ),
+                                        validator: (String? value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Masukkan alamat anda';
+                                          }
+                                          return null;
+                                        },
+                                      )),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       fixedSize: Size(
@@ -194,31 +263,39 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                                     onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
                                         // Ambil email dan password dari input controller
+                                        String name = nameController.text;
+                                        String username =
+                                            usernameController.text;
                                         String email = emailController.text;
                                         String password =
                                             passwordController.text;
+                                        String address = addressController.text;
 
-                                        // Lakukan proses login dengan memanggil metode loginApi dengan email dan password
-                                        bool isLoggedIn =
-                                            await loginApi(email, password);
+                                        // Lakukan proses login dengan memanggil metode registerApi dengan email dan password
+                                        bool isRegister = await registerApi(
+                                            name,
+                                            username,
+                                            email,
+                                            password,
+                                            address);
 
                                         // Jika login berhasil, lanjutkan ke halaman BukuScreen
-                                        if (isLoggedIn) {
+                                        if (isRegister) {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    HomePage()),
+                                                    LoginFormScreen()),
                                           );
                                         } else {
                                           showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
                                               return AlertDialog(
-                                                title:
-                                                    const Text('Login Failed'),
+                                                title: const Text(
+                                                    'Register Failed'),
                                                 content: const Text(
-                                                    "Invalid email or password"),
+                                                    "Invalid register, your account has been registered before"),
                                                 actions: <Widget>[
                                                   TextButton(
                                                     onPressed: () {
@@ -236,22 +313,21 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                                       // Todo
                                     },
                                     child: const Text(
-                                      'Login',
+                                      'Submit',
                                       style: TextStyle(
                                           fontSize: 20, color: Colors.black),
                                     ),
                                   ),
                                   const SizedBox(
-                                      height:
-                                          10), // Menambahkan jarak vertikal di sini
-                                  // Tambahkan bagian hyperlink di sini
+                                    height: 20,
+                                  ),
                                   RichText(
                                     text: TextSpan(
-                                      text: 'Belum punya akun? ',
+                                      text: 'Udah punya akun? Langsung aja ',
                                       style: TextStyle(color: Colors.black),
                                       children: <TextSpan>[
                                         TextSpan(
-                                          text: 'Register dulu disini',
+                                          text: 'login',
                                           style: TextStyle(
                                             color: Colors.blue,
                                             decoration:
@@ -265,7 +341,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          RegisterFormScreen()));
+                                                          LoginFormScreen()));
                                             },
                                         ),
                                       ],
@@ -276,31 +352,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                             ))
                       ],
                     ),
-                  ),
-                  const SizedBox(height: 20), // Tambahkan jarak di sini
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      fixedSize:
-                          Size(MediaQuery.of(context).size.width * 0.8, 50),
-                      backgroundColor:
-                          Colors.grey, // Sesuaikan warna dengan kebutuhan
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CatalogHome(),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'Login as Guest',
-                      style: TextStyle(fontSize: 20, color: Colors.black),
-                    ),
-                  ),
+                  )
                 ],
               ),
             ),

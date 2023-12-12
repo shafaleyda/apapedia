@@ -43,7 +43,6 @@ public class PageController {
         @GetMapping("/validate-ticket")
         public ModelAndView adminLoginSSO(@RequestParam(value = "ticket", required = false) String ticket,
                         HttpServletRequest request, HttpServletResponse httpResponse) {
-                System.out.println("Masuk validate ticket");
 
                 ServiceResponse serviceResponse = this.webClient.get().uri(
                                 String.format(
@@ -61,19 +60,14 @@ public class PageController {
 
                 String name = attributes.getNama();
 
-                System.out.println("Masuk validate ticket bozz");
 
                 try {
-                        System.out.println("Masuk validate ticket 2");
                         var token = userRestService.getToken(username, name);
 
-                        System.out.println("Masuk validate ticket 3");
                         HttpSession httpSession = request.getSession(true);
                         httpSession.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                                         securityContext);
                         httpSession.setAttribute("token", token);
-
-                        System.out.println("MASUK SINI");
 
                         Cookie cookie = new Cookie("jwtToken", token);
                         cookie.setPath("/");
@@ -102,7 +96,6 @@ public class PageController {
 
         @GetMapping("/login-sso")
         public ModelAndView loginSSO() {
-                System.out.println("masuk login user");
                 return new ModelAndView("redirect:" + Setting.SERVER_LOGIN + Setting.CLIENT_LOGIN);
         }
 

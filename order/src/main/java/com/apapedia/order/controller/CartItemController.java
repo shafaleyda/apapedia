@@ -1,6 +1,7 @@
 package com.apapedia.order.controller;
 
 import java.util.UUID;
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,9 @@ import com.apapedia.order.dto.request.DeleteCartItemDTO;
 import com.apapedia.order.dto.request.UpdateCartItemRequestDTO;
 import com.apapedia.order.service.CartItemService;
 import com.apapedia.order.service.CartService;
-import com.apapedia.order.service.ProductService;
 
 @RestController
+@CrossOrigin
 public class CartItemController {
     @Autowired
     CartItemMapper cartItemMapper;
@@ -28,11 +29,8 @@ public class CartItemController {
     @Autowired
     CartService cartService;
 
-    @Autowired
-    ProductService productMockService;
-
     @PostMapping(value = "/cart/{id}/add")
-    private CartItemModel createCartItem(@Valid @RequestBody CreateCartItemRequestDTO cartItemRequestDTO, @PathVariable(value = "id") UUID id){
+    private CartItemModel createCartItem(@Valid @RequestBody CreateCartItemRequestDTO cartItemRequestDTO, @PathVariable(value = "id") UUID id) throws IOException, InterruptedException{
         CartItemModel cartItemModel = cartItemMapper.createCartItemRequestDTOToCartItemModel(cartItemRequestDTO);
         CartModel cartModel = cartService.getCartById(id);
         cartItemModel.setCart(cartModel);
@@ -43,7 +41,7 @@ public class CartItemController {
     }
 
     @PutMapping(value = "/cart/{id}/update")
-    private CartItemModel updateCartItem(@Valid @RequestBody UpdateCartItemRequestDTO cartItemRequestDTO, @PathVariable(value = "id") UUID cartId){
+    private CartItemModel updateCartItem(@Valid @RequestBody UpdateCartItemRequestDTO cartItemRequestDTO, @PathVariable(value = "id") UUID cartId) throws IOException, InterruptedException{
         CartItemModel cartItemModel = cartItemMapper.updateCartItemRequestDTOToCartItemModel(cartItemRequestDTO);
         CartModel cartModel = cartService.getCartById(cartId);
         CartItemModel cartItemModelToUpdate = cartItemService.getCartItemById(cartItemModel.getId());
@@ -61,7 +59,7 @@ public class CartItemController {
     }
 
     @DeleteMapping(value = "/cart/{id}/delete")
-    private void deleteCartItem(@PathVariable(value = "id") UUID id, @RequestBody DeleteCartItemDTO deleteCartItemDTO){
+    private void deleteCartItem(@PathVariable(value = "id") UUID id, @RequestBody DeleteCartItemDTO deleteCartItemDTO) throws IOException, InterruptedException{
         CartModel cartModel = cartService.getCartById(id);
         CartItemModel cartItemModel = cartItemService.getCartItemById(deleteCartItemDTO.getCartItemId());
         cartModel.getListCartItem().remove(cartItemModel);

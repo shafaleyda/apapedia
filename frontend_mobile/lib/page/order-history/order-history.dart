@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_mobile/common/cookie_request.dart';
 import 'package:frontend_mobile/main.dart';
-import 'package:frontend_mobile/home.dart';
+import 'package:frontend_mobile/page/home.dart';
 import 'package:frontend_mobile/page/profile/customer.dart';
+import 'package:frontend_mobile/service/auth_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -14,6 +15,18 @@ class OrderHistoryPage extends StatefulWidget {
 }
 
 class _OrderHistoryPageState extends State<OrderHistoryPage> {
+
+  Future<List<Map<String, dynamic>>> _checkTokenAndFetchData() async {
+    AuthService authService = AuthService();
+    String? token = await authService.getTokenFromStorage();
+
+    if (token != null) {
+      return fetchCustomerOrderHistory();
+    } else {
+      return [];
+    }
+  }
+
   Future<Map<String, dynamic>> fetchLoggedInUser() async {
     try {
       var url = Uri.parse('http://localhost:8081/api/user/user-loggedin');
@@ -74,12 +87,12 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
       print('Error: $error');
     }
 
-    // Return an empty list if there's an error or no data
     return [];
   }
 
-  Future<String> updateStatus(String orderId, int status) async {
+  Future<String> updateStatus(String orderId, int statusCase) async {
     try {
+      var status = statusCase + 4;
       final String uri = 'http://localhost:8080/order/update/$orderId';
 
       Map<String, int> requestBody = {'status': status};
@@ -117,112 +130,164 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     }
   }
 
-  int selectedStatus = 0;
+  List<int> selectedStatusList = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Order History'),
-      ),
       body: Container(
-        margin: EdgeInsets.only(top: 50),
         child: FutureBuilder<List<Map<String, dynamic>>>(
-          future: fetchCustomerOrderHistory(),
+          future: _checkTokenAndFetchData(),
           builder: (context, snapshot) {
-            if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text(
-                    "Belum ada order :(",
-                    style: TextStyle(
-                      color: Color(0xFF59A5D8),
-                      fontSize: 20,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                ],
+            if (snapshot.connectionState == ConnectionState.none ||
+                snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
               );
-            } else {
-              return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  Map<String, dynamic> orderDetails = snapshot.data![index];
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        side: BorderSide(color: Colors.blue),
-                      ),
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
                       child: Container(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            for (var orderItem in orderDetails['listOrderItem'])
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                      'Item ${orderDetails['listOrderItem'].indexOf(orderItem) + 1}'),
-                                  Text(
-                                      'Product name: ${orderItem['productName']}'),
-                                  Text('Quantity: ${orderItem['quantity']}'),
-                                  SizedBox(height: 8.0),
-                                ],
-                              ),
-                            Text(
-                                'Product total price: ${orderDetails['order']['totalPrice']}'),
-                            SizedBox(height: 8.0),
-                            Text(
-                              'Order status: ${getStatusText(orderDetails['order']['status'])}',
-                              style: TextStyle(color: Colors.blue),
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(208, 255, 237, 210),
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        padding: EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Text(
+                            "Make your first order!",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: const Color.fromARGB(255, 0, 0, 0),
                             ),
-                            SizedBox(height: 8.0),
-                            Row(
-                              children: [
-                                Text('Select status:'),
-                                SizedBox(width: 8.0),
-                                DropdownButton<int>(
-                                  value: selectedStatus,
-                                  items: List.generate(
-                                    6,
-                                    (index) => DropdownMenuItem<int>(
-                                      value: index,
-                                      child: Text(getStatusText(index)),
-                                    ),
-                                  ),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedStatus = value!;
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 8.0),
-                            ElevatedButton(
-                              onPressed: () async {
-                                if (orderDetails['order']['status'] != 5) {
-                                  String result = await updateStatus(
-                                      orderDetails['order']['id'],
-                                      selectedStatus);
-                                  print(result);
-                                  setState(() {});
-                                }
-                              },
-                              child: orderDetails['order']['status'] == 5
-                                  ? Text('Selesai')
-                                  : Text('Update Order Status'),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
-                  );
-                },
+                  ],
+                ),
+              );
+            } else {
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 32.0, 16.0, 12.0),
+                    child: Text(
+                      "Order History",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        Map<String, dynamic> orderDetails = snapshot.data![index];
+                        while (selectedStatusList.length <= index) {
+                          selectedStatusList.add(0);
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Align(
+                            alignment: Alignment.topCenter,
+                            child: SizedBox(
+                              width: 600, 
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Container(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      for (var orderItem
+                                          in orderDetails['listOrderItem'])
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                'Item ${orderDetails['listOrderItem'].indexOf(orderItem) + 1}'),
+                                            Text(
+                                                'Product name: ${orderItem['productName']}'),
+                                            Text(
+                                                'Quantity: ${orderItem['quantity']}'),
+                                            SizedBox(height: 8.0),
+                                          ],
+                                        ),
+                                      Text(
+                                          'Product total price: ${orderDetails['order']['totalPrice']}'),
+                                      SizedBox(height: 8.0),
+                                      Text(
+                                        'Order status: ${getStatusText(orderDetails['order']['status'])}',
+                                        style: TextStyle(color: Colors.blue),
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Row(
+                                        children: [
+                                          Text('Update status:'),
+                                          SizedBox(width: 6.0),
+                                          DropdownButton<int>(
+                                            value: selectedStatusList[index],
+                                            items: List.generate(
+                                              2,
+                                              (dropIndex) => DropdownMenuItem<int>(
+                                                value: dropIndex,
+                                                child: Text(getStatusText(
+                                                    dropIndex,
+                                                    forDropdown: true)),
+                                              ),
+                                            ),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedStatusList[index] =
+                                                    value!;
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Center(
+                                        child: ElevatedButton(
+                                          onPressed:
+                                              orderDetails['order']['status'] == 5
+                                                  ? null
+                                                  : () async {
+                                                      String result =
+                                                          await updateStatus(
+                                                              orderDetails['order']
+                                                                  ['id'],
+                                                              selectedStatusList[
+                                                                  index]);
+                                                      print(result);
+                                                      setState(() {});
+                                                    },
+                                          child: orderDetails['order']['status'] == 5
+                                              ? Text('Selesai',
+                                                  style: TextStyle(
+                                                      color: Colors.red))
+                                              : Text('Update Order Status'),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               );
             }
           },
@@ -230,15 +295,35 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
       ),
     );
   }
+
 }
 
-String getStatusText(int statusCode) {
-  switch (statusCode) {
-    case 4:
-      return 'Barang diterima';
-    case 5:
-      return 'Selesai';
-    default:
-      return 'Unknown';
+String getStatusText(int statusCode, {bool forDropdown = false}) {
+  if (forDropdown) {
+    switch (statusCode) {
+      case 0:
+        return 'Barang diterima';
+      case 1:
+        return 'Selesai';
+      default:
+        return 'Unknown';
+    }
+  } else {
+    switch (statusCode) {
+      case 0:
+        return 'Menunggu konfirmasi';
+      case 1:
+        return 'Dikonfirmasi penjual';
+      case 2:
+        return 'Menunggu kurir';
+      case 3:
+        return 'Dalam perjalanan';
+      case 4:
+        return 'Barang diterima';
+      case 5:
+        return 'Selesai';
+      default:
+        return 'Unknown';
+    }
   }
 }
