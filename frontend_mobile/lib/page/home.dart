@@ -8,6 +8,7 @@ import 'package:frontend_mobile/page/landingPage.dart';
 import 'package:frontend_mobile/page/order-history/order-history.dart';
 import 'package:frontend_mobile/page/profile/customer.dart';
 import 'package:frontend_mobile/page/profile/profile.dart';
+import 'package:frontend_mobile/page/cart/cartPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -32,6 +33,7 @@ class _HomePageState extends State<HomePage> {
       OrderHistoryPage(),
       LandingPage(), //cart page
       ProfilePage(),
+      CartPage(),
     ];
     return Scaffold(
       body: page[pageIndex],
