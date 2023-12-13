@@ -1,3 +1,5 @@
+// ignore_for_file: curly_braces_in_flow_control_structures, avoid_print, use_super_parameters
+
 import 'package:flutter/material.dart';
 import 'package:frontend_mobile/service/auth_service.dart';
 import 'package:http/http.dart' as http;
@@ -13,6 +15,8 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   late Future<Map<String, dynamic>> _cartFuture;
   late Future<List<Map<String, dynamic>>> _cartItemsFuture;
+  List<bool> selectedItems = [];
+  Map<String, dynamic> cart = {};
 
   @override
   void initState() {
@@ -53,7 +57,7 @@ class _CartPageState extends State<CartPage> {
       var response = await http.get(url);
 
       if (response.statusCode == 200) {
-        Map<String, dynamic> cart = json.decode(response.body);
+        cart = json.decode(response.body);
         return cart;
       }
     } catch (error) {
@@ -107,95 +111,257 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Cart Page'),
-        ),
-        body: FutureBuilder(
-          future: Future.wait([_cartFuture, _cartItemsFuture]),
-          builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              Map<String, dynamic> cart = snapshot.data![0];
-              List<Map<String, dynamic>> cartItems = snapshot.data![1];
+      appBar: AppBar(
+          title: const Text(
+            'Cart',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          automaticallyImplyLeading: false),
+      body: Column(
+        children: [
+          Expanded(
+            child: FutureBuilder(
+              future: Future.wait([_cartFuture, _cartItemsFuture]),
+              builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  cart = snapshot.data![0];
+                  List<Map<String, dynamic>> cartItems = snapshot.data![1];
 
-              return ListView(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'Cart',
-                      style:
-                          TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'Total price: ${cart['totalPrice']}',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'Cart items',
-                      style:
-                          TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(10),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: cartItems.length,
-                      itemBuilder: (context, index) {
-                        Map<String, dynamic> cartItem = cartItems[index];
-                        return Container(
-                          padding: EdgeInsets.only(left: 15, right: 15, top: 5),
-                          margin:
-                              EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+                  if (cartItems.isEmpty) {
+                    return const Center(
+                      child: Text('Cart is empty'),
+                    );
+                  }
+
+                  if (selectedItems.length != cartItems.length) {
+                    selectedItems =
+                        List.generate(cartItems.length, (index) => false);
+                  }
+
+                  return ListView.builder(
+                    itemCount: cartItems.length,
+                    itemBuilder: (context, index) {
+                      Map<String, dynamic> cartItem = cartItems[index];
+                      return Container(
+                          padding: const EdgeInsets.only(
+                              left: 15, right: 15, top: 5),
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 3, horizontal: 10),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Row(
                             children: [
-                              Image.memory(
-                                base64Decode(cartItem['image']),
-                                height: 200,
-                                width: 200,
+                              Checkbox(
+                                value: selectedItems[index],
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    selectedItems[index] = value!;
+                                  });
+                                },
                               ),
-                              Text(
-                                '${cartItem['productName']}',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.memory(
+                                  base64Decode(cartItem['image']),
+                                  height: 100,
+                                  width: 100,
+                                ),
                               ),
-                              Text(
-                                'Harga: ${cartItem['price']}',
-                                style: TextStyle(fontSize: 18),
+                              const SizedBox(width: 8.0),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${cartItem['productName']}',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Harga: ${cartItem['price']}',
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                'Jumlah: ${cartItem['quantity']}',
-                                style: TextStyle(fontSize: 18),
+                              const Spacer(
+                                flex: 1,
                               ),
-                              Text(
-                                'Total: ${cartItem['price'] * cartItem['quantity']}',
-                                style: TextStyle(fontSize: 18),
+                              Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        onPressed: () async {
+                                          try {
+                                            if (cartItem['quantity'] == 1) {
+                                              return;
+                                            }
+                                            String cartId = cart['id'];
+                                            String cartItemId = cartItem['id'];
+
+                                            var url = Uri.parse(
+                                                'http://localhost:8080/cart/$cartId/update');
+
+                                            var response = await http.put(
+                                              url,
+                                              headers: <String, String>{
+                                                'Content-Type':
+                                                    'application/json',
+                                              },
+                                              body: jsonEncode(<String, Object>{
+                                                'id': cartItemId,
+                                                'quantity':
+                                                    cartItem['quantity'] - 1,
+                                              }),
+                                            );
+                                            print('Remove button pressed');
+
+                                            if (response.statusCode == 200) {
+                                              setState(() {
+                                                _cartItemsFuture =
+                                                    _checkTokenAndFetchCartItems();
+
+                                                _cartFuture =
+                                                    _checkTokenAndFetchCart();
+                                              });
+                                            }
+                                          } catch (error) {
+                                            print('Error: $error');
+                                          }
+                                        },
+                                        icon: const Icon(Icons.remove),
+                                      ),
+                                      Text(
+                                        'Jumlah: ${cartItem['quantity']}',
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                      IconButton(
+                                        onPressed: () async {
+                                          try {
+                                            if (cartItem['quantity'] ==
+                                                cartItem['stock']) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Stock tidak mencukupi'),
+                                                  backgroundColor:
+                                                      Color.fromARGB(
+                                                          255, 196, 96, 89),
+                                                ),
+                                              );
+                                              return;
+                                            }
+                                            String cartId = cart['id'];
+                                            String cartItemId = cartItem['id'];
+
+                                            var url = Uri.parse(
+                                                'http://localhost:8080/cart/$cartId/update');
+
+                                            var response = await http.put(
+                                              url,
+                                              headers: <String, String>{
+                                                'Content-Type':
+                                                    'application/json',
+                                              },
+                                              body: jsonEncode(<String, Object>{
+                                                'id': cartItemId,
+                                                'quantity':
+                                                    cartItem['quantity'] + 1,
+                                              }),
+                                            );
+                                            print('Add button pressed');
+
+                                            if (response.statusCode == 200) {
+                                              setState(() {
+                                                _cartItemsFuture =
+                                                    _checkTokenAndFetchCartItems();
+
+                                                _cartFuture =
+                                                    _checkTokenAndFetchCart();
+                                              });
+                                            }
+                                          } catch (error) {
+                                            print('Error: $error');
+                                          }
+                                        },
+                                        icon: const Icon(Icons.add),
+                                      ),
+                                      IconButton(
+                                        onPressed: () async {
+                                          try {
+                                            String cartId = cart['id'];
+                                            String cartItemId = cartItem['id'];
+
+                                            var url = Uri.parse(
+                                                'http://localhost:8080/cart/$cartId/delete');
+
+                                            var response = await http.delete(
+                                                url,
+                                                headers: <String, String>{
+                                                  'Content-Type':
+                                                      'application/json',
+                                                },
+                                                body:
+                                                    jsonEncode(<String, Object>{
+                                                  'cartItemId': cartItemId,
+                                                }));
+
+                                            if (response.statusCode == 200) {
+                                              setState(() {
+                                                _cartItemsFuture =
+                                                    _checkTokenAndFetchCartItems();
+                                              });
+                                            }
+                                          } catch (error) {
+                                            print('Error: $error');
+                                          }
+                                        },
+                                        icon: const Icon(Icons.delete),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                      'Total Price: ${cartItem['price'] * cartItem['quantity']}',
+                                      style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold)),
+                                ],
                               ),
                             ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              );
-            }
-          },
-        ));
+                          ));
+                    },
+                  );
+                }
+              },
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.fromLTRB(15, 10, 15, 100),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    print('Checkout button pressed');
+                  },
+                  child: const Text('Checkout'),
+                ),
+                Text('Total price: ${cart['totalPrice'] ?? '0.0'}',
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
