@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend_mobile/common/cookie_request.dart';
 import 'package:frontend_mobile/main.dart';
 import 'package:frontend_mobile/page/catalogue/catalogHome.dart';
+import 'package:frontend_mobile/page/catalogue/catalogHomeGuest.dart';
 import 'package:frontend_mobile/page/customer-login/register.dart';
 import 'package:frontend_mobile/page/home.dart';
 import 'package:frontend_mobile/page/home_guest.dart';
@@ -294,7 +295,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => GuestHomePage(),
+                          builder: (context) => CatalogHomeGuest(),
                         ),
                       );
                     },
