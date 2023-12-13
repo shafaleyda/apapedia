@@ -5,6 +5,7 @@ import 'package:frontend_mobile/main.dart';
 import 'package:frontend_mobile/page/catalogue/catalogHome.dart';
 import 'package:frontend_mobile/page/customer-login/register.dart';
 import 'package:frontend_mobile/page/home.dart';
+import 'package:frontend_mobile/page/home_guest.dart';
 import 'package:frontend_mobile/page/profile/customer.dart';
 import 'package:frontend_mobile/page/profile/profile.dart';
 
@@ -106,9 +107,10 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  const Icon(
-                    Icons.shopify,
-                    size: 100,
+                  Image.asset(
+                    'images/navbar-icon.png',
+                    width: 100,
+                    height: 100,
                   ),
                   const SizedBox(
                     height: 10,
@@ -292,7 +294,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CatalogHome(),
+                          builder: (context) => GuestHomePage(),
                         ),
                       );
                     },
