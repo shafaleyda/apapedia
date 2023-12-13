@@ -75,6 +75,7 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
   void _showFilterSearchDrawer(BuildContext context) {
     showModalBottomSheet(
       context: context,
+      enableDrag: true,
       builder: (BuildContext context) {
         return SingleChildScrollView(
           child: Container(

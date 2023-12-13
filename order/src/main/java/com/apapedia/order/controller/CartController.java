@@ -12,7 +12,6 @@ import com.apapedia.order.service.CartService;
 
 import java.util.UUID; 
 
-@CrossOrigin
 @RestController
 @CrossOrigin
 public class CartController {
