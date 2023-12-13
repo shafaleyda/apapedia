@@ -25,4 +25,9 @@ class AuthService {
     final decodedToken = decodeToken(token);
     return decodedToken?['username'];
   }
+
+  Future<void> deleteTokenToStorage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('jwtToken');
+  }
 }

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <!--    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>-->
+    <!--    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous" />
+    <title>Form Update Profile Seller</title>
+</head>
+
+<body class="d-flex align-items-center justify-content-center" style="height: 100vh;">
+<div class="container px-md-5 align-items-center justify-content-center" >
+    <div class="card mt-5">
+        <div class="card-header">
+            <div class="row mt-2">
+                <div class="col align-content-start">
+                    <h2>Update Seller Profile</h2>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="justify-content-center">
+                <br>
+                <form th:action="@{/user/update/{id}(id=${data.id})}"
+                      th:object="${data}"
+                      method="POST">
+
+                    <input required class="form-control" type="hidden" th:field="*{username}" />
+
+                    User Name: <br>
+                    <input required class="form-control" type="text" th:field="*{name}" />
+                    <br><br>
+
+                    User Email: <br>
+                    <input class="form-control" type="text" th:field="*{email}" /><br>
+
+                    User Address: <br>
+                    <input class="form-control" type="text" th:field="*{address}" />
+                    <br><br>
+
+                    Category: <br>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <select class="form-control" th:field="*{category}">
+                                <option th:each="category: ${listCategory}" th:value="${category}" th:text="${category}"></option>
+                            </select>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                    <a class="btn btn-danger" th:href="@{/user/profile}">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
