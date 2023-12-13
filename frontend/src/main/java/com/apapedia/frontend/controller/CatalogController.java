@@ -561,7 +561,7 @@ public class CatalogController {
                 requestEntity,
                 Catalogue.class);
 
-        return userController.dashboardSeller(model, httpServletRequest);
+        return "redirect:/dashboard/seller";
     }
 
 }
