@@ -107,105 +107,95 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Cart Page'),
-      ),
-      body: FutureBuilder(
-        future: Future.wait([_cartFuture, _cartItemsFuture]),
-        builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            Map<String, dynamic> cart = snapshot.data![0];
-            List<Map<String, dynamic>> cartItems = snapshot.data![1];
-            print('Cart: $cart');
-            print('Cart items: $cartItems');
+        appBar: AppBar(
+          title: Text('Cart Page'),
+        ),
+        body: FutureBuilder(
+          future: Future.wait([_cartFuture, _cartItemsFuture]),
+          builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              Map<String, dynamic> cart = snapshot.data![0];
+              List<Map<String, dynamic>> cartItems = snapshot.data![1];
 
-            return Scrollbar(
-              child: SingleChildScrollView(
-                child: GridView.count(
-                  childAspectRatio: 0.68,
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  children: [
-                    for (var cartItem in cartItems)
-                      Container(
-                        padding: EdgeInsets.only(left: 15, right: 15, top: 5),
-                        margin:
-                            EdgeInsets.symmetric(vertical: 3, horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Column(
-                          children: [
-                            InkWell(
-                              onTap: () {},
-                              child: Container(
-                                margin: EdgeInsets.all(10),
-                                child: AspectRatio(
-                                  aspectRatio:
-                                      1, // Set the aspect ratio as needed
-                                  child: Image.memory(
-                                    base64Decode(cartItem!['image']),
-                                    fit: BoxFit
-                                        .cover, // Adjust how the image fills the space
-                                  ),
-                                ),
+              return ListView(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Cart',
+                      style:
+                          TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Total price: ${cart['totalPrice']}',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Cart items',
+                      style:
+                          TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: cartItems.length,
+                      itemBuilder: (context, index) {
+                        Map<String, dynamic> cartItem = cartItems[index];
+                        return Container(
+                          padding: EdgeInsets.only(left: 15, right: 15, top: 5),
+                          margin:
+                              EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Image.memory(
+                                base64Decode(cartItem['image']),
+                                height: 200,
+                                width: 200,
                               ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(bottom: 8),
-                              alignment: Alignment.centerLeft,
-                              child: Text(cartItem['productName'],
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: Color(0xFF4C53A5),
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                            ),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                cartItem['productDescription'],
+                              Text(
+                                '${cartItem['productName']}',
                                 style: TextStyle(
-                                  fontSize: 15,
-                                  color: Color(0xFF4C53A5),
-                                ),
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10),
-                              child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      cartItem['price'].toString(),
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF4C53A5),
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.shopping_cart_checkout,
-                                      color: Colors.red,
-                                    )
-                                  ]),
-                            )
-                          ],
-                        ),
-                      )
-                  ],
-                ),
-              ),
-            );
-          }
-        },
-      ),
-    );
+                              Text(
+                                'Harga: ${cartItem['price']}',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              Text(
+                                'Jumlah: ${cartItem['quantity']}',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              Text(
+                                'Total: ${cartItem['price'] * cartItem['quantity']}',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            }
+          },
+        ));
   }
 }

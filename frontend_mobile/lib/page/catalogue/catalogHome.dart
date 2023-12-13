@@ -421,11 +421,11 @@ class _CatalogHomeState extends State<CatalogHome> {
                                     child: AspectRatio(
                                       aspectRatio:
                                           1, // Set the aspect ratio as needed
-                                      // child: Image.memory(
-                                      //   base64Decode(product!['image']),
-                                      //   fit: BoxFit
-                                      //       .cover, // Adjust how the image fills the space
-                                      // ),
+                                      child: Image.memory(
+                                        base64Decode(product!['image']),
+                                        fit: BoxFit
+                                            .cover, // Adjust how the image fills the space
+                                      ),
                                     ),
                                   ),
                                 ),

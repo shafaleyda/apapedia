@@ -113,17 +113,16 @@ public class OrderApplication {
 				// orderDTO.setUpdatedAt(LocalDateTime.now());		
 				// orderDTO.setStatus(0); // Adjust the range as needed
 				// System.out.println(orderDTO);
-				OrderModel order = new OrderModel();
-				// Save the fake order to the database
-				// var order = orderMapper.createOrderRequestDTOToOrder(orderDTO);
-				order.setCreatedAt(LocalDateTime.now());
-				order.setUpdatedAt(LocalDateTime.now());		
-				order.setStatus(0); 
-				order.setTotalPrice(Integer.valueOf((int) (Math.random() * 1000000)));				
-				order.setCustomer(UUID.randomUUID());
-				order.setSeller(UUID.randomUUID());
-				orderRestService.saveOrder(order);
-				
+				// OrderModel order = new OrderModel();
+				// // Save the fake order to the database
+				// // var order = orderMapper.createOrderRequestDTOToOrder(orderDTO);
+				// order.setCreatedAt(LocalDateTime.now());
+				// order.setUpdatedAt(LocalDateTime.now());		
+				// order.setStatus(0); 
+				// order.setTotalPrice(Integer.valueOf((int) (Math.random() * 1000000)));				
+				// order.setCustomer(UUID.randomUUID());
+				// order.setSeller(UUID.randomUUID());
+				// orderRestService.saveOrder(order);
         	}
 		};
 	}
