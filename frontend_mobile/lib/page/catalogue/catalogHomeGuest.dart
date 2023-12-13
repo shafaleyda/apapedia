@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_mobile/page/customer-login/register.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -332,7 +333,21 @@ class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
                     ),
                   ),
                 ),
-                Spacer(),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              RegisterFormScreen()), 
+                    );
+                  },
+                  child: Icon(
+                    Icons.login_outlined,
+                    size: 32,
+                    color: Color(0xFF4C53A5),
+                  ),
+                ),
                 InkWell(
                   onTap: () {
                     _showFilterSearchDrawer(context);
