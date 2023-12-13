@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_mobile/page/customer-login/register.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 // ignore: duplicate_import
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 
-class CatalogHome extends StatefulWidget {
+class CatalogHomeGuest extends StatefulWidget {
   @override
-  _CatalogHomeState createState() => _CatalogHomeState();
+  _CatalogHomeGuestState createState() => _CatalogHomeGuestState();
 }
 
-class _CatalogHomeState extends State<CatalogHome> {
+class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
   List<dynamic> categories = [];
   List<dynamic> products = [];
   List<String> categoryNames = [];
@@ -41,9 +42,9 @@ class _CatalogHomeState extends State<CatalogHome> {
               .map((category) => category['categoryName'].toString())
               .toList();
         });
-        categories.asMap().forEach((index, value) {
-          print("Index $index: $value['categoryName']");
-        });
+        // categories.asMap().forEach((index, value) {
+        //   print("Index $index: $value['categoryName']");
+        // });
       } else {
         // Handle errors if any
         print("Failed to fetch data");
@@ -57,102 +58,166 @@ class _CatalogHomeState extends State<CatalogHome> {
   void _showFilterSearchDrawer(BuildContext context) {
     showModalBottomSheet(
       context: context,
+      enableDrag: true,
       builder: (BuildContext context) {
-        return Container(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: productNameController,
-                      decoration:
-                          InputDecoration(labelText: 'Filter by Product Name'),
+        return SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [
+                  Text(
+                    'Filter by Product Name',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.grey,
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      String productName = productNameController.text;
-                      filterCatalogByProductName(productName);
-                      Navigator.pop(context);
-                      //productNameController.dispose();
-                    },
-                    child: Text('Search'),
+                ]),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: TextFormField(
+                          controller: productNameController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Product Name",
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: minPriceController,
-                      decoration: InputDecoration(
-                          labelText: 'Filter by Range Price (Min Price)'),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          String productName = productNameController.text;
+                          filterCatalogByProductName(productName);
+                          Navigator.pop(context);
+                          productNameController.clear();
+                          //productNameController.dispose();
+                        },
+                        child: Text('Search'),
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(),
+                Row(children: [
+                  Text(
+                    'Filter by Product Range Price',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.grey,
                     ),
                   ),
-                  SizedBox(width: 10),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: maxPriceController,
-                      decoration: InputDecoration(
-                          labelText: 'Filter by Range Price (Max Price)'),
-                    ),
+                ]),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: TextFormField(
+                          controller: minPriceController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Min Price",
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      String minPrice = minPriceController.text;
-                      String maxPrice = maxPriceController.text;
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: TextFormField(
+                          controller: maxPriceController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Max Price",
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          String minPrice = minPriceController.text;
+                          String maxPrice = maxPriceController.text;
 
-                      int minPriceInt = int.parse(minPrice);
-                      int maxPriceInt = int.parse(maxPrice);
-                      filterCatalogByProductPrice(minPriceInt, maxPriceInt);
-                      Navigator.pop(context);
-                      // minPriceController.dispose();
-                      // maxPriceController.dispose();
-                    },
-                    child: Text('Search'),
+                          int minPriceInt = int.parse(minPrice);
+                          int maxPriceInt = int.parse(maxPrice);
+                          filterCatalogByProductPrice(minPriceInt, maxPriceInt);
+                          Navigator.pop(context);
+                          minPriceController.clear();
+                          maxPriceController.clear();
+                        },
+                        child: Text('Search'),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              SizedBox(height: 20),
-              DropdownButton<String>(
-                hint: Text('Sort Catalog'),
-                items: [
-                  'Sort by Product Name (A - Z)',
-                  'Sort by Product Name (Z - A)',
-                  'Sort by Product Price (Min - Max)',
-                  'Sort by Product Price (Max - Min)'
-                ].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  if (newValue == 'Sort by Product Name (A - Z)') {
-                    sortCatalog('productName', 'ASC');
-                    Navigator.pop(context);
-                  } else if (newValue == 'Sort by Product Name (Z - A)') {
-                    sortCatalog('productName', 'DESC');
-                    Navigator.pop(context);
-                  } else if (newValue == 'Sort by Product Price (Min - Max)') {
-                    sortCatalog('price', 'ASC');
-                    Navigator.pop(context);
-                  } else {
-                    sortCatalog('price', 'DESC');
-                    Navigator.pop(context);
-                  }
-                  // selectedSortValue = newValue;
-                  // print(selectedSortValue);
-                },
-              ),
-            ],
+                ),
+                Divider(),
+                Row(children: [
+                  Text(
+                    'Sort Product',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ]),
+                DropdownButton<String>(
+                  hint: Text('Sort Catalog'),
+                  items: [
+                    'Sort by Product Name (A - Z)',
+                    'Sort by Product Name (Z - A)',
+                    'Sort by Product Price (Min - Max)',
+                    'Sort by Product Price (Max - Min)'
+                  ].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    if (newValue == 'Sort by Product Name (A - Z)') {
+                      sortCatalog('productName', 'ASC');
+                      Navigator.pop(context);
+                    } else if (newValue == 'Sort by Product Name (Z - A)') {
+                      sortCatalog('productName', 'DESC');
+                      Navigator.pop(context);
+                    } else if (newValue ==
+                        'Sort by Product Price (Min - Max)') {
+                      sortCatalog('price', 'ASC');
+                      Navigator.pop(context);
+                    } else {
+                      sortCatalog('price', 'DESC');
+                      Navigator.pop(context);
+                    }
+                    // selectedSortValue = newValue;
+                    // print(selectedSortValue);
+                  },
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -268,7 +333,21 @@ class _CatalogHomeState extends State<CatalogHome> {
                     ),
                   ),
                 ),
-                Spacer(),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              RegisterFormScreen()), 
+                    );
+                  },
+                  child: Icon(
+                    Icons.login_outlined,
+                    size: 32,
+                    color: Color(0xFF4C53A5),
+                  ),
+                ),
                 InkWell(
                   onTap: () {
                     _showFilterSearchDrawer(context);
@@ -389,31 +468,6 @@ class _CatalogHomeState extends State<CatalogHome> {
                             ),
                             child: Column(
                               children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFF4C53A5),
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: Text(
-                                        "buat diskon",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.favorite_border,
-                                      color: Colors.red,
-                                    )
-                                  ],
-                                ),
                                 InkWell(
                                   onTap: () {},
                                   child: Container(
@@ -421,11 +475,11 @@ class _CatalogHomeState extends State<CatalogHome> {
                                     child: AspectRatio(
                                       aspectRatio:
                                           1, // Set the aspect ratio as needed
-                                      // child: Image.memory(
-                                      //   base64Decode(product!['image']),
-                                      //   fit: BoxFit
-                                      //       .cover, // Adjust how the image fills the space
-                                      // ),
+                                      child: Image.memory(
+                                        base64Decode(product!['image']),
+                                        fit: BoxFit
+                                            .cover, // Adjust how the image fills the space
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -463,10 +517,6 @@ class _CatalogHomeState extends State<CatalogHome> {
                                             color: Color(0xFF4C53A5),
                                           ),
                                         ),
-                                        Icon(
-                                          Icons.shopping_cart_checkout,
-                                          color: Colors.red,
-                                        )
                                       ]),
                                 )
                               ],

@@ -401,23 +401,23 @@ public class CatalogController {
         return null;
     }
 
-    public boolean isUserLoggedId(HttpServletRequest httpServletRequest) throws IOException, InterruptedException{
+    public boolean isUserLoggedId(HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
         Cookie[] cookies = httpServletRequest.getCookies();
 
         if (cookies == null) {
             return false;
         }
 
-        for(Cookie cookie : cookies){
-            if(!("jwtToken".equals(cookie.getName()))){
+        for (Cookie cookie : cookies) {
+            if (!("jwtToken".equals(cookie.getName()))) {
                 continue;
-            } else{
+            } else {
                 RestTemplate restTemplate = new RestTemplate();
                 String urlLogin = baseUrlUser + "/api/user/user-loggedin";
 
                 ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
 
-                if(userLoggedIn.getStatusCode().is2xxSuccessful()) { //User login
+                if (userLoggedIn.getStatusCode().is2xxSuccessful()) { // User login
                     return true;
                 }
             }
@@ -427,13 +427,13 @@ public class CatalogController {
 
     // Seller - Add Catalog GET
     @GetMapping("/catalog/create")
-    public String formAddBarang(Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
+    public String formAddBarang(Model model, HttpServletRequest httpServletRequest)
+            throws IOException, InterruptedException {
         boolean isUserLoggedIn = isUserLoggedId(httpServletRequest);
 
-        if(!isUserLoggedIn){
-            return "user/access-denied.html";    
+        if (!isUserLoggedIn) {
+            return "user/access-denied.html";
         }
-        
 
         var catalogDTO = new CreateCatalogueRequestDTO();
         model.addAttribute("catalogDTO", catalogDTO);
@@ -443,13 +443,13 @@ public class CatalogController {
     // Seller - Add Catalog POST
     @PostMapping(value = { "/catalog/create" }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public String addBarang(@ModelAttribute("catalogDTO") CreateCatalogueRequestDTO catalogDTO,
-                        HttpServletRequest httpServletRequest,
-                        @RequestParam("imageFile") MultipartFile imageFile,
-                        Model model) throws IOException, InterruptedException {
+            HttpServletRequest httpServletRequest,
+            @RequestParam("imageFile") MultipartFile imageFile,
+            Model model) throws IOException, InterruptedException {
 
         boolean isUserLoggedIn = isUserLoggedId(httpServletRequest);
 
-        if(!isUserLoggedIn){
+        if (!isUserLoggedIn) {
             return "user/access-denied.html";
         }
 
@@ -496,7 +496,7 @@ public class CatalogController {
 
         boolean isUserLoggedIn = isUserLoggedId(httpServletRequest);
 
-        if(!isUserLoggedIn){
+        if (!isUserLoggedIn) {
             return "user/access-denied.html";
         }
 

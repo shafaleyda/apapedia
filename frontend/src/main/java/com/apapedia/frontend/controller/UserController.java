@@ -91,7 +91,7 @@ public class UserController {
     public String dashboardSeller(Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
         // Retrieve cookies from the request
         Cookie[] cookies = httpServletRequest.getCookies();
-
+        System.out.println("MASUK SINI DASHBOARD SELLER");
         if (cookies == null) {
             return "user/access-denied.html";
         }
@@ -99,7 +99,7 @@ public class UserController {
         for (Cookie cookie : cookies) {
             if (!("jwtToken".equals(cookie.getName()))) {
                 continue;
-            } else{
+            } else {
                 RestTemplate restTemplate = new RestTemplate();
                 String urlLogin = baseUrlUser + "/api/user/user-loggedin";
 
@@ -138,11 +138,14 @@ public class UserController {
                         }
                         model.addAttribute("listCatalogChart", mapTotalOrdersPerDay);
                     }
+
+                    return "catalog/seller-viewall-catalog";
+                } else {
+                    return "user/access-denied.html";
                 }
-                return "catalog/seller-viewall-catalog";
             }
         }
-        return "user/access-denied.html";
+       return "catalog/seller-viewall-catalog";
     }
 
     @GetMapping("/dashboard/seller/guest")
