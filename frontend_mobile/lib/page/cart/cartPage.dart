@@ -1,6 +1,7 @@
 // ignore_for_file: curly_braces_in_flow_control_structures, avoid_print, use_super_parameters
 
 import 'package:flutter/material.dart';
+import 'package:frontend_mobile/page/order/orderConfirm.dart';
 import 'package:frontend_mobile/service/auth_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -15,6 +16,7 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   late Future<Map<String, dynamic>> _cartFuture;
   late Future<List<Map<String, dynamic>>> _cartItemsFuture;
+  List<Map<String, dynamic>> cartItems = [];
   List<bool> selectedItems = [];
   Map<String, dynamic> cart = {};
 
@@ -112,11 +114,12 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text(
-            'Cart',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          automaticallyImplyLeading: false),
+        title: const Text(
+          'Cart',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        automaticallyImplyLeading: false,
+      ),
       body: Column(
         children: [
           Expanded(
@@ -129,7 +132,7 @@ class _CartPageState extends State<CartPage> {
                   return Text('Error: ${snapshot.error}');
                 } else {
                   cart = snapshot.data![0];
-                  List<Map<String, dynamic>> cartItems = snapshot.data![1];
+                  cartItems = snapshot.data![1];
 
                   if (cartItems.isEmpty) {
                     return Center(
@@ -190,13 +193,19 @@ class _CartPageState extends State<CartPage> {
                                 },
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.memory(
-                                  base64Decode(cartItem['image']),
-                                  height: 100,
-                                  width: 100,
-                                ),
-                              ),
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                          context, '/productDetail',
+                                          arguments: cartItem);
+                                    },
+                                    child: Image.memory(
+                                      base64Decode(cartItem['image']),
+                                      height: 100,
+                                      width: 100,
+                                    ),
+                                  )),
                               const SizedBox(width: 8.0),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -245,7 +254,6 @@ class _CartPageState extends State<CartPage> {
                                                     cartItem['quantity'] - 1,
                                               }),
                                             );
-                                            print('Remove button pressed');
 
                                             if (response.statusCode == 200) {
                                               setState(() {
@@ -301,7 +309,6 @@ class _CartPageState extends State<CartPage> {
                                                     cartItem['quantity'] + 1,
                                               }),
                                             );
-                                            print('Add button pressed');
 
                                             if (response.statusCode == 200) {
                                               setState(() {
@@ -342,6 +349,8 @@ class _CartPageState extends State<CartPage> {
                                               setState(() {
                                                 _cartItemsFuture =
                                                     _checkTokenAndFetchCartItems();
+                                                _cartFuture =
+                                                    _checkTokenAndFetchCart();
                                               });
                                             }
                                           } catch (error) {
@@ -374,13 +383,54 @@ class _CartPageState extends State<CartPage> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    print('Checkout button pressed');
+                    if (selectedItems.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('There is no item selected'),
+                          backgroundColor: Color.fromARGB(255, 196, 96, 89),
+                        ),
+                      );
+                      return;
+                    }
+                    List<Map<String, dynamic>> selectedCartItems = [];
+                    for (int i = 0; i < selectedItems.length; i++) {
+                      if (selectedItems[i]) {
+                        selectedCartItems.add(cartItems[i]);
+                      }
+                    }
+                    Navigator.pushNamed(
+                      context,
+                      '/orderConfirm',
+                      arguments: selectedCartItems,
+                    );
                   },
                   child: const Text('Checkout'),
                 ),
-                Text('Total price: ${cart['totalPrice'] ?? '0.0'}',
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
+                FutureBuilder<Map<String, dynamic>>(
+                  future: _cartFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Text(
+                        'Total price: Loading...',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      );
+                    } else if (snapshot.hasError) {
+                      return const Text(
+                        'Error loading total price',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      );
+                    } else {
+                      num totalPrice = snapshot.data?['totalPrice'] ?? 0.0;
+                      return Text(
+                        'Total price: $totalPrice',
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      );
+                    }
+                  },
+                )
               ],
             ),
           ),

@@ -77,7 +77,6 @@ public class OrderController {
                         }
 
                         model.addAttribute("orderList", orderList);
-                        System.out.println(orderList);
                         return "view-user-order";
 
                     } else{
@@ -85,7 +84,6 @@ public class OrderController {
                     }
 
                 } catch (Exception e){
-                    System.out.println("Caught an exception: " + e.getMessage());
                     e.printStackTrace();
                     return "error"; 
                 }
@@ -126,7 +124,6 @@ public class OrderController {
                         return "error";
                     }
                 } catch (Exception e) {
-                    System.out.println("Caught an exception: " + e.getMessage());
                     e.printStackTrace();
                     return "error"; 
                 }
@@ -196,7 +193,6 @@ public class OrderController {
                         return "error";
                     }
                 } catch (Exception e) {
-                    System.out.println("Caught an exception: " + e.getMessage());
                     e.printStackTrace();
                     return "error"; 
                 }
@@ -242,7 +238,6 @@ public class OrderController {
                     return "successful"; 
 
                 } catch (Exception e) {
-                    System.out.println("Caught an exception: " + e.getMessage());
                     e.printStackTrace();
                     return "error"; 
                 }

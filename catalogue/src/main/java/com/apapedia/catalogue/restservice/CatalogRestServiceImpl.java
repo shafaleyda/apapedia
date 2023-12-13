@@ -1,7 +1,5 @@
 package com.apapedia.catalogue.restservice;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.*;
 
 import com.apapedia.catalogue.dto.request.CreateCatalogueRequestDTO;
@@ -9,7 +7,6 @@ import com.apapedia.catalogue.dto.request.UpdateCatalogRequestDTO;
 import com.apapedia.catalogue.model.Category;
 import com.apapedia.catalogue.repository.CategoryDb;
 import com.apapedia.catalogue.service.FileStoreService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -31,9 +28,6 @@ public class CatalogRestServiceImpl implements CatalogRestService{
 
     @Autowired
     private CategoryDb categoryDb;
-
-//    @Autowired
-//    private FileStoreServiceV1 fileStoreService;
 
     @Autowired
     private FileStoreService fileStoreService;
@@ -321,20 +315,19 @@ public class CatalogRestServiceImpl implements CatalogRestService{
                 .build();
     }
 
-    private byte[] concatenateImages(List<byte[]> images) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        for (byte[] image : images) {
-            outputStream.write(image);
-        }
-        return outputStream.toByteArray();
-    }
+    // private byte[] concatenateImages(List<byte[]> images) throws IOException {
+    //     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    //     for (byte[] image : images) {
+    //         outputStream.write(image);
+    //     }
+    //     return outputStream.toByteArray();
+    // }
 
     @Override
     public Catalog updateRestCatalog (
             UUID idCatalog,
             UpdateCatalogRequestDTO updateCatalogRequestDTO) {
         Catalog catalog = getRestCatalogById(idCatalog);
-        Category category = catalog.getCategory();
 
         var catalogDTO = updateCatalogRequestDTO;
 
@@ -393,7 +386,6 @@ public class CatalogRestServiceImpl implements CatalogRestService{
             List<Catalog> getAllCatalogSortBy = catalogDb.findAll(Sort.by(sortDirection, sortField));
 
             if (sortField.equals("productName")) {
-                System.out.println(sortDirection.equals(Sort.Direction.ASC));
                 if (sortDirection.equals(Sort.Direction.ASC)) {
                     getAllCatalogSortBy = getAllCatalogSortBy.stream()
                     .sorted(Comparator.comparing(c -> c.getProductName().toLowerCase()))
@@ -424,7 +416,6 @@ public class CatalogRestServiceImpl implements CatalogRestService{
         } else {
             List<Catalog> getAllCatalogSortBy = catalogDb.findAllBySeller(seller, Sort.by(sortDirection, sortField));
             if (sortField.equals("productName")) {
-                System.out.println(sortDirection.equals(Sort.Direction.ASC));
                 if (sortDirection.equals(Sort.Direction.ASC)) {
                     getAllCatalogSortBy = getAllCatalogSortBy.stream()
                     .sorted(Comparator.comparing(c -> c.getProductName().toLowerCase()))
