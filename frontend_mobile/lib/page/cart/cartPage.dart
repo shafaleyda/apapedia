@@ -190,13 +190,19 @@ class _CartPageState extends State<CartPage> {
                                 },
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.memory(
-                                  base64Decode(cartItem['image']),
-                                  height: 100,
-                                  width: 100,
-                                ),
-                              ),
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                          context, '/productDetail',
+                                          arguments: cartItem);
+                                    },
+                                    child: Image.memory(
+                                      base64Decode(cartItem['image']),
+                                      height: 100,
+                                      width: 100,
+                                    ),
+                                  )),
                               const SizedBox(width: 8.0),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,

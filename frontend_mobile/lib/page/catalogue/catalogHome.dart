@@ -41,9 +41,7 @@ class _CatalogHomeState extends State<CatalogHome> {
               .map((category) => category['categoryName'].toString())
               .toList();
         });
-        categories.asMap().forEach((index, value) {
-          print("Index $index: $value['categoryName']");
-        });
+        categories.asMap().forEach((index, value) {});
       } else {
         // Handle errors if any
         print("Failed to fetch data");
@@ -415,7 +413,11 @@ class _CatalogHomeState extends State<CatalogHome> {
                                   ],
                                 ),
                                 InkWell(
-                                  onTap: () {},
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, '/productDetail',
+                                        arguments: product);
+                                  },
                                   child: Container(
                                     margin: EdgeInsets.all(10),
                                     child: AspectRatio(
