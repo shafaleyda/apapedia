@@ -1,36 +1,43 @@
 package com.apapedia.order.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 import com.apapedia.order.dto.OrderMapper;
 import com.apapedia.order.dto.request.CreateOrderRequestDTO;
 import com.apapedia.order.dto.request.UpdateOrderRequestDTO;
 import com.apapedia.order.dto.response.Order;
-import com.apapedia.order.dto.response.Product;
+import com.apapedia.order.dto.response.Catalogue;
 import com.apapedia.order.model.OrderItemModel;
 import com.apapedia.order.model.OrderModel;
 import com.apapedia.order.service.OrderItemService;
 import com.apapedia.order.service.OrderService;
-import com.apapedia.order.service.ProductService;
-
-import io.netty.handler.codec.http.HttpObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashSet;
 import java.util.UUID;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Dictionary;
@@ -48,27 +55,59 @@ public class OrderController {
     @Autowired
     OrderMapper orderMapper;
 
-    @Autowired
-    ProductService productMockService;
+    String baseUrlCatalogue = "http://localhost:8082";
+    String baseUrlOrder = "http://localhost:8080";
+    String baseUrlUser = "http://localhost:8081";
 
     @PostMapping(value = "/order/create")
-    private List<OrderModel> createOrder(@Valid @RequestBody CreateOrderRequestDTO orderRequestDTO){
+    private List<OrderModel> createOrder(@Valid @RequestBody CreateOrderRequestDTO orderRequestDTO) throws IOException, InterruptedException{
         List<OrderModel> orderModels = new ArrayList<>();
         System.out.println(orderRequestDTO.getItems().size());
         for(Map.Entry<UUID,Integer> entry : orderRequestDTO.getItems().entrySet()){
             UUID productId = entry.getKey();
             Integer quantity = entry.getValue();
-            //Use mock service to get product price
-            Product product = productMockService.getProductById(productId).block();
 
-            //Use this to check if automatically create new order model
-            //product.setSeller(UUID.randomUUID());
+            //Product product = productService.getProductById(productId).block();
+
+            //Update product stock
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(baseUrlCatalogue + "/api/catalog/" + productId))
+                .header("Content-Type", "application/json")
+                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .build();
+
+            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            String responseBody = response.body();
+            ObjectMapper objectMapper = new ObjectMapper();
+            Catalogue catalog = objectMapper.readValue(responseBody, Catalogue.class);
+
+            if(catalog.getStock() < quantity){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product stock is not enough");
+            }
+
+            catalog.setStock(catalog.getStock() - quantity);
+
+            RestTemplate restTemplate = new RestTemplate();
+
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            HttpHeaders headers = new HttpHeaders();
+
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+            body.add("model", catalog);
+
+            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+            restTemplate.exchange(
+                baseUrlCatalogue + "/api/catalog/update/" + productId,
+                HttpMethod.PUT,
+                requestEntity,
+                Catalogue.class);
 
             //Check if order already exist
             OrderModel order = null;
             if(orderModels.size() > 0){
                 for(OrderModel existingOrder : orderModels){
-                    if(existingOrder.getSeller().equals(product.getSeller())){
+                    if(existingOrder.getSeller().equals(catalog.getSeller())){
                         order = existingOrder;
                         break;
                     }
@@ -79,26 +118,28 @@ public class OrderController {
             OrderItemModel orderItem = new OrderItemModel();
             orderItem.setProductId(productId);
             orderItem.setQuantity(quantity);
-            orderItem.setProductPrice(product.getPrice());
-            orderItem.setProductName(product.getName());
+            orderItem.setProductPrice(catalog.getPrice());
+            System.out.println("product:"+ catalog.getProductName());
+            orderItem.setProductName(catalog.getProductName());
 
             //Create order
             if (order != null) {
                 order.getListOrderItem().add(orderItem);
-                order.setTotalPrice(order.getTotalPrice() + product.getPrice() * quantity);
+                order.setTotalPrice(order.getTotalPrice() + catalog.getPrice() * quantity);
             } else{
                 order = new OrderModel();
-                order.setSeller(product.getSeller());
+                order.setSeller(catalog.getSeller());
                 order.setCustomer(orderRequestDTO.getCustomer());
                 order.setCreatedAt(LocalDateTime.now());
                 order.setUpdatedAt(LocalDateTime.now());
-                order.setTotalPrice(product.getPrice() * quantity);
+                order.setTotalPrice(catalog.getPrice() * quantity);
                 order.setStatus(0);
                 orderService.saveOrder(order);
                 order.setListOrderItem(new HashSet<OrderItemModel>());
                 order.getListOrderItem().add(orderItem);
                 orderModels.add(order);
             }
+            System.out.println("product:"+orderItem.getProductName());
             orderItem.setOrder(order);
             orderItemService.createOrderItem(orderItem);
             orderService.saveOrder(order);
