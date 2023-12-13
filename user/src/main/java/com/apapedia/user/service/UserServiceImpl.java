@@ -7,7 +7,6 @@ import com.apapedia.user.config.JwtService;
 import com.apapedia.user.dto.request.LoginJwtRequestDTO;
 import com.apapedia.user.model.User;
 import com.apapedia.user.repository.UserDb;
-
 @Service
 public class UserServiceImpl implements UserService {
 

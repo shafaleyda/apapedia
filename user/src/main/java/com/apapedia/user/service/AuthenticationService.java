@@ -48,11 +48,10 @@ public class AuthenticationService {
         }
 
         var userId = UUID.randomUUID();
-        System.out.println("user id " + userId);
 
         JsonObject jsonBody = new JsonObject();
         jsonBody.addProperty("userId", userId.toString());
-        System.out.printf("json: ", jsonBody); 
+
         HttpRequest requestCartId = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/cart/create"))
                 .header("content-type", "application/json")
@@ -72,7 +71,6 @@ public class AuthenticationService {
         // Output string tanpa tanda kutip
         System.out.println("Response body tanpa tanda kutip:");
         System.out.println(responseBodyTanpaPetik);
-        System.out.println("userid after api " + userId);
         var user = Customer.builder()
                 .id(userId)
                 .name(request.getName())
