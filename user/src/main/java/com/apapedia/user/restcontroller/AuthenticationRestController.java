@@ -41,7 +41,6 @@ public class AuthenticationRestController {
     public ResponseEntity<AuthenticationResponse> authenticate(
         @RequestBody AuthenticationRequest request
     ) throws Exception {
-        System.out.println("CP 0");
         return ResponseEntity.ok(service.authenticate(request));
     }
 
