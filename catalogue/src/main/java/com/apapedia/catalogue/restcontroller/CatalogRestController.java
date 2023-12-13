@@ -26,6 +26,7 @@ import com.apapedia.catalogue.restservice.CatalogRestService;
 import com.apapedia.catalogue.dto.mapper.CatalogMapper;
 import com.apapedia.catalogue.rest.CatalogRest;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api")
 public class CatalogRestController {
