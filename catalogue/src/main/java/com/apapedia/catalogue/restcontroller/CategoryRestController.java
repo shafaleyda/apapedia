@@ -1,6 +1,5 @@
 package com.apapedia.catalogue.restcontroller;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +25,6 @@ import java.io.IOException;
 
 import com.apapedia.catalogue.model.Category;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api")
 public class CategoryRestController {

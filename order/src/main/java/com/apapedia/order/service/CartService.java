@@ -11,6 +11,6 @@ public interface CartService {
     CartModel getCartById(UUID id);
 
     Optional<CartModel> getCartByUserId(UUID userId);
-    UUID getCartByIdUser(UUID idUser); 
+
     CartModel updateCart(CartModel cart) throws IOException, InterruptedException;
 }

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:frontend_mobile/common/cookie_request.dart';
 import 'package:frontend_mobile/main.dart';
-import 'package:frontend_mobile/page/catalogue/catalogHomeCustomer.dart';
-import 'package:frontend_mobile/page/catalogue/catalogHomeGuest.dart';
+import 'package:frontend_mobile/page/catalogue/catalogHome.dart';
 import 'package:frontend_mobile/page/home.dart';
 import 'package:frontend_mobile/page/landingPage.dart';
 import 'package:frontend_mobile/page/order-history/order-history.dart';
@@ -30,8 +29,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final page = [
-      LandingPage(),
-      CatalogHomeCustomer(),
+      CatalogHome(),
       OrderHistoryPage(),
       LandingPage(), //cart page
       ProfilePage(),
