@@ -26,8 +26,8 @@ public class CartModel {
     @Column(name = "user_id", nullable = false)
     private UUID userId;
 
-
-    @Column(name = "total_price")
+    @NotNull
+    @Column(name = "total_price", nullable = false)
     private Integer totalPrice = 0;
 
     @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

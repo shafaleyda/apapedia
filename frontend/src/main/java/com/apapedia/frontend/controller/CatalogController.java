@@ -522,16 +522,18 @@ public class CatalogController {
             @ModelAttribute("catalogue") UpdateCatalogueRequestDTO catalogue,
             @RequestParam("imageFile") MultipartFile imageFile,
             Model model) throws IOException, InterruptedException {
-
+                
         RestTemplate restTemplate = new RestTemplate();
         String getUserIdUrl = baseUrlUser + "/api/user/user-id";
-
+        
         ResponseEntity<UserId> responseEntity = restTemplate.getForEntity(getUserIdUrl, UserId.class);
-
+        
         UserId user = responseEntity.getBody();
         catalogue.setSeller(UUID.fromString(user.getUserId()));
-
+        
         HttpHeaders headers = new HttpHeaders();
+                
+        restTemplate = new RestTemplate();
 
         restTemplate = new RestTemplate();
 
@@ -546,7 +548,7 @@ public class CatalogController {
             }
         };
 
-        catalogue.setSeller(UUID.randomUUID());
+        // catalogue.setSeller(UUID.randomUUID());
 
         body.add("image", resource);
         body.add("model", catalogue);
