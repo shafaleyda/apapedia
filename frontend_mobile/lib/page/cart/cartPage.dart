@@ -114,10 +114,12 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text(
-        'Cart',
-        style: TextStyle(fontWeight: FontWeight.bold),
-      )),
+        title: const Text(
+          'Cart',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        automaticallyImplyLeading: false,
+      ),
       body: Column(
         children: [
           Expanded(
@@ -252,7 +254,6 @@ class _CartPageState extends State<CartPage> {
                                                     cartItem['quantity'] - 1,
                                               }),
                                             );
-                                            print('Remove button pressed');
 
                                             if (response.statusCode == 200) {
                                               setState(() {
@@ -308,7 +309,6 @@ class _CartPageState extends State<CartPage> {
                                                     cartItem['quantity'] + 1,
                                               }),
                                             );
-                                            print('Add button pressed');
 
                                             if (response.statusCode == 200) {
                                               setState(() {

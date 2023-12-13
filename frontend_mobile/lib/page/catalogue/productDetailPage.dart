@@ -47,14 +47,11 @@ class _ProductDetailState extends State<ProductDetailPage> {
         http.Response responseCart = await http.get(urlGetCard);
 
         if (responseCart.statusCode == 200) {
-          //check if product already in cart
-          print(userLoggedIn['id']);
           var urlGetCartItems = Uri.parse(
               'http://localhost:8080/cart/customer/${userLoggedIn['id']}');
 
           http.Response responseCartItems = await http.get(urlGetCartItems);
           if (responseCartItems.statusCode == 200) {
-            print('cart items');
             List<Map<String, dynamic>> cartItems =
                 List<Map<String, dynamic>>.from(
                     json.decode(responseCartItems.body));
@@ -77,8 +74,6 @@ class _ProductDetailState extends State<ProductDetailPage> {
           String cartId = cart['id'];
 
           var urlAddItem = Uri.parse('http://localhost:8080/cart/$cartId/add');
-
-          print(product['idCatalog']);
 
           http.Response responseAddItem = await http.post(urlAddItem,
               headers: <String, String>{

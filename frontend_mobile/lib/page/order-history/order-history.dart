@@ -76,7 +76,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
             orderList.add(orderDetailsMap);
           }
 
-          print(orderList);
           return orderList;
         }
       } else {
@@ -107,8 +106,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
         int updatedStatus = responseBody['status'];
         String idSeller = responseBody['seller'];
         int totalPrice = responseBody['totalPrice'];
-
-        print(updatedStatus);
 
         if (updatedStatus == 5) {
           final String uriUpdateBalance =
@@ -270,7 +267,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                                                               ['id'],
                                                           selectedStatusList[
                                                               index]);
-                                                  print(result);
                                                   setState(() {});
                                                 },
                                           child: orderDetails['order']

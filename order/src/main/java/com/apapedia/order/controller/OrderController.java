@@ -62,14 +62,10 @@ public class OrderController {
     @PostMapping(value = "/order/create")
     private List<OrderModel> createOrder(@Valid @RequestBody CreateOrderRequestDTO orderRequestDTO) throws IOException, InterruptedException{
         List<OrderModel> orderModels = new ArrayList<>();
-        System.out.println(orderRequestDTO.getItems().size());
         for(Map.Entry<UUID,Integer> entry : orderRequestDTO.getItems().entrySet()){
             UUID productId = entry.getKey();
 
-            System.out.println("product:"+ productId);
             Integer quantity = entry.getValue();
-
-            //Product product = productService.getProductById(productId).block();
 
             //Update product stock
             HttpRequest request = HttpRequest.newBuilder()
@@ -82,8 +78,6 @@ public class OrderController {
             String responseBody = response.body();
             ObjectMapper objectMapper = new ObjectMapper();
             Catalogue catalog = objectMapper.readValue(responseBody, Catalogue.class);
-            System.out.println("product:"+ catalog.getProductName());
-            System.out.println("stock:"+ catalog.getStock());
 
             if(catalog.getStock() < quantity){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product stock is not enough");
@@ -123,7 +117,6 @@ public class OrderController {
             orderItem.setProductId(productId);
             orderItem.setQuantity(quantity);
             orderItem.setProductPrice(catalog.getPrice());
-            System.out.println("product:"+ catalog.getProductName());
             orderItem.setProductName(catalog.getProductName());
 
             //Create order
@@ -143,7 +136,6 @@ public class OrderController {
                 order.getListOrderItem().add(orderItem);
                 orderModels.add(order);
             }
-            System.out.println("product:"+orderItem.getProductName());
             orderItem.setOrder(order);
             orderItemService.createOrderItem(orderItem);
             orderService.saveOrder(order);
@@ -152,9 +144,8 @@ public class OrderController {
     }
 
     @GetMapping(value = "/order/customer/{id}")
-    private ResponseEntity<Dictionary<String, Object>> retrieveCustomerOrder(@PathVariable("id") UUID id, HttpServletRequest httpServletRequest){
+    public ResponseEntity<Dictionary<String, Object>> retrieveCustomerOrder(@PathVariable("id") UUID id, HttpServletRequest httpServletRequest){
         List<Order> listOrderDto = orderService.listByCustomer(id);
-
         Dictionary<String, Object> responseData = new Hashtable<>();
         responseData.put("status", HttpStatus.OK.value());
         responseData.put("message", "success");
@@ -163,9 +154,8 @@ public class OrderController {
     }
 
     @GetMapping(value = "/order/seller/{id}")
-    private ResponseEntity<Dictionary<String, Object>> retrieveSellerOrder(@PathVariable("id") UUID id, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<Dictionary<String, Object>> retrieveSellerOrder(@PathVariable("id") UUID id, HttpServletRequest httpServletRequest) {
         List<Order> listOrderDto = orderService.listBySeller(id);
-
         Dictionary<String, Object> responseData = new Hashtable<>();
         responseData.put("status", HttpStatus.OK.value());
         responseData.put("message", "success");
@@ -177,19 +167,15 @@ public class OrderController {
     public OrderModel updateOrderStatus(@PathVariable("orderId") UUID id,
             @Valid @RequestBody UpdateOrderRequestDTO orderDTO, BindingResult bindingResult) {
     
-        System.out.println("Received request for orderId: " + id);
         OrderModel oldOrder = orderService.getOrderByOrderId(id);
     
         if(bindingResult.hasFieldErrors()){
-            System.out.println("Invalid request body: " + bindingResult.getAllErrors());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request body has invalid type or missing field"); 
         } else {
             var order = orderMapper.updateOrderRequestDTOToOrder(orderDTO);
             order.setId(id);
             order.setStatus(orderDTO.getStatus());;
             OrderModel orderUpdated = orderService.updateOrder(order, oldOrder); 
-    
-            System.out.println("Order updated successfully: " + orderUpdated);
             return orderUpdated; 
         }
     }

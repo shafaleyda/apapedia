@@ -1,6 +1,5 @@
 package com.apapedia.catalogue.rest;
 
-import com.apapedia.catalogue.model.ImageData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

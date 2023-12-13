@@ -1,7 +1,6 @@
 package com.apapedia.catalogue.service;
 
 import com.apapedia.catalogue.config.FileStorageProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +15,6 @@ import java.nio.file.StandardCopyOption;
 public class FileStoreService {
 
     private final Path fileStorageLocation;
-    @Autowired
 
     public FileStoreService(FileStorageProperties fileStorageProperties) {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();

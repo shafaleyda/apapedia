@@ -70,7 +70,6 @@ public class UserController {
 
             HttpResponse<String> response = HttpClient.newHttpClient().send(request,
                     HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
 
             if (response.statusCode() != 200) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Gagal melakukan registrasi penjual");
@@ -91,7 +90,6 @@ public class UserController {
     public String dashboardSeller(Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
         // Retrieve cookies from the request
         Cookie[] cookies = httpServletRequest.getCookies();
-
         if (cookies == null) {
             return "user/access-denied.html";
         }
@@ -99,12 +97,11 @@ public class UserController {
         for (Cookie cookie : cookies) {
             if (!("jwtToken".equals(cookie.getName()))) {
                 continue;
-            } else{
+            } else {
                 RestTemplate restTemplate = new RestTemplate();
                 String urlLogin = baseUrlUser + "/api/user/user-loggedin";
 
                 ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
-                //System.out.println(userLoggedIn);
 
                 if(userLoggedIn.getStatusCode().is2xxSuccessful()) { //User login
                     ResponseEntity<Map<String, Object>> userResponse = restTemplate.exchange(
@@ -138,11 +135,14 @@ public class UserController {
                         }
                         model.addAttribute("listCatalogChart", mapTotalOrdersPerDay);
                     }
+
+                    return "catalog/seller-viewall-catalog";
+                } else {
+                    return "user/access-denied.html";
                 }
-                return "catalog/seller-viewall-catalog";
             }
         }
-        return "user/access-denied.html";
+       return "catalog/seller-viewall-catalog";
     }
 
     @GetMapping("/dashboard/seller/guest")

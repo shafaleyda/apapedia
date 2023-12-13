@@ -177,6 +177,7 @@ class _OrderConfirmState extends State<OrderConfirmPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Order Confirmation'),
+        automaticallyImplyLeading: true,
       ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: _userFuture,

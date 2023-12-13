@@ -44,83 +44,6 @@ public class CatalogController {
     String baseUrlOrder = "http://localhost:8080";
     String baseUrlUser = "http://localhost:8081";
 
-    // Guest - View All
-    // @GetMapping("/catalog/viewall-guest")
-    // public String viewAllCatalog(Model model){
-    // RestTemplate restTemplate = new RestTemplate();
-    // String url = baseUrlCatalogue + "/api/catalog/all";
-
-    // List<Map<String, Object>> catalogData = restTemplate.getForObject(url,
-    // List.class);
-
-    // model.addAttribute("catalogData", catalogData);
-    // model.addAttribute("valid", Boolean.TRUE);
-    // return "catalog/guest-viewall-catalog";
-    // }
-
-    // Seller - View All
-    // @GetMapping("/catalog/viewall-seller")
-    // public String sellerViewAllCatalog(Model model, HttpServletRequest
-    // httpServletRequest){
-    // // Retrieve cookies from the request
-    // Cookie[] cookies = httpServletRequest.getCookies();
-
-    // if (cookies == null) {
-    // return "user/access-denied.html";
-    // }
-
-    // for (Cookie cookie : cookies) {
-    // if (!("jwtToken".equals(cookie.getName()))) {
-    // continue;
-    // } else{
-    // RestTemplate restTemplate = new RestTemplate();
-    // String urlLogin = baseUrlUser + "/api/user/user-loggedin";
-
-    // ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin,
-    // Object.class);
-    // //System.out.println(userLoggedIn);
-
-    // if(userLoggedIn.getStatusCode().is2xxSuccessful()) { //User login
-    // ResponseEntity<Map<String, Object>> userResponse = restTemplate.exchange(
-    // urlLogin, HttpMethod.GET, null, new ParameterizedTypeReference<Map<String,
-    // Object>>() {});
-    // Map<String, Object> responseBody = userResponse.getBody();
-    // UUID seller = UUID.fromString(responseBody.get("id").toString());
-
-    // String url = baseUrlCatalogue + "/api/catalog/seller/" + seller.toString();
-
-    // //Catalog
-    // List<Map<String, Object>> catalogData = restTemplate.getForObject(url,
-    // List.class);
-
-    // model.addAttribute("catalogData", catalogData);
-    // model.addAttribute("valid", Boolean.TRUE);
-
-    // //Chart
-    // String urlChart = baseUrlOrder + "/order/salesChart/" + seller.toString();
-    // ResponseEntity<Map<LocalDate, Integer>> response = restTemplate.exchange(
-    // urlChart,
-    // HttpMethod.GET,
-    // null,
-    // new ParameterizedTypeReference<Map<LocalDate, Integer>>() {}
-    // );
-
-    // if (response.getStatusCode().is2xxSuccessful()) {
-    // Map<LocalDate, Integer> mapTotalOrdersPerDay = response.getBody();
-    // Map<String, Integer> salesChartStringKeys = new HashMap<>();
-    // for (Map.Entry<LocalDate, Integer> entry : mapTotalOrdersPerDay.entrySet()) {
-    // String dateStringKey = entry.getKey().toString();
-    // salesChartStringKeys.put(dateStringKey, entry.getValue());
-    // }
-    // model.addAttribute("listCatalogChart", mapTotalOrdersPerDay);
-    // }
-    // }
-    // return "catalog/seller-viewall-catalog";
-    // }
-    // }
-    // return "user/access-denied.html";
-    // }
-
     // Guest - Find By Name
     @GetMapping("/catalog/find-by-name")
     public String viewAllCatalogByName(@RequestParam(name = "name", required = false) String name, Model model) {
@@ -155,7 +78,6 @@ public class CatalogController {
 
             String urlLogin = baseUrlUser + "/api/user/user-loggedin";
             ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
-            // System.out.println(userLoggedIn);
 
             if (userLoggedIn.getStatusCode().is2xxSuccessful()) {
                 // Catalog Data
@@ -401,23 +323,23 @@ public class CatalogController {
         return null;
     }
 
-    public boolean isUserLoggedId(HttpServletRequest httpServletRequest) throws IOException, InterruptedException{
+    public boolean isUserLoggedId(HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
         Cookie[] cookies = httpServletRequest.getCookies();
 
         if (cookies == null) {
             return false;
         }
 
-        for(Cookie cookie : cookies){
-            if(!("jwtToken".equals(cookie.getName()))){
+        for (Cookie cookie : cookies) {
+            if (!("jwtToken".equals(cookie.getName()))) {
                 continue;
-            } else{
+            } else {
                 RestTemplate restTemplate = new RestTemplate();
                 String urlLogin = baseUrlUser + "/api/user/user-loggedin";
 
                 ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
 
-                if(userLoggedIn.getStatusCode().is2xxSuccessful()) { //User login
+                if (userLoggedIn.getStatusCode().is2xxSuccessful()) { // User login
                     return true;
                 }
             }
@@ -427,13 +349,13 @@ public class CatalogController {
 
     // Seller - Add Catalog GET
     @GetMapping("/catalog/create")
-    public String formAddBarang(Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
+    public String formAddBarang(Model model, HttpServletRequest httpServletRequest)
+            throws IOException, InterruptedException {
         boolean isUserLoggedIn = isUserLoggedId(httpServletRequest);
 
-        if(!isUserLoggedIn){
-            return "user/access-denied.html";    
+        if (!isUserLoggedIn) {
+            return "user/access-denied.html";
         }
-        
 
         var catalogDTO = new CreateCatalogueRequestDTO();
         model.addAttribute("catalogDTO", catalogDTO);
@@ -443,13 +365,13 @@ public class CatalogController {
     // Seller - Add Catalog POST
     @PostMapping(value = { "/catalog/create" }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public String addBarang(@ModelAttribute("catalogDTO") CreateCatalogueRequestDTO catalogDTO,
-                        HttpServletRequest httpServletRequest,
-                        @RequestParam("imageFile") MultipartFile imageFile,
-                        Model model) throws IOException, InterruptedException {
+            HttpServletRequest httpServletRequest,
+            @RequestParam("imageFile") MultipartFile imageFile,
+            Model model) throws IOException, InterruptedException {
 
         boolean isUserLoggedIn = isUserLoggedId(httpServletRequest);
 
-        if(!isUserLoggedIn){
+        if (!isUserLoggedIn) {
             return "user/access-denied.html";
         }
 
@@ -496,9 +418,16 @@ public class CatalogController {
 
         boolean isUserLoggedIn = isUserLoggedId(httpServletRequest);
 
-        if(!isUserLoggedIn){
+        if (!isUserLoggedIn) {
             return "user/access-denied.html";
         }
+
+        RestTemplate restTemplate = new RestTemplate();
+        String getUserIdUrl = baseUrlUser + "/api/user/user-id";
+        
+        ResponseEntity<UserId> responseEntity = restTemplate.getForEntity(getUserIdUrl, UserId.class);
+        
+        UserId user = responseEntity.getBody();
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(baseUrlCatalogue + "/api/catalog/" + id))
@@ -512,6 +441,11 @@ public class CatalogController {
         // Parse JSON using Jackson
         ObjectMapper objectMapper = new ObjectMapper();
         Catalogue catalog = objectMapper.readValue(responseBody, Catalogue.class);
+        
+        if(!catalog.getSeller().equals(UUID.fromString(user.getUserId()))) {
+            return "user/access-denied.html";
+        }
+
         model.addAttribute("catalogue", catalog);
         return "form-update-catalogue";
     }
@@ -545,8 +479,6 @@ public class CatalogController {
                 return imageFile.getOriginalFilename();
             }
         };
-
-        // catalogue.setSeller(UUID.randomUUID());
 
         body.add("image", resource);
         body.add("model", catalogue);

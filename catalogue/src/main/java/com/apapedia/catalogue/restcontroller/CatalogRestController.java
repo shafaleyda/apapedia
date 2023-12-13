@@ -4,7 +4,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Sort;
 
 import com.apapedia.catalogue.dto.request.CreateCatalogueRequestDTO;
-import com.apapedia.catalogue.service.FileStoreService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,19 +22,14 @@ import java.sql.SQLException;
 import java.io.IOException;
 
 import com.apapedia.catalogue.restservice.CatalogRestService;
-import com.apapedia.catalogue.dto.mapper.CatalogMapper;
 import com.apapedia.catalogue.rest.CatalogRest;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api")
 public class CatalogRestController {
     @Autowired
     private CatalogRestService catalogRestService; 
-    private FileStoreService fileStoreService;
-
-     @Autowired
-    private CatalogMapper catalogMapper;
-    // private FileStoreServiceV1 fileStoreService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -125,7 +119,6 @@ public class CatalogRestController {
             HttpServletResponse response, 
             HttpServletRequest request) throws SQLException, IOException
     {
-        System.out.println("\ngak login by name");
         if (!namaProduk.isEmpty()) {
             List<CatalogRest> listCatalogFindByName = catalogRestService.retrieveRestAllCatalogByCatalogName(namaProduk, null);
             return listCatalogFindByName;
@@ -144,10 +137,8 @@ public class CatalogRestController {
         String url = baseUrlUser + "/api/user/user-loggedin";
 
         ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(url, Object.class); 
-        System.out.println(userLoggedIn);
 
         if(userLoggedIn.getStatusCode().is2xxSuccessful()) { //User login
-            System.out.println("\nseller login by name");
             ResponseEntity<Map<String, Object>> userResponse = restTemplate.exchange(
                                                                 url, HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, Object>>() {});
             Map<String, Object> responseBody = userResponse.getBody();
@@ -165,7 +156,6 @@ public class CatalogRestController {
     @ResponseBody public List<CatalogRest> retrieveAllCatalogByPrice(
             @RequestParam Integer minPrice, @RequestParam Integer maxPrice)
     {
-        System.out.println("\nseller not login by price");
         if (minPrice.toString().length() > 0 && maxPrice.toString().length() > 0) {
             List<CatalogRest> listCatalogFindByPrice = catalogRestService.retrieveRestAllCatalogByCatalogPrice(minPrice, maxPrice, null);
             return listCatalogFindByPrice;
@@ -177,16 +167,13 @@ public class CatalogRestController {
     @ResponseBody public List<CatalogRest> sellerViewRetrieveAllCatalogByPrice(
             @RequestParam Integer minPrice, @RequestParam Integer maxPrice)
     {
-        System.out.println("\nseller login by price");
 
         RestTemplate restTemplate = new RestTemplate();
         String url = baseUrlUser + "/api/user/user-loggedin";
 
         ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(url, Object.class); 
-        System.out.println(userLoggedIn);
 
         if(userLoggedIn.getStatusCode().is2xxSuccessful()) { //User login
-            System.out.println("\nseller login by name");
             ResponseEntity<Map<String, Object>> userResponse = restTemplate.exchange(
                                                                 url, HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, Object>>() {});
             Map<String, Object> responseBody = userResponse.getBody();
@@ -205,7 +192,6 @@ public class CatalogRestController {
     @ResponseBody public List<CatalogRest> retrieveAllSortBy(@RequestParam(defaultValue = "productName") String sortField,
                                                                                       @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection) 
     {
-        System.out.println("\nsort not login");
         // Sort sort = Sort.by(sortDirection, sortField); 
         List<CatalogRest> listAllCatalogSortBy = catalogRestService.findAllSortBy(sortDirection, sortField, null);
         return listAllCatalogSortBy;
@@ -220,10 +206,8 @@ public class CatalogRestController {
         String url = baseUrlUser + "/api/user/user-loggedin";
 
         ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(url, Object.class); 
-        System.out.println(userLoggedIn);
 
         if(userLoggedIn.getStatusCode().is2xxSuccessful()) { //User login
-            System.out.println("\nsort login");
 
             ResponseEntity<Map<String, Object>> userResponse = restTemplate.exchange(
                                                                 url, HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, Object>>() {});
