@@ -535,8 +535,6 @@ public class CatalogController {
                 
         restTemplate = new RestTemplate();
 
-        restTemplate = new RestTemplate();
-
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
