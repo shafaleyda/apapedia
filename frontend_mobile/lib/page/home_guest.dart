@@ -8,18 +8,17 @@ import 'package:frontend_mobile/page/landingPage.dart';
 import 'package:frontend_mobile/page/order-history/order-history.dart';
 import 'package:frontend_mobile/page/profile/customer.dart';
 import 'package:frontend_mobile/page/profile/profile.dart';
-import 'package:frontend_mobile/page/cart/cartPage.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({
+class GuestHomePage extends StatefulWidget {
+  const GuestHomePage({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<GuestHomePage> createState() => _GuestHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _GuestHomePageState extends State<GuestHomePage> {
   int pageIndex = 0;
   @override
   void initState() {
@@ -30,10 +29,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final page = [
       CatalogHome(),
-      OrderHistoryPage(),
-      LandingPage(), //cart page
-      ProfilePage(),
-      CartPage(),
     ];
     return Scaffold(
       body: page[pageIndex],
@@ -46,22 +41,6 @@ class _HomePageState extends State<HomePage> {
             'images/navbar-icon.png',
             width: 30,
             height: 30,
-          ),
-          Icon(
-            Icons.receipt_long_outlined,
-            size: 30,
-          ),
-          Icon(
-            Icons.shopping_cart_outlined,
-            size: 30,
-          ),
-          Icon(
-            Icons.person_outlined,
-            size: 30,
-          ),
-          Icon(
-            Icons.shopping_cart_outlined,
-            size: 30,
           ),
         ],
         animationCurve: Curves.easeInOut,
