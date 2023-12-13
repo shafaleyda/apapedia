@@ -103,6 +103,10 @@
                             <h5 th:text="${item['productName']}" class="card-title"></h5>
                             <p th:text="'Rp ' + ${item['price']}" class="card-text"><b></b></p>
                             <small class="text-muted mb-0"><span th:text="${item['productDescription']}"></span></small>
+                            <br>
+                            <a class="btn btn-primary mt-3" th:href="@{/catalog/update/{id}(id=${item['idCatalog']})}">
+                                Edit product
+                            </a>
                         </div>
 
                         <a class="icon-link mb-1 ms-1" th:href="@{/catalog/update/{id}(id=${item['idCatalog']})}">

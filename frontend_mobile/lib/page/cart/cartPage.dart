@@ -1,3 +1,5 @@
+// ignore_for_file: curly_braces_in_flow_control_structures, avoid_print, use_super_parameters
+
 import 'package:flutter/material.dart';
 import 'package:frontend_mobile/service/auth_service.dart';
 import 'package:http/http.dart' as http;
@@ -13,6 +15,8 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   late Future<Map<String, dynamic>> _cartFuture;
   late Future<List<Map<String, dynamic>>> _cartItemsFuture;
+  List<bool> selectedItems = [];
+  Map<String, dynamic> cart = {};
 
   @override
   void initState() {
@@ -53,7 +57,7 @@ class _CartPageState extends State<CartPage> {
       var response = await http.get(url);
 
       if (response.statusCode == 200) {
-        Map<String, dynamic> cart = json.decode(response.body);
+        cart = json.decode(response.body);
         return cart;
       }
     } catch (error) {
@@ -108,103 +112,279 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cart Page'),
-      ),
-      body: FutureBuilder(
-        future: Future.wait([_cartFuture, _cartItemsFuture]),
-        builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            Map<String, dynamic> cart = snapshot.data![0];
-            List<Map<String, dynamic>> cartItems = snapshot.data![1];
-            print('Cart: $cart');
-            print('Cart items: $cartItems');
+          title: const Text(
+            'Cart',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          automaticallyImplyLeading: false),
+      body: Column(
+        children: [
+          Expanded(
+            child: FutureBuilder(
+              future: Future.wait([_cartFuture, _cartItemsFuture]),
+              builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  cart = snapshot.data![0];
+                  List<Map<String, dynamic>> cartItems = snapshot.data![1];
 
-            return Scrollbar(
-              child: SingleChildScrollView(
-                child: GridView.count(
-                  childAspectRatio: 0.68,
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  children: [
-                    for (var cartItem in cartItems)
-                      Container(
-                        padding: EdgeInsets.only(left: 15, right: 15, top: 5),
-                        margin:
-                            EdgeInsets.symmetric(vertical: 3, horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Column(
-                          children: [
-                            InkWell(
-                              onTap: () {},
-                              child: Container(
-                                margin: EdgeInsets.all(10),
-                                child: AspectRatio(
-                                  aspectRatio:
-                                      1, // Set the aspect ratio as needed
-                                  child: Image.memory(
-                                    base64Decode(cartItem!['image']),
-                                    fit: BoxFit
-                                        .cover, // Adjust how the image fills the space
+                  if (cartItems.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: Color.fromARGB(208, 255, 237, 210),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                              padding: const EdgeInsets.all(8.0),
+                              child: const Center(
+                                child: Text(
+                                  "Your cart is empty",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 0, 0, 0),
                                   ),
                                 ),
                               ),
                             ),
-                            Container(
-                              padding: EdgeInsets.only(bottom: 8),
-                              alignment: Alignment.centerLeft,
-                              child: Text(cartItem['productName'],
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: Color(0xFF4C53A5),
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                            ),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                cartItem['productDescription'],
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Color(0xFF4C53A5),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  if (selectedItems.length != cartItems.length) {
+                    selectedItems =
+                        List.generate(cartItems.length, (index) => false);
+                  }
+
+                  return ListView.builder(
+                    itemCount: cartItems.length,
+                    itemBuilder: (context, index) {
+                      Map<String, dynamic> cartItem = cartItems[index];
+                      return Container(
+                          padding: const EdgeInsets.only(
+                              left: 15, right: 15, top: 5),
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 3, horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            children: [
+                              Checkbox(
+                                value: selectedItems[index],
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    selectedItems[index] = value!;
+                                  });
+                                },
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.memory(
+                                  base64Decode(cartItem['image']),
+                                  height: 100,
+                                  width: 100,
                                 ),
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10),
-                              child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      cartItem['price'].toString(),
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF4C53A5),
-                                      ),
+                              const SizedBox(width: 8.0),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${cartItem['productName']}',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    Icon(
-                                      Icons.shopping_cart_checkout,
-                                      color: Colors.red,
-                                    )
-                                  ]),
-                            )
-                          ],
-                        ),
-                      )
-                  ],
+                                  ),
+                                  Text(
+                                    'Harga: ${cartItem['price']}',
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                              const Spacer(
+                                flex: 1,
+                              ),
+                              Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        onPressed: () async {
+                                          try {
+                                            if (cartItem['quantity'] == 1) {
+                                              return;
+                                            }
+                                            String cartId = cart['id'];
+                                            String cartItemId = cartItem['id'];
+
+                                            var url = Uri.parse(
+                                                'http://localhost:8080/cart/$cartId/update');
+
+                                            var response = await http.put(
+                                              url,
+                                              headers: <String, String>{
+                                                'Content-Type':
+                                                    'application/json',
+                                              },
+                                              body: jsonEncode(<String, Object>{
+                                                'id': cartItemId,
+                                                'quantity':
+                                                    cartItem['quantity'] - 1,
+                                              }),
+                                            );
+                                            print('Remove button pressed');
+
+                                            if (response.statusCode == 200) {
+                                              setState(() {
+                                                _cartItemsFuture =
+                                                    _checkTokenAndFetchCartItems();
+
+                                                _cartFuture =
+                                                    _checkTokenAndFetchCart();
+                                              });
+                                            }
+                                          } catch (error) {
+                                            print('Error: $error');
+                                          }
+                                        },
+                                        icon: const Icon(Icons.remove),
+                                      ),
+                                      Text(
+                                        'Jumlah: ${cartItem['quantity']}',
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                      IconButton(
+                                        onPressed: () async {
+                                          try {
+                                            if (cartItem['quantity'] ==
+                                                cartItem['stock']) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Stock tidak mencukupi'),
+                                                  backgroundColor:
+                                                      Color.fromARGB(
+                                                          255, 196, 96, 89),
+                                                ),
+                                              );
+                                              return;
+                                            }
+                                            String cartId = cart['id'];
+                                            String cartItemId = cartItem['id'];
+
+                                            var url = Uri.parse(
+                                                'http://localhost:8080/cart/$cartId/update');
+
+                                            var response = await http.put(
+                                              url,
+                                              headers: <String, String>{
+                                                'Content-Type':
+                                                    'application/json',
+                                              },
+                                              body: jsonEncode(<String, Object>{
+                                                'id': cartItemId,
+                                                'quantity':
+                                                    cartItem['quantity'] + 1,
+                                              }),
+                                            );
+                                            print('Add button pressed');
+
+                                            if (response.statusCode == 200) {
+                                              setState(() {
+                                                _cartItemsFuture =
+                                                    _checkTokenAndFetchCartItems();
+
+                                                _cartFuture =
+                                                    _checkTokenAndFetchCart();
+                                              });
+                                            }
+                                          } catch (error) {
+                                            print('Error: $error');
+                                          }
+                                        },
+                                        icon: const Icon(Icons.add),
+                                      ),
+                                      IconButton(
+                                        onPressed: () async {
+                                          try {
+                                            String cartId = cart['id'];
+                                            String cartItemId = cartItem['id'];
+
+                                            var url = Uri.parse(
+                                                'http://localhost:8080/cart/$cartId/delete');
+
+                                            var response = await http.delete(
+                                                url,
+                                                headers: <String, String>{
+                                                  'Content-Type':
+                                                      'application/json',
+                                                },
+                                                body:
+                                                    jsonEncode(<String, Object>{
+                                                  'cartItemId': cartItemId,
+                                                }));
+
+                                            if (response.statusCode == 200) {
+                                              setState(() {
+                                                _cartItemsFuture =
+                                                    _checkTokenAndFetchCartItems();
+                                              });
+                                            }
+                                          } catch (error) {
+                                            print('Error: $error');
+                                          }
+                                        },
+                                        icon: const Icon(Icons.delete),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                      'Total Price: ${cartItem['price'] * cartItem['quantity']}',
+                                      style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold)),
+                                ],
+                              ),
+                            ],
+                          ));
+                    },
+                  );
+                }
+              },
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.fromLTRB(15, 10, 15, 100),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    print('Checkout button pressed');
+                  },
+                  child: const Text('Checkout'),
                 ),
-              ),
-            );
-          }
-        },
+                Text('Total price: ${cart['totalPrice'] ?? '0.0'}',
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
