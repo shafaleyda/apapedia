@@ -37,7 +37,7 @@ public class OrderModel {
 
     @NotNull
     @Column(name = "total_price", nullable = false)
-    private int totalPrice;
+    private Long totalPrice;
 
     @NotNull
     @Column(name = "customer", nullable = false)
@@ -47,10 +47,7 @@ public class OrderModel {
     @Column(name = "seller", nullable = false)
     private UUID seller;
 
-    @Transient
-    private boolean withdrawn;
-
     @OneToMany(mappedBy = "order")
     @JsonIgnore
-    private Set<OrderItemModel> listOrderItem;
+    private Set<OrderItemModel> ListOrderItem;
 }

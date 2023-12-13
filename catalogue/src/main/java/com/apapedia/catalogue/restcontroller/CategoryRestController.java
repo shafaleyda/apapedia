@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.apapedia.catalogue.rest.CatalogRest;
-import com.apapedia.catalogue.rest.CategoryRest;
 import com.apapedia.catalogue.restservice.CategoryRestService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +30,13 @@ public class CategoryRestController {
     @Autowired CategoryRestService categoryRestService;
 
     @GetMapping(value = "/category/view-all")
-    @ResponseBody public List<CategoryRest> retrieveAllCategory(HttpServletResponse response) throws SQLException, IOException{
-        return categoryRestService.retrieveAllCategoryRest(); 
-        
-        // Dictionary<String, Object> responseData= new Hashtable<>();
-        // List<Category> listAllCategory = categoryRestService.retrieveAllCategory();
-        //     responseData.put("status", HttpStatus.OK.value());
-        //     responseData.put("data", listAllCategory);
-        //     responseData.put("message", "success"); 
-        //     return ResponseEntity.status(HttpStatus.OK)
-        //     .body(responseData);
+    @ResponseBody public ResponseEntity<Dictionary<String, Object>> retrieveAllCategory(HttpServletResponse response) throws SQLException, IOException{
+        Dictionary<String, Object> responseData= new Hashtable<>();
+        List<Category> listAllCategory = categoryRestService.retrieveAllCategory();
+            responseData.put("status", HttpStatus.OK.value());
+            responseData.put("data", listAllCategory);
+            responseData.put("message", "success"); 
+            return ResponseEntity.status(HttpStatus.OK)
+            .body(responseData);
     }
 }

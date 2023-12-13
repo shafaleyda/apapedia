@@ -23,6 +23,7 @@ import java.util.Set;
 @Mapper(componentModel = "spring")
 public interface CatalogMapper {
     Catalog createCatalogRequestDTOToCatalogModel(CreateCatalogueRequestDTO createCatalogRequestDTO);
+
     CreateCatalogueRequestDTO createCatalogRequestDTOToCatalogModel(CatalogRest catalogRest);
     ReadCatalogResponseDTO catalogRestToReadCatalogResponseDTO(CatalogRest catalogRest);
 }

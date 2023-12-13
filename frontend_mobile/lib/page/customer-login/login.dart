@@ -103,7 +103,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                 children: [
                   const Text("APAPEDIA",
                       style:
-                          TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
+                      TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
                   const SizedBox(
                     height: 10,
                   ),
@@ -117,7 +117,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                   ),
                   Container(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 20),
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 20),
                     margin: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
@@ -144,7 +144,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                                   ),
                                   SizedBox(
                                     width:
-                                        MediaQuery.of(context).size.width * 0.8,
+                                    MediaQuery.of(context).size.width * 0.8,
                                     child: TextFormField(
                                       controller: emailController,
                                       decoration: const InputDecoration(
@@ -202,7 +202,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
 
                                         // Lakukan proses login dengan memanggil metode loginApi dengan email dan password
                                         bool isLoggedIn =
-                                            await loginApi(email, password);
+                                        await loginApi(email, password);
 
                                         // Jika login berhasil, lanjutkan ke halaman BukuScreen
                                         if (isLoggedIn) {
@@ -218,7 +218,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                                             builder: (BuildContext context) {
                                               return AlertDialog(
                                                 title:
-                                                    const Text('Login Failed'),
+                                                const Text('Login Failed'),
                                                 content: const Text(
                                                     "Invalid email or password"),
                                                 actions: <Widget>[
@@ -245,7 +245,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                                   ),
                                   const SizedBox(
                                       height:
-                                          10), // Menambahkan jarak vertikal di sini
+                                      10), // Menambahkan jarak vertikal di sini
                                   // Tambahkan bagian hyperlink di sini
                                   RichText(
                                     text: TextSpan(
@@ -257,7 +257,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                                           style: TextStyle(
                                             color: Colors.blue,
                                             decoration:
-                                                TextDecoration.underline,
+                                            TextDecoration.underline,
                                           ),
                                           recognizer: TapGestureRecognizer()
                                             ..onTap = () {
@@ -283,9 +283,9 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       fixedSize:
-                          Size(MediaQuery.of(context).size.width * 0.8, 50),
+                      Size(MediaQuery.of(context).size.width * 0.8, 50),
                       backgroundColor:
-                          Colors.grey, // Sesuaikan warna dengan kebutuhan
+                      Colors.grey, // Sesuaikan warna dengan kebutuhan
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),

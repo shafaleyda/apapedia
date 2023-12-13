@@ -43,19 +43,6 @@ public class CatalogController {
         return "form-add-catalog";
     }
 
-    @GetMapping("/catalog/viewall")
-    public String viewAllCatalog(Model model){
-        List<CatalogRest> listCatalogRest = catalogService.getAllCatalog(); 
-
-        List<ReadCatalogResponseDTO> listReadCatalogResponseDTO = new ArrayList<>(); 
-        for (CatalogRest catalogRest: listCatalogRest) {
-            var readCatalogDTO = catalogMapper.catalogRestToReadCatalogResponseDTO(catalogRest); 
-            listReadCatalogResponseDTO.add(readCatalogDTO); 
-        }
-		model.addAttribute("listCatalog", listReadCatalogResponseDTO);
-		return "viewall-catalog";
-    }
-    
     @PostMapping("/catalog/create")
     public String createCatalog(@ModelAttribute("catalogRest")
                                 @Valid CreateCatalogueRequestDTO catalogRest,
@@ -100,6 +87,19 @@ public class CatalogController {
         catalogService.updateCatalog(id, updateCatalogRequestDto, imageFile);
 
         return "redirect:/catalog/viewall";
+    }
+
+    @GetMapping("/catalog/viewall")
+    public String viewAllCatalog(Model model){
+        List<CatalogRest> listCatalogRest = catalogService.getAllCatalog();
+
+        List<ReadCatalogResponseDTO> listReadCatalogResponseDTO = new ArrayList<>();
+        for (CatalogRest catalogRest: listCatalogRest) {
+            var readCatalogDTO = catalogMapper.catalogRestToReadCatalogResponseDTO(catalogRest);
+            listReadCatalogResponseDTO.add(readCatalogDTO);
+        }
+        model.addAttribute("listCatalog", listReadCatalogResponseDTO);
+        return "viewall-catalog";
     }
 
 }
