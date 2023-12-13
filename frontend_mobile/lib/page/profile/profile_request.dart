@@ -3,6 +3,8 @@ class UserRequest {
   final String username;
   final String email;
   final String address;
+  final String password;
+
 
   const UserRequest(
       {
@@ -10,6 +12,9 @@ class UserRequest {
         required this.username,
         required this.email,
         required this.address,
+        // TODO
+        required this.password,
+
       }
       );
 
@@ -19,6 +24,8 @@ class UserRequest {
       username: json['username'],
       email: json['email'],
       address: json['address'],
+      password: json['password'],
+
     );
   }
 }

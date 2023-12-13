@@ -21,18 +21,28 @@ class _ProfileFormState extends State<ProfileForm> {
   String name = '';
   String email = '';
   String address = '';
+  String username = '';
+  String password = '';
+
+
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+
 
   @override
   void initState() {
     super.initState();
 
     _nameController.text = widget.profileResponse.name;
+    _usernameController.text = widget.profileResponse.username;
     _emailController.text = widget.profileResponse.email;
     _addressController.text = widget.profileResponse.address;
+    _passwordController.text = widget.profileResponse.address;
   }
 
   Future<Map<String, dynamic>> handleUpdateUser(
@@ -49,6 +59,7 @@ class _ProfileFormState extends State<ProfileForm> {
         'username': userRequest.username,
         'email': userRequest.email,
         'address': userRequest.address,
+        'password': userRequest.password,
       }),
     );
 
@@ -165,7 +176,11 @@ class _ProfileFormState extends State<ProfileForm> {
                               // TODO: sementara mengambil data dari ProfileResponse dulu karena tidak ada inputan username, sedangkan backend membutuhkan field ini
                               username: widget.profileResponse.username,
                               email: _emailController.text,
-                              address: _addressController.text);
+                              address: _addressController.text,
+                              password: _passwordController.text
+
+
+                          );
                           Map<String, dynamic> response =
                           await handleUpdateUser(
                               widget.profileResponse.id, userRequest);
