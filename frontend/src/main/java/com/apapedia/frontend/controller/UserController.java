@@ -26,14 +26,14 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
-import java.util.*; 
+import java.util.*;
 import java.time.LocalDate;
 
 @Controller
 public class UserController {
-    String baseUrlCatalogue = "http://localhost:8082"; 
-    String baseUrlOrder = "http://localhost:8080"; 
-    String baseUrlUser = "http://localhost:8081"; 
+    String baseUrlCatalogue = "http://localhost:8082";
+    String baseUrlOrder = "http://localhost:8080";
+    String baseUrlUser = "http://localhost:8081";
 
     @GetMapping("/")
     public String registerForm(Model model) throws IOException, InterruptedException {
@@ -42,7 +42,7 @@ public class UserController {
         model.addAttribute("sellerDTO", sellerDTO);
 
         var listCategory = SellerCategory.values();
-        
+
         model.addAttribute("listCategory", listCategory);
 
         return "user/register.html";
@@ -50,7 +50,7 @@ public class UserController {
 
     @PostMapping("/register/seller")
     public String submitFormRegister(@Valid @ModelAttribute RegisterSellerRequestDTO sellerDTO,
-            RedirectAttributes redirectAttributes)
+                                     RedirectAttributes redirectAttributes)
             throws IOException, InterruptedException {
 
         JsonObject jsonBody = new JsonObject();
@@ -91,7 +91,7 @@ public class UserController {
     public String dashboardSeller(Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
         // Retrieve cookies from the request
         Cookie[] cookies = httpServletRequest.getCookies();
-        System.out.println("MASUK SINI DASHBOARD SELLER");
+
         if (cookies == null) {
             return "user/access-denied.html";
         }
@@ -99,7 +99,7 @@ public class UserController {
         for (Cookie cookie : cookies) {
             if (!("jwtToken".equals(cookie.getName()))) {
                 continue;
-            } else {
+            } else{
                 RestTemplate restTemplate = new RestTemplate();
                 String urlLogin = baseUrlUser + "/api/user/user-loggedin";
 
@@ -108,7 +108,11 @@ public class UserController {
 
                 if(userLoggedIn.getStatusCode().is2xxSuccessful()) { //User login
                     ResponseEntity<Map<String, Object>> userResponse = restTemplate.exchange(
-                            urlLogin, HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, Object>>() {});
+                            urlLogin,
+                            HttpMethod.GET,
+                            null,
+                            new ParameterizedTypeReference<Map<String, Object>>() {
+                            });
                     Map<String, Object> responseBody = userResponse.getBody();
                     UUID seller = UUID.fromString(responseBody.get("id").toString());
 
@@ -138,14 +142,11 @@ public class UserController {
                         }
                         model.addAttribute("listCatalogChart", mapTotalOrdersPerDay);
                     }
-
-                    return "catalog/seller-viewall-catalog";
-                } else {
-                    return "user/access-denied.html";
                 }
+                return "catalog/seller-viewall-catalog";
             }
         }
-       return "catalog/seller-viewall-catalog";
+        return "user/access-denied.html";
     }
 
     @GetMapping("/dashboard/seller/guest")
