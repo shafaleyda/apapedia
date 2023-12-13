@@ -25,6 +25,4 @@ public interface OrderService {
     Map<LocalDate, Integer> getDailySales(UUID seller);
 
     List<OrderItemModel> getListOrderItemById(UUID orderId);
-
-    Boolean getWithdrawnById(UUID id);
 }
