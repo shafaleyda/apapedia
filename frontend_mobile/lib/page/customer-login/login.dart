@@ -295,7 +295,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CatalogHomeGuest(),
+                          builder: (context) => GuestHomePage(),
                         ),
                       );
                     },
