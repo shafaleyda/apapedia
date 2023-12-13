@@ -5,7 +5,6 @@ import 'package:frontend_mobile/page/profile/profile_response.dart';
 import 'package:frontend_mobile/page/profile/topUpBalance.dart';
 import 'package:frontend_mobile/page/profile/updateProfile.dart';
 import 'package:frontend_mobile/service/auth_service.dart';
-import 'package:frontend_mobile/utils/constant.dart';
 import 'package:http/http.dart' as http;
 
 class ProfilePage extends StatefulWidget {
@@ -28,7 +27,6 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       String? token = await AuthService().getTokenFromStorage();
 
-      // var url = Uri.parse('${Constant.baseUrl}/api/user/user-loggedin');
       var url = Uri.parse('http://localhost:8081/api/user/user-loggedin');
 
       http.Response response = await http.get(
@@ -255,6 +253,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                                 onPressed: () async {
                                   await signOut();
+                                  await AuthService().deleteTokenToStorage();
                                   if (!context.mounted) return;
                                   Navigator.of(context)
                                       .pushReplacement(MaterialPageRoute(
@@ -315,8 +314,16 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-
-
+// Future<Customer> fetchCustomer(CookieRequest request) async {
+//   const host =
+//   String.fromEnvironment('host', defaultValue: "http://localhost:8080");
+//   final response = await request.get(host + '/api/v1/customer/');
+//   if (response.statusCode == 200) {
+//     return Customer.fromJson(jsonDecode(response.body));
+//   } else {
+//     throw Exception('Failed to load customer');
+//   }
+// }
 
 // import 'package:flutter/material.dart';
 // import 'package:frontend_mobile/main.dart';
