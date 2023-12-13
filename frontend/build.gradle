@@ -25,3 +25,7 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+//	implementation project(':catalogue')
+//	implementation project(':user')
+//	implementation project(':order')

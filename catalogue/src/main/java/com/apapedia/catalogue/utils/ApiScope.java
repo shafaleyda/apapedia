@@ -1,6 +1,6 @@
 package com.apapedia.catalogue.utils;
 
-import com.apapedia.catalogue.exception.BusinessException;
+import com.apapedia.catalogue.exception.ExtendException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -17,12 +17,12 @@ public class ApiScope {
         String access = claims.get("role");
 
         if (StringUtils.isBlank(access) || !roles.contains(access)) {
-            throw new BusinessException("40001", "Gagal connect", "Tidak Memiliki Akses");
+            throw new ExtendException("40001", "Gagal connect", "Tidak Memiliki Akses");
         }
 
         boolean isValid = TokenUtils.isTokenExpired(token);
         if (!isValid) {
-            throw new BusinessException("40002", "Gagal connect", "Token Expired");
+            throw new ExtendException("40002", "Gagal connect", "Token Expired");
         }
 
     }
