@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_mobile/page/catalogue/catalogDetail.dart';
+import 'package:frontend_mobile/page/catalogue/productDetailPage.dart';
 import 'package:frontend_mobile/page/customer-login/login.dart';
 import 'package:frontend_mobile/page/catalogue/catalogHomeGuest.dart';
 import 'package:frontend_mobile/page/home.dart';
+import 'package:frontend_mobile/page/order/orderConfirm.dart';
 import 'package:frontend_mobile/page/profile/profile.dart';
 import 'package:frontend_mobile/page/order-history/order-history.dart';
 import 'package:frontend_mobile/page/profile/topUpBalance.dart';
@@ -19,10 +21,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      routes: {
-        '/catalogDetail': (context) => catalogDetail(),
-        '/confirmOrder': (context) => catalogDetail(),
-      },
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -37,6 +35,13 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const LoginFormScreen(),
+      routes: {
+        '/productDetail': (context) => const ProductDetailPage(),
+        '/orderConfirm': (context) => const OrderConfirmPage(),
+        '/orderHistory': (context) => const OrderHistoryPage(),
+        '/catalogDetail': (context) => catalogDetail(),
+        '/confirmOrder': (context) => catalogDetail(),
+      },
     );
   }
 }

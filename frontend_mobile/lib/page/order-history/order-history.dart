@@ -15,7 +15,6 @@ class OrderHistoryPage extends StatefulWidget {
 }
 
 class _OrderHistoryPageState extends State<OrderHistoryPage> {
-
   Future<List<Map<String, dynamic>>> _checkTokenAndFetchData() async {
     AuthService authService = AuthService();
     String? token = await authService.getTokenFromStorage();
@@ -77,7 +76,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
             orderList.add(orderDetailsMap);
           }
 
-          print(orderList);
           return orderList;
         }
       } else {
@@ -108,8 +106,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
         int updatedStatus = responseBody['status'];
         String idSeller = responseBody['seller'];
         int totalPrice = responseBody['totalPrice'];
-
-        print(updatedStatus);
 
         if (updatedStatus == 5) {
           final String uriUpdateBalance =
@@ -197,7 +193,8 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                     child: ListView.builder(
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
-                        Map<String, dynamic> orderDetails = snapshot.data![index];
+                        Map<String, dynamic> orderDetails =
+                            snapshot.data![index];
                         while (selectedStatusList.length <= index) {
                           selectedStatusList.add(0);
                         }
@@ -206,7 +203,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                           child: Align(
                             alignment: Alignment.topCenter,
                             child: SizedBox(
-                              width: 600, 
+                              width: 600,
                               child: Card(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
@@ -214,7 +211,8 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                                 child: Container(
                                   padding: const EdgeInsets.all(16.0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       for (var orderItem
                                           in orderDetails['listOrderItem'])
@@ -247,7 +245,8 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                                             value: selectedStatusList[index],
                                             items: List.generate(
                                               2,
-                                              (dropIndex) => DropdownMenuItem<int>(
+                                              (dropIndex) =>
+                                                  DropdownMenuItem<int>(
                                                 value: dropIndex,
                                                 child: Text(getStatusText(
                                                     dropIndex,
@@ -266,20 +265,22 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                                       SizedBox(height: 8.0),
                                       Center(
                                         child: ElevatedButton(
-                                          onPressed:
-                                              orderDetails['order']['status'] == 5
-                                                  ? null
-                                                  : () async {
-                                                      String result =
-                                                          await updateStatus(
-                                                              orderDetails['order']
-                                                                  ['id'],
-                                                              selectedStatusList[
-                                                                  index]);
-                                                      print(result);
-                                                      setState(() {});
-                                                    },
-                                          child: orderDetails['order']['status'] == 5
+                                          onPressed: orderDetails['order']
+                                                      ['status'] ==
+                                                  5
+                                              ? null
+                                              : () async {
+                                                  String result =
+                                                      await updateStatus(
+                                                          orderDetails['order']
+                                                              ['id'],
+                                                          selectedStatusList[
+                                                              index]);
+                                                  setState(() {});
+                                                },
+                                          child: orderDetails['order']
+                                                      ['status'] ==
+                                                  5
                                               ? Text('Selesai',
                                                   style: TextStyle(
                                                       color: Colors.red))
@@ -304,7 +305,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
       ),
     );
   }
-
 }
 
 String getStatusText(int statusCode, {bool forDropdown = false}) {

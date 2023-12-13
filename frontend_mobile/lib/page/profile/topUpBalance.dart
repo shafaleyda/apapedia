@@ -37,22 +37,21 @@ class _TopUpBalancePageState extends State<TopUpBalancePage> {
   }
 
   void displayDialog(context, title, text) => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(text),
-        actions: <Widget>[
-          ElevatedButton(
-            onPressed: () {
-              widget.onTopUpComplete();
-              Navigator.of(context).pop();
-              Navigator.of(context).pop(); 
-            },
-            child: Text('OK'),
-          ),
-        ],
-      ),
-    );
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(title),
+          content: Text(text),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
 
   Future<Map<String, dynamic>> fetchLoggedInUser() async {
     try {
