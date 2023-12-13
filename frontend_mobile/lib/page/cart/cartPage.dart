@@ -132,8 +132,32 @@ class _CartPageState extends State<CartPage> {
                   List<Map<String, dynamic>> cartItems = snapshot.data![1];
 
                   if (cartItems.isEmpty) {
-                    return const Center(
-                      child: Text('Cart is empty'),
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: Color.fromARGB(208, 255, 237, 210),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                              padding: const EdgeInsets.all(8.0),
+                              child: const Center(
+                                child: Text(
+                                  "Your cart is empty",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     );
                   }
 

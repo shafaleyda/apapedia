@@ -30,10 +30,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final page = [
       CatalogHome(),
-      OrderHistoryPage(),
-      LandingPage(), //cart page
-      ProfilePage(),
+      OrderHistoryPage(), //cart page
       CartPage(),
+      ProfilePage(),
     ];
     return Scaffold(
       body: page[pageIndex],
@@ -57,10 +56,6 @@ class _HomePageState extends State<HomePage> {
           ),
           Icon(
             Icons.person_outlined,
-            size: 30,
-          ),
-          Icon(
-            Icons.shopping_cart_outlined,
             size: 30,
           ),
         ],
