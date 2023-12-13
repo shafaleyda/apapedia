@@ -30,12 +30,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final page = [
-      LandingPage(),
       CatalogHomeCustomer(),
       OrderHistoryPage(),
-      LandingPage(), //cart page
-      ProfilePage(),
       CartPage(),
+      ProfilePage(),
     ];
     return Scaffold(
       body: page[pageIndex],
