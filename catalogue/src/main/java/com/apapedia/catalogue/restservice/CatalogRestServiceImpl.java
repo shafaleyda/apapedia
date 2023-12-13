@@ -9,7 +9,6 @@ import com.apapedia.catalogue.dto.request.UpdateCatalogRequestDTO;
 import com.apapedia.catalogue.model.Category;
 import com.apapedia.catalogue.repository.CategoryDb;
 import com.apapedia.catalogue.service.FileStoreService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -31,9 +30,6 @@ public class CatalogRestServiceImpl implements CatalogRestService{
 
     @Autowired
     private CategoryDb categoryDb;
-
-//    @Autowired
-//    private FileStoreServiceV1 fileStoreService;
 
     @Autowired
     private FileStoreService fileStoreService;
@@ -129,7 +125,7 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     public List<CatalogRest> retrieveRestAllCatalogByCatalogName(String catalogName, UUID seller) {
         List<CatalogRest> result = new ArrayList<>();
 
-        if (seller == null) { //Tidak ada seller login 
+        if (seller == null) { 
             for (Catalog cat: catalogDb.findByProductNameContainingIgnoreCaseOrderByProductNameAsc(catalogName)) {
                 Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
             if (catalog.isPresent()) {
@@ -256,7 +252,6 @@ public class CatalogRestServiceImpl implements CatalogRestService{
                     .build();
         } catch (Exception e) {
             log.error("error : {}", e.getMessage());
-            e.printStackTrace();
             return null;
         }
     }
@@ -266,30 +261,14 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     public CatalogRest editRestCatalog(CreateCatalogueRequestDTO catalog, MultipartFile imageFiles) throws Exception {
 
         Optional<Catalog> catalogData = catalogDb.findByIdCatalogAndIsDeletedFalse(catalog.getIdCatalog());
-
-        // lebih baik kaya gini mengurangi if jadi ketika data tidak ada langsung throw tanpa harus membuat if
-        // code jadinya lebih bersih
-
-//        Catalog catalogData = catalogDb.findByIdCatalogAndIsDeletedFalse(catalog.getIdCatalog())
-//                .orElseThrow(() -> new EntityNotFoundException("Entity Catalog Not Found"));
-
         if (catalogData.isEmpty()) {
-            // bagusnya EntityNotFoundException
             throw new Exception("not found catalog");
         }
 
 
         Optional<Category> category = categoryDb.findByIdCategory(catalog.getCategoryId());
 
-        // lebih baik kaya gini mengurangi if jadi ketika data tidak ada langsung throw tanpa harus membuat if
-        // code jadinya lebih bersih
-
-//        Category categoryd = categoryDb.findByIdCategory(catalog.getCategoryId())
-//                .orElseThrow(() -> new EntityNotFoundException("Entity Category Not Found"));
-
-
         if (category.isEmpty()) {
-            // bagusnya EntityNotFoundException
             throw new Exception("not found catalog");
         }
 
@@ -297,8 +276,6 @@ public class CatalogRestServiceImpl implements CatalogRestService{
             catalogData.get().setImage(Base64.getEncoder().encodeToString(imageFiles.getBytes()));
         }
 
-        // coba pelajari https://orika-mapper.github.io/orika-docs/ lebih bagus untuk convert convert data
-        // agar tidak cape-cape set seperti ini
         catalogData.get().setSeller(catalog.getSeller());
         catalogData.get().setPrice(catalog.getPrice());
         catalogData.get().setProductName(catalog.getProductName());
@@ -393,7 +370,6 @@ public class CatalogRestServiceImpl implements CatalogRestService{
             List<Catalog> getAllCatalogSortBy = catalogDb.findAll(Sort.by(sortDirection, sortField));
 
             if (sortField.equals("productName")) {
-                System.out.println(sortDirection.equals(Sort.Direction.ASC));
                 if (sortDirection.equals(Sort.Direction.ASC)) {
                     getAllCatalogSortBy = getAllCatalogSortBy.stream()
                     .sorted(Comparator.comparing(c -> c.getProductName().toLowerCase()))
@@ -424,7 +400,7 @@ public class CatalogRestServiceImpl implements CatalogRestService{
         } else {
             List<Catalog> getAllCatalogSortBy = catalogDb.findAllBySeller(seller, Sort.by(sortDirection, sortField));
             if (sortField.equals("productName")) {
-                System.out.println(sortDirection.equals(Sort.Direction.ASC));
+                
                 if (sortDirection.equals(Sort.Direction.ASC)) {
                     getAllCatalogSortBy = getAllCatalogSortBy.stream()
                     .sorted(Comparator.comparing(c -> c.getProductName().toLowerCase()))

@@ -6,16 +6,13 @@ import org.hibernate.annotations.SQLDelete;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
-import org.hibernate.usertype.UserType;
 
 @Getter
 @Setter
