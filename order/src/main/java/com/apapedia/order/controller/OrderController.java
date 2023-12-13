@@ -174,9 +174,8 @@ public class OrderController {
         } else {
             var order = orderMapper.updateOrderRequestDTOToOrder(orderDTO);
             order.setId(id);
-            order.setStatus(orderDTO.getStatus());;
-            OrderModel orderUpdated = orderService.updateOrder(order, oldOrder); 
-            return orderUpdated; 
+            order.setStatus(orderDTO.getStatus());
+            return orderService.updateOrder(order, oldOrder); 
         }
     }
 

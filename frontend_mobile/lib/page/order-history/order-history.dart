@@ -38,11 +38,11 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
       } else {
         print(
             'Failed to fetch logged-in user. Status code: ${response.statusCode}');
-        return {'error': 'error'};
+        return {'error': 'Failed to fetch logged-in user'};
       }
     } catch (e) {
       print('Caught an exception: $e');
-      return {'error': 'error'};
+      return {'error': 'Caught an exception'};
     }
   }
 
@@ -131,6 +131,12 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          title: const Text(
+            'Order History',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          automaticallyImplyLeading: false),
       body: Container(
         child: FutureBuilder<List<Map<String, dynamic>>>(
           future: _checkTokenAndFetchData(),
@@ -143,22 +149,25 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return Center(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    GestureDetector(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(208, 255, 237, 210),
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        ),
-                        padding: EdgeInsets.all(8.0),
-                        child: Center(
-                          child: Text(
-                            "Make your first order!",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: const Color.fromARGB(255, 0, 0, 0),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 230.0),
+                      child: GestureDetector(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(208, 255, 237, 210),
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          ),
+                          padding: EdgeInsets.all(8.0),
+                          child: Center(
+                            child: Text(
+                              "Make your first order!",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: const Color.fromARGB(255, 0, 0, 0),
+                              ),
                             ),
                           ),
                         ),

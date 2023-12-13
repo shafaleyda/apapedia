@@ -10,7 +10,8 @@ import 'package:frontend_mobile/page/profile/profile.dart';
 import 'package:provider/provider.dart';
 
 class TopUpBalancePage extends StatefulWidget {
-  const TopUpBalancePage({Key? key}) : super(key: key);
+  final VoidCallback onTopUpComplete;
+  const TopUpBalancePage({Key? key, required this.onTopUpComplete}) : super(key: key);
 
   @override
   State<TopUpBalancePage> createState() => _TopUpBalancePageState();
