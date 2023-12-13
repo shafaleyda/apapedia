@@ -57,7 +57,7 @@ class CookieRequest {
     headers['Access-Control-Allow-Headers'] =
     'Origin, Content-Type, X-Auth-Token';
     const host =
-    String.fromEnvironment('host', defaultValue: "http://localhost:8080");
+    String.fromEnvironment('host', defaultValue: "http://localhost:8081");
     http.Response response =
     await _client.post(Uri.parse(host + '/api/v1/customer/register'), body: data, headers: headers);
 
@@ -67,9 +67,9 @@ class CookieRequest {
       loggedIn = true;
 
       token = json.decode(response.body)['token'];
-      username = json.decode(response.body)['pasien']['username'];
-      email = json.decode(response.body)['pasien']['email'];
-      role = json.decode(response.body)['pasien']['role'];
+      username = json.decode(response.body)['customer']['username'];
+      email = json.decode(response.body)['customer']['email'];
+      role = json.decode(response.body)['customer']['role'];
     } else {
       loggedIn = false;
     }
