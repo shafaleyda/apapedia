@@ -106,9 +106,10 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  const Icon(
-                    Icons.shopify,
-                    size: 100,
+                  Image.asset(
+                    'images/navbar-icon.png',
+                    width: 100,
+                    height: 100,
                   ),
                   const SizedBox(
                     height: 10,

@@ -42,7 +42,12 @@ class _TopUpBalancePageState extends State<TopUpBalancePage> {
           actions: <Widget>[
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop(); 
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => ProfilePage(),
+                  ),
+                );
               },
               child: Text('OK'),
             ),
