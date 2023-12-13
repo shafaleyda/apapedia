@@ -140,12 +140,14 @@ public class UserController {
                     }
 
                     return "catalog/seller-viewall-catalog";
-                } else {
-                    return "user/access-denied.html";
                 }
+                return "catalog/seller-viewall-catalog";
+                
             }
         }
-       return "catalog/seller-viewall-catalog";
+
+        return "user/access-denied.html";
+       
     }
 
     @GetMapping("/dashboard/seller/guest")

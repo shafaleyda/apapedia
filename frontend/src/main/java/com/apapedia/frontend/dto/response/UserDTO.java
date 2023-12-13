@@ -26,7 +26,6 @@ public class UserDTO {
     private boolean accountNonLocked;
     private boolean accountNonExpired;
     private boolean credentialsNonExpired;
-    private List<Authority> authorities;
     private boolean enabled;
 
     // Constructors, getters, and setters
