@@ -1,5 +1,7 @@
 package com.apapedia.order.controller;
 
+import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +11,9 @@ import com.apapedia.order.dto.CartMapper;
 import com.apapedia.order.dto.request.CreateCartRequestDTO;
 import com.apapedia.order.model.CartModel;
 import com.apapedia.order.service.CartService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 import java.util.UUID; 
 
@@ -22,13 +27,19 @@ public class CartController {
     CartService cartService;
 
     @PostMapping(value = "/cart/create")
-    private CartModel createCart(@Valid @RequestBody CreateCartRequestDTO cartRequestDTO){
+    private UUID createCart(@Valid @RequestBody CreateCartRequestDTO cartRequestDTO){
         CartModel cartModel = cartMapper.createCartRequestDTOToCartModel(cartRequestDTO);
-        return cartService.createCart(cartModel);
+        return cartService.createCart(cartModel).getId();
     }
 
-    @GetMapping(value = "/cart/get-user/{idUser}")
-    private UUID getCartFromUser(@PathVariable(value = "idUser") UUID userId) {
-        return cartService.getCartByIdUser(userId); 
+    @GetMapping("/cart/{id}")
+    private CartModel getCartById(@PathVariable(value = "id") String id){
+        return cartService.getCartById(UUID.fromString(id));
     }
+
+    @GetMapping("/cart/user/{id}")
+    private Optional<CartModel> getCartByUserId(@PathVariable(value = "id") String id){
+        return cartService.getCartByUserId(UUID.fromString(id));
+    }
+    
 }

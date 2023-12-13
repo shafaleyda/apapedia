@@ -348,14 +348,14 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
   }
 
   Future<bool> checkIfCartExists(String? userId) async {
-    final String apiUrl = '$urlOrder/cart/customer/$userId';
+    final String apiUrl = '$urlOrder/cart/customer/$userId'; //List<CartItemRest> 
     print(apiUrl);
     try {
       final response = await http.get(Uri.parse(apiUrl));
       if (response.statusCode == 200) {
         if (idCart == null) {
           //Punya cart, tapi baru login
-          final String urlGetCartId = '$urlOrder/cart/get-user/$userId';
+          final String urlGetCartId = '$urlOrder/cart/user/$userId';
           final cartIdFromApi = await http.get(Uri.parse(urlGetCartId));
           idCart = json.decode(cartIdFromApi.body) as String;
         }
