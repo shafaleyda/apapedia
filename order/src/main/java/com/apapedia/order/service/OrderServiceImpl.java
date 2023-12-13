@@ -135,8 +135,4 @@ public class OrderServiceImpl implements OrderService{
     public List<OrderItemModel> getListOrderItemById(UUID orderId){
         return orderItemDb.findByOrderId(orderId);
     }
-
-    public Boolean getWithdrawnById(UUID id){
-        return getOrderByOrderId(id).isWithdrawn();
-    }
 }
