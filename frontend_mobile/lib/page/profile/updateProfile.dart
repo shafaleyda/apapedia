@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_mobile/page/profile/profile_response.dart';
+import 'package:frontend_mobile/page/profile/profile_request.dart';
+import 'package:frontend_mobile/service/auth_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:provider/provider.dart';
-import 'package:frontend_mobile/common/cookie_request.dart';
 import 'package:frontend_mobile/page/profile/profile.dart';
 
 class ProfileForm extends StatefulWidget {
-  const ProfileForm({Key? key}) : super(key: key);
+  final ProfileResponse profileResponse;
+
+  const ProfileForm({Key? key, required this.profileResponse})
+      : super(key: key);
+
   @override
-  _ProfileFormState createState() => _ProfileFormState();
+  State<ProfileForm> createState() => _ProfileFormState();
 }
 
 class _ProfileFormState extends State<ProfileForm> {
@@ -20,6 +25,40 @@ class _ProfileFormState extends State<ProfileForm> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _nameController.text = widget.profileResponse.name;
+    _emailController.text = widget.profileResponse.email;
+    _addressController.text = widget.profileResponse.address;
+  }
+
+  Future<Map<String, dynamic>> handleUpdateUser(
+      String id, UserRequest userRequest) async {
+    String? token = await AuthService().getTokenFromStorage();
+    final response = await http.put(
+      Uri.parse('http://localhost:8081/api/user/update/$id'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token'
+      },
+      body: jsonEncode(<String, String>{
+        'name': userRequest.name,
+        'username': userRequest.username,
+        'email': userRequest.email,
+        'address': userRequest.address,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    } else {
+      throw Exception(
+          'Failed to update data user with status code: ${response.statusCode}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +88,9 @@ class _ProfileFormState extends State<ProfileForm> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return '*Required';
-                      } else if (!value.toString().contains(
-                          RegExp(r'^(?![\s.]+$)[a-zA-Z\s.]*$'))) {
+                      } else if (!value
+                          .toString()
+                          .contains(RegExp(r'^(?![\s.]+$)[a-zA-Z\s.]*$'))) {
                         return "Insert the right name!";
                       }
                       return null;
@@ -110,26 +150,61 @@ class _ProfileFormState extends State<ProfileForm> {
                     },
                   ),
                 ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  child: const Text(
-                    "Save Updated Data",
-                    style: TextStyle(color: Colors.white),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue, // Background color
+                    ),
+                    onPressed: () async {
+                      try {
+                        if (_formKey.currentState!.validate()) {
+                          // Perform actions when the form is valid (backend actions removed)
+                          UserRequest userRequest = UserRequest(
+                              name: _nameController.text,
+                              // TODO: sementara mengambil data dari ProfileResponse dulu karena tidak ada inputan username, sedangkan backend membutuhkan field ini
+                              username: widget.profileResponse.username,
+                              email: _emailController.text,
+                              address: _addressController.text);
+                          Map<String, dynamic> response =
+                          await handleUpdateUser(
+                              widget.profileResponse.id, userRequest);
+
+                          if (!context.mounted) return;
+
+                          if (response['id'] != null) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ProfilePage(),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                                backgroundColor: Colors.red,
+                                content: Text(
+                                  'Error Update Data User',
+                                  textAlign: TextAlign.center,
+                                )));
+                          }
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(
+                            backgroundColor: Colors.red,
+                            content: Text(
+                              'Error: $e',
+                              textAlign: TextAlign.center,
+                            )));
+                      }
+                    },
+                    child: const Text(
+                      "Save Updated Data",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Perform actions when the form is valid (backend actions removed)
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ProfilePage(),
-                        ),
-                      );
-                    }
-                  },
-                ),
-              )
+                )
               ],
             ),
           ),
@@ -138,7 +213,6 @@ class _ProfileFormState extends State<ProfileForm> {
     );
   }
 }
-
 
 //
 // class ProfileForm extends StatefulWidget {
