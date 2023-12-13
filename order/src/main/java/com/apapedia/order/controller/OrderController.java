@@ -177,8 +177,7 @@ public class OrderController {
             var order = orderMapper.updateOrderRequestDTOToOrder(orderDTO);
             order.setId(id);
             order.setStatus(orderDTO.getStatus());;
-            OrderModel orderUpdated = orderService.updateOrder(order, oldOrder); 
-            return orderUpdated; 
+            return orderService.updateOrder(order, oldOrder); 
         }
     }
 
