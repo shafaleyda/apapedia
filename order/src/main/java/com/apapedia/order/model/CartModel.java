@@ -33,9 +33,4 @@ public class CartModel {
     @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<CartItemModel> listCartItem;
-
-    // user yang bisa berbelanja hanyalah customer
-    // @OneToOne(cascade = CascadeType.ALL) 
-    // @JoinColumn(name = "customer_id", referencedColumnName = "id")
-    // private UUID customerId; 
 }
