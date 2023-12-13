@@ -1,9 +1,10 @@
 package com.apapedia.user.repository;
 
 import com.apapedia.user.model.User;
+
 import jakarta.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
+@Transactional
 public interface UserDb extends JpaRepository<User, UUID> {
     List<User> findAll();
     Optional<User> findById(UUID id);

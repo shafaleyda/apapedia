@@ -25,24 +25,22 @@
   <div class="collapse navbar-collapse">
     <ul class="navbar-nav mr-auto d-flex">
       <li class="nav-item active">
-        <a class="nav-link fs-4 mr-3" th:href="@{/catalog/viewall}" th:classappend="${activePage == 'catalog'?'active':''}">
+        <a class="nav-link fs-4 mr-3" th:href="@{/dashboard/seller}" th:classappend="${activePage == 'catalog'?'active':''}">
           <b>Catalog</b>
         </a>
       </li>
-      <li class="nav-item active ">
-        <a class="nav-link fs-4 mr-3" th:href="@{/catalog/viewall}" th:classappend="${activePage == 'catalog'?'active':''}">
-          <b>Order History</b>
+      <li class="nav-item active">
+        <a class="nav-link fs-4 mr-3" th:href="@{/orderHistory}" th:classappend="${activePage == 'order'?'active':''}">
+          <b>Order</b>
         </a>
       </li>
       <li class="nav-item active">
-        <a class="nav-link fs-4 mr-3" th:href="@{/catalog/viewall}" th:classappend="${activePage == 'catalog'?'active':''}">
+        <a class="nav-link fs-4 mr-3" th:href="@{/catalog/viewall}" th:classappend="${activePage == 'profile'?'active':''}">
           <b>Profile</b>
         </a>
       </li>
     </ul>
   </div>
-
-
 
 </nav>
 </body>

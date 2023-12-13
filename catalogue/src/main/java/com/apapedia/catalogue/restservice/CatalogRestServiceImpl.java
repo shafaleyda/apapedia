@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
+import java.util.stream.Collectors;
 
 import com.apapedia.catalogue.model.Catalog;
 import com.apapedia.catalogue.repository.CatalogDb;
@@ -47,6 +48,10 @@ public class CatalogRestServiceImpl implements CatalogRestService{
         List<CatalogRest> result = new ArrayList<>();
 
         List<Catalog> getAllCatalog = catalogDb.findAllByIsDeletedFalseOrderByProductNameAsc();
+
+        getAllCatalog = getAllCatalog.stream()
+                .sorted(Comparator.comparing(c -> c.getProductName().toLowerCase()))
+                .collect(Collectors.toList());
 
         for (Catalog catalog: getAllCatalog) {
             CatalogRest catalogRest = new CatalogRest();
@@ -121,12 +126,12 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     }
 
     @Override
-    public List<CatalogRest> retrieveRestAllCatalogByCatalogName(String catalogName) {
+    public List<CatalogRest> retrieveRestAllCatalogByCatalogName(String catalogName, UUID seller) {
         List<CatalogRest> result = new ArrayList<>();
 
-        for (Catalog cat: catalogDb.findByProductNameContainingIgnoreCaseOrderByProductNameAsc(catalogName)) {
-            Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
-
+        if (seller == null) { //Tidak ada seller login 
+            for (Catalog cat: catalogDb.findByProductNameContainingIgnoreCaseOrderByProductNameAsc(catalogName)) {
+                Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
             if (catalog.isPresent()) {
                 CatalogRest catalogRest = new CatalogRest();
                 catalogRest.setIdCatalog(catalog.get().getIdCatalog());
@@ -140,19 +145,37 @@ public class CatalogRestServiceImpl implements CatalogRestService{
                 catalogRest.setIsDeleted(catalog.get().getIsDeleted());
                 catalogRest.setImage(catalog.get().getImage());
                 result.add(catalogRest);
+                }
+            }
+        } else {
+            for (Catalog cat: catalogDb.findByProductNameContainingIgnoreCaseAndSellerOrderByProductNameAsc(catalogName, seller)) {
+                Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
+                if (catalog.isPresent()) {
+                CatalogRest catalogRest = new CatalogRest();
+                catalogRest.setIdCatalog(catalog.get().getIdCatalog());
+                catalogRest.setSeller(catalog.get().getSeller());
+                catalogRest.setPrice(catalog.get().getPrice());
+                catalogRest.setProductName(catalog.get().getProductName());
+                catalogRest.setProductDescription(catalog.get().getProductDescription());
+                catalogRest.setCategoryId(catalog.get().getCategory().getIdCategory());
+                catalogRest.setCategoryName(catalog.get().getCategory().getCategoryName());
+                catalogRest.setStock(catalog.get().getStock());
+                catalogRest.setIsDeleted(catalog.get().getIsDeleted());
+                catalogRest.setImage(catalog.get().getImage());
+                result.add(catalogRest);
+                }
             }
         }
-
         return result;
     }
 
     @Override
-    public List<CatalogRest> retrieveRestAllCatalogByCatalogPrice(Integer minPrice, Integer maxPrice) {
+    public List<CatalogRest> retrieveRestAllCatalogByCatalogPrice(Integer minPrice, Integer maxPrice, UUID seller) {
         List<CatalogRest> result = new ArrayList<>();
 
-        for (Catalog cat: catalogDb.findByPriceBetween(minPrice, maxPrice)) {
+        if (seller == null) {
+            for (Catalog cat: catalogDb.findByPriceBetween(minPrice, maxPrice)) {
             Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
-
             if (catalog.isPresent()) {
                 CatalogRest catalogRest = new CatalogRest();
                 catalogRest.setIdCatalog(catalog.get().getIdCatalog());
@@ -166,8 +189,28 @@ public class CatalogRestServiceImpl implements CatalogRestService{
                 catalogRest.setIsDeleted(catalog.get().getIsDeleted());
                 catalogRest.setImage(catalog.get().getImage());
                 result.add(catalogRest);
+                }
+            }
+        } else {
+            for (Catalog cat: catalogDb.findByPriceBetweenAndSeller(minPrice, maxPrice, seller)) {
+            Optional<Catalog> catalog = catalogDb.findById(cat.getIdCatalog());
+            if (catalog.isPresent()) {
+                CatalogRest catalogRest = new CatalogRest();
+                catalogRest.setIdCatalog(catalog.get().getIdCatalog());
+                catalogRest.setSeller(catalog.get().getSeller());
+                catalogRest.setPrice(catalog.get().getPrice());
+                catalogRest.setProductName(catalog.get().getProductName());
+                catalogRest.setProductDescription(catalog.get().getProductDescription());
+                catalogRest.setCategoryId(catalog.get().getCategory().getIdCategory());
+                catalogRest.setCategoryName(catalog.get().getCategory().getCategoryName());
+                catalogRest.setStock(catalog.get().getStock());
+                catalogRest.setIsDeleted(catalog.get().getIsDeleted());
+                catalogRest.setImage(catalog.get().getImage());
+                result.add(catalogRest);
+                }
             }
         }
+        
         return result;
     }
 
@@ -218,6 +261,7 @@ public class CatalogRestServiceImpl implements CatalogRestService{
         }
     }
 
+
     @Override
     public CatalogRest editRestCatalog(CreateCatalogueRequestDTO catalog, MultipartFile imageFiles) throws Exception {
 
@@ -249,7 +293,7 @@ public class CatalogRestServiceImpl implements CatalogRestService{
             throw new Exception("not found catalog");
         }
 
-        if (!imageFiles.isEmpty()){
+        if (imageFiles != null){
             catalogData.get().setImage(Base64.getEncoder().encodeToString(imageFiles.getBytes()));
         }
 
@@ -316,6 +360,7 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     public List<CatalogRest> getListCatalogBySellerId(String sellerId) {
         List<CatalogRest> catalogRestList = new ArrayList<>();
         List<Catalog> catalogList = catalogDb.findBySellerAndIsDeletedFalse(UUID.fromString(sellerId));
+        catalogList.sort(Comparator.comparing(c -> c.getProductName().toLowerCase()));
         for (Catalog catalog : catalogList) {
             CatalogRest catalogRest = CatalogRest.builder()
                     .idCatalog(catalog.getIdCatalog())
@@ -334,38 +379,81 @@ public class CatalogRestServiceImpl implements CatalogRestService{
     }
 
 
-//    @Override
-//    public byte[] decompressImage(byte[] data) {
-//        return new byte[0];
-//    }
-
     @Override
     public void saveCatalog(Catalog catalog) {
         catalogDb.save(catalog);
     }
 
     @Override
-    public List<CatalogRest> findAllSortBy(Sort sort) {
+    public List<CatalogRest> findAllSortBy(Sort.Direction sortDirection, String sortField,  UUID seller) {
 
         List<CatalogRest> result = new ArrayList<>();
 
-        List<Catalog> getAllCatalogSortBy = catalogDb.findAll(sort);
+        if (seller == null) { //Guest
+            List<Catalog> getAllCatalogSortBy = catalogDb.findAll(Sort.by(sortDirection, sortField));
 
-        for (Catalog catalog: getAllCatalogSortBy) {
-            CatalogRest catalogRest = new CatalogRest();
-            catalogRest.setIdCatalog(catalog.getIdCatalog());
-            catalogRest.setSeller(catalog.getSeller());
-            catalogRest.setPrice(catalog.getPrice());
-            catalogRest.setProductName(catalog.getProductName());
-            catalogRest.setProductDescription(catalog.getProductDescription());
-            catalogRest.setCategoryId(catalog.getCategory().getIdCategory());
-            catalogRest.setCategoryName(catalog.getCategory().getCategoryName());
-            catalogRest.setStock(catalog.getStock());
-            catalogRest.setIsDeleted(catalog.getIsDeleted());
-            catalogRest.setImage(catalog.getImage());
+            if (sortField.equals("productName")) {
+                System.out.println(sortDirection.equals(Sort.Direction.ASC));
+                if (sortDirection.equals(Sort.Direction.ASC)) {
+                    getAllCatalogSortBy = getAllCatalogSortBy.stream()
+                    .sorted(Comparator.comparing(c -> c.getProductName().toLowerCase()))
+                    .collect(Collectors.toList());
+                } else {
+                    getAllCatalogSortBy = getAllCatalogSortBy.stream()
+                    .sorted(Comparator.comparing(c -> c.getProductName().toLowerCase(), Comparator.reverseOrder()))
+                    .collect(Collectors.toList());
+                }
+            }
 
-            result.add(catalogRest);
+            for (Catalog catalog: getAllCatalogSortBy) {
+                CatalogRest catalogRest = new CatalogRest();
+                catalogRest.setIdCatalog(catalog.getIdCatalog());
+                catalogRest.setSeller(catalog.getSeller());
+                catalogRest.setPrice(catalog.getPrice());
+                catalogRest.setProductName(catalog.getProductName());
+                catalogRest.setProductDescription(catalog.getProductDescription());
+                catalogRest.setCategoryId(catalog.getCategory().getIdCategory());
+                catalogRest.setCategoryName(catalog.getCategory().getCategoryName());
+                catalogRest.setStock(catalog.getStock());
+                catalogRest.setIsDeleted(catalog.getIsDeleted());
+                catalogRest.setImage(catalog.getImage());
+
+                result.add(catalogRest);
+            }
+            return result;
+        } else {
+            List<Catalog> getAllCatalogSortBy = catalogDb.findAllBySeller(seller, Sort.by(sortDirection, sortField));
+            if (sortField.equals("productName")) {
+                System.out.println(sortDirection.equals(Sort.Direction.ASC));
+                if (sortDirection.equals(Sort.Direction.ASC)) {
+                    getAllCatalogSortBy = getAllCatalogSortBy.stream()
+                    .sorted(Comparator.comparing(c -> c.getProductName().toLowerCase()))
+                    .collect(Collectors.toList());
+                } else {
+                    getAllCatalogSortBy = getAllCatalogSortBy.stream()
+                    .sorted(Comparator.comparing(c -> c.getProductName().toLowerCase(), Comparator.reverseOrder()))
+                    .collect(Collectors.toList());
+                }
+            }
+
+            for (Catalog catalog: getAllCatalogSortBy) {
+                CatalogRest catalogRest = new CatalogRest();
+                catalogRest.setIdCatalog(catalog.getIdCatalog());
+                catalogRest.setSeller(catalog.getSeller());
+                catalogRest.setPrice(catalog.getPrice());
+                catalogRest.setProductName(catalog.getProductName());
+                catalogRest.setProductDescription(catalog.getProductDescription());
+                catalogRest.setCategoryId(catalog.getCategory().getIdCategory());
+                catalogRest.setCategoryName(catalog.getCategory().getCategoryName());
+                catalogRest.setStock(catalog.getStock());
+                catalogRest.setIsDeleted(catalog.getIsDeleted());
+                catalogRest.setImage(catalog.getImage());
+
+                result.add(catalogRest);
+            }
+            return result;
         }
-        return result;
+
+        
     }
 }

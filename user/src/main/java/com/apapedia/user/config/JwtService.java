@@ -1,6 +1,5 @@
 package com.apapedia.user.config;
 
-import org.mapstruct.control.MappingControl.Use;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -74,6 +73,7 @@ public class JwtService {
     }
 
     public String generateToken(User userDetails) {
+        System.out.println("halo km disini " + token);
         token = generateToken(new HashMap<>(), userDetails);
         return generateToken(new HashMap<>(), userDetails);
     }
@@ -91,4 +91,15 @@ public class JwtService {
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
+
+    public String expireToken(String token) {
+        Claims claims = extractAllClaims(token);
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(extractUsername(token))
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(0)) // Set expiration time to a past date to make it expired
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }    
 }

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_mobile/page/customer-login/login.dart';
+import 'package:frontend_mobile/page/catalogue/catalogHome.dart';
+import 'package:frontend_mobile/page/home.dart';
 import 'package:frontend_mobile/page/profile/profile.dart';
+import 'package:frontend_mobile/page/order-history/order-history.dart';
 import 'package:frontend_mobile/page/profile/topUpBalance.dart';
+import 'package:frontend_mobile/page/profile/profile.dart';
 
 
 void main() {
@@ -27,7 +32,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const ProfilePage(),
+      home: const LoginFormScreen(),
     );
   }
 }

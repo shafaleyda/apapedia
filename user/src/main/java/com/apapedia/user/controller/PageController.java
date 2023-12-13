@@ -41,9 +41,9 @@ public class PageController {
                         .build();
 
         @GetMapping("/validate-ticket")
-        public ModelAndView adminLoginSSO(
-                        @RequestParam(value = "ticket", required = false) String ticket,
+        public ModelAndView adminLoginSSO(@RequestParam(value = "ticket", required = false) String ticket,
                         HttpServletRequest request, HttpServletResponse httpResponse) {
+
                 ServiceResponse serviceResponse = this.webClient.get().uri(
                                 String.format(
                                                 Setting.SERVER_VALIDATE_TICKET,
@@ -60,7 +60,6 @@ public class PageController {
 
                 String name = attributes.getNama();
 
-                System.out.println("CP 0");
 
                 try {
                         var token = userRestService.getToken(username, name);
@@ -70,8 +69,6 @@ public class PageController {
                                         securityContext);
                         httpSession.setAttribute("token", token);
 
-                        System.out.println("MASUK SINI");
-
                         Cookie cookie = new Cookie("jwtToken", token);
                         cookie.setPath("/");
                         cookie.setSecure(true);
@@ -80,12 +77,18 @@ public class PageController {
                         // Add the cookie to the response
                         httpResponse.addCookie(cookie);
 
-                        return new ModelAndView("redirect:/dashboard/seller");
+                        return new ModelAndView("redirect:http://localhost:8085/dashboard/seller");
 
                 } catch (Exception e) {
                         // TODO: handle exception
-                        
-                        return new ModelAndView("redirect:/failed-login");
+
+                        var token = jwtService.getToken();
+                        if (token != null) {
+                                var idUser = jwtService.extractUserId(token);
+                                userRestService.deleteUser(idUser);
+                        }
+
+                        return new ModelAndView("redirect:http://localhost:8085/failed-login");
 
                 }
 
@@ -97,24 +100,22 @@ public class PageController {
         }
 
         @GetMapping("/logout-sso")
-        public ModelAndView logoutSSO(Principal principal) {
+        public ModelAndView logoutSSO(Principal principal, HttpServletResponse response) {
+                Cookie cookie = new Cookie("jwtToken", null);
+                cookie.setPath("/");
+                cookie.setMaxAge(0); // Set masa berlaku cookie menjadi 0 untuk menghapusnya
+
+                // Menambahkan cookie yang sama dengan nilai null dan masa berlaku yang sudah
+                // lewat
+                response.addCookie(cookie);
+
                 return new ModelAndView("redirect:" + Setting.SERVER_LOGOUT + Setting.CLIENT_LOGOUT);
         }
 
-
-
         @GetMapping("/failed-login")
         public String failedLogin() {
-                var token = jwtService.getToken();
-                var idUser = jwtService.extractUserId(token);
-                userRestService.deleteUser(idUser);
-                
+
                 return "failed-login.html";
         }
 
-        @GetMapping("/login?logout")
-        public String redirectLogout() {
-                System.out.println("TESTTEST");
-                return "redirect:/";
-        }
 }

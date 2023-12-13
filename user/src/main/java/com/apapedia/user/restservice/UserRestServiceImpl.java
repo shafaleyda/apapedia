@@ -14,17 +14,9 @@ import org.springframework.web.server.ResponseStatusException;
 import com.apapedia.user.config.JwtService;
 import com.apapedia.user.dto.LoginRequestDTO;
 import com.apapedia.user.dto.TokenDTO;
-// import com.apapedia.user.dto.LoginRequestDTO;
-// import com.apapedia.user.dto.TokenDTO;
 import com.apapedia.user.dto.request.UpdateUserRequestDTO;
 
-// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import com.apapedia.user.model.Customer;
-import com.apapedia.user.model.Seller;
 import com.apapedia.user.model.User;
-import com.apapedia.user.repository.CustomerDb;
-import com.apapedia.user.repository.SellerDb;
 import com.apapedia.user.repository.UserDb;
 import jakarta.transaction.Transactional;
 
@@ -36,15 +28,7 @@ public class UserRestServiceImpl implements UserRestService {
     private UserDb userDb;
 
     @Autowired
-    private CustomerDb customerDb;
-
-    @Autowired
-    private SellerDb sellerDb;
-
-    @Autowired
     private JwtService jwtService;
-
-    // private final WebClient webClient;
 
     @Override
     public User getUserLoggedIn() {
@@ -113,7 +97,7 @@ public class UserRestServiceImpl implements UserRestService {
     private final WebClient webClient;
 
     public UserRestServiceImpl(WebClient.Builder webClientBuilder){
-        this.webClient = webClientBuilder.baseUrl("http://localhost:8080")
+        this.webClient = webClientBuilder.baseUrl("http://localhost:8081")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }

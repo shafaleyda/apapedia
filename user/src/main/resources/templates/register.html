@@ -31,14 +31,12 @@
             Address: <br>
             <input required class="form-control" type="text" th:field="*{address}" />
             <br><br>
-            
             Category: <br>
             <table class="table">
               <tbody>
                 <tr>
                   <select class="form-control" th:field="*{category}">
-                    <option th:each="category: ${listCategory}" th:value="${category}"
-                      th:text="${category}"></option>
+                    <option th:each="category: ${listCategory}" th:value="${category}" th:text="${category}"></option>
                   </select>
                 </tr>
               </tbody>
@@ -55,6 +53,10 @@
         </div>
       </div>
     </div>
+    <div class="justify-content-center">
+      <a class="btn btn-primary" href="/dashboard/seller/guest">Login as Guest</a>
+    </div>
+
   </div>
 </body>
 

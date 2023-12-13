@@ -18,7 +18,7 @@ public interface OrderService {
 
     OrderModel updateOrder(OrderModel order, OrderModel oldOrder);
 
-    List<OrderModel> listByCustomer(UUID customer);
+    List<Order> listByCustomer(UUID customer);
 
     List<Order> listBySeller(UUID seller);
 

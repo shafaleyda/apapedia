@@ -10,6 +10,7 @@ import com.apapedia.order.model.CartModel;
 import com.apapedia.order.service.CartService;
 
 @RestController
+@CrossOrigin
 public class CartController {
     @Autowired
     CartMapper cartMapper;

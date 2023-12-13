@@ -22,9 +22,6 @@ public interface CatalogRestService {
     CatalogRest getCatalogById(String id);
     List<CatalogRest> retrieveRestAllReadCatalogResponseDTO();
     void deleteCatalog(UUID idCatalog);
-    List<CatalogRest> retrieveRestAllCatalogByCatalogName(String catalogName);
-    List<CatalogRest> retrieveRestAllCatalogByCatalogPrice(Integer minPrice, Integer maxPrice);
-
     //    CatalogRest createRestCatalog(CreateCatalogueRequestDTO catalog, MultipartFile imageFiles) throws IOException;
     CatalogRest createRestCatalog(CreateCatalogueRequestDTO catalog, MultipartFile imageFiles) throws Exception;
     CatalogRest editRestCatalog(CreateCatalogueRequestDTO catalog, MultipartFile imageFiles) throws Exception;
@@ -32,5 +29,8 @@ public interface CatalogRestService {
     Catalog getRestCatalogById(UUID idCatalog);
     List<CatalogRest> getListCatalogBySellerId(String sellerId);
     void saveCatalog(Catalog catalog);
-    List<CatalogRest> findAllSortBy(Sort sort);
+
+    List<CatalogRest> findAllSortBy(Sort.Direction sortDirection, String sortField,  UUID seller);
+    List<CatalogRest> retrieveRestAllCatalogByCatalogName(String catalogName, UUID seller);
+    List<CatalogRest> retrieveRestAllCatalogByCatalogPrice(Integer minPrice, Integer maxPrice, UUID seller);
 }

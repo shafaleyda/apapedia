@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <title>Home</title>
+    <style>
+        .container {
+            font-family: 'Georgia', serif; 
+        }
+    </style>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar-seller :: navbar}"></nav>
+    <div class="container">
+        <div class="card m-4 p-4">
+            <div class="card-body">
+                <div class="text-center">
+                    <h2>The withdrawal amount cannot exceed your current balance!</h2>
+                    <a href="/withdraw" class="btn btn-primary mt-3">Back to withdraw page</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

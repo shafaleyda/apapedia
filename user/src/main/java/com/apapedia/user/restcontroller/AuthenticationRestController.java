@@ -1,21 +1,20 @@
 package com.apapedia.user.restcontroller;
 
-import org.apache.catalina.filters.AddDefaultCharsetFilter.ResponseWrapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.apapedia.user.dto.*;
 import com.apapedia.user.dto.request.AuthenticationRequest;
 import com.apapedia.user.dto.request.RegisterCustomerRequestDTO;
-import com.apapedia.user.dto.request.RegisterRequest;
 import com.apapedia.user.dto.request.RegisterSellerRequestDTO;
 import com.apapedia.user.dto.response.AuthenticationResponse;
 import com.apapedia.user.service.AuthenticationService;
 
 import lombok.RequiredArgsConstructor;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/authentication")
 @RequiredArgsConstructor
@@ -35,7 +34,6 @@ public class AuthenticationRestController {
     public ResponseEntity<AuthenticationResponse> registerSeller(
         @RequestBody RegisterSellerRequestDTO request
     ) throws Exception {
-        System.out.println("CP 1");
         return ResponseEntity.ok(service.registerSeller(request));
     }
 
