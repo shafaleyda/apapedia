@@ -293,7 +293,7 @@ public class CatalogRestServiceImpl implements CatalogRestService{
             throw new Exception("not found catalog");
         }
 
-        if (!imageFiles.isEmpty()){
+        if (imageFiles != null){
             catalogData.get().setImage(Base64.getEncoder().encodeToString(imageFiles.getBytes()));
         }
 
