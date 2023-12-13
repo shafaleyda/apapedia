@@ -47,6 +47,8 @@ dependencies:
   jwt_decoder: ^2.0.1
   badges: ^3.1.2
   dot_navigation_bar:
+  flutter_slidable: ^3.0.1
+  hooks_riverpod: ^2.4.9
 
 
 dev_dependencies:

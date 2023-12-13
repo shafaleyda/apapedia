@@ -12,7 +12,7 @@ class CartItem {
     String id;
     String productId;
     String seller;
-    int price;
+    double price;
     String productName;
     String productDescription;
     int categoryId;
