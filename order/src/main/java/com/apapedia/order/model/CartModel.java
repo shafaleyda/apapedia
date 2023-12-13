@@ -28,7 +28,7 @@ public class CartModel {
 
     @NotNull
     @Column(name = "total_price", nullable = false)
-    private Integer totalPrice;
+    private Integer totalPrice = 0;
 
     @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore

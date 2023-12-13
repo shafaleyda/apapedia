@@ -337,7 +337,8 @@ class _CatalogHomeState extends State<CatalogHome> {
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 5), // Adjust the margin as needed
+                      horizontal: 10,
+                      vertical: 5), // Adjust the margin as needed
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: ElevatedButton(
@@ -347,7 +348,8 @@ class _CatalogHomeState extends State<CatalogHome> {
                               !isWrappedVisible; // Toggle the visibility
                         });
                       },
-                      child: Text(isWrappedVisible ? 'Close' : 'Product Category'),
+                      child:
+                          Text(isWrappedVisible ? 'Close' : 'Product Category'),
                     ),
                   ),
                 ),
@@ -419,11 +421,11 @@ class _CatalogHomeState extends State<CatalogHome> {
                                     child: AspectRatio(
                                       aspectRatio:
                                           1, // Set the aspect ratio as needed
-                                      child: Image.memory(
-                                        base64Decode(product!['image']),
-                                        fit: BoxFit
-                                            .cover, // Adjust how the image fills the space
-                                      ),
+                                      // child: Image.memory(
+                                      //   base64Decode(product!['image']),
+                                      //   fit: BoxFit
+                                      //       .cover, // Adjust how the image fills the space
+                                      // ),
                                     ),
                                   ),
                                 ),
@@ -479,7 +481,6 @@ class _CatalogHomeState extends State<CatalogHome> {
           )
         ],
       ),
-      
     );
   }
 }
