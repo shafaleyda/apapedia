@@ -3,6 +3,7 @@ import 'package:frontend_mobile/page/catalogue/productDetailPage.dart';
 import 'package:frontend_mobile/page/customer-login/login.dart';
 import 'package:frontend_mobile/page/catalogue/catalogHome.dart';
 import 'package:frontend_mobile/page/home.dart';
+import 'package:frontend_mobile/page/order/orderConfirm.dart';
 import 'package:frontend_mobile/page/profile/profile.dart';
 import 'package:frontend_mobile/page/order-history/order-history.dart';
 import 'package:frontend_mobile/page/profile/topUpBalance.dart';
@@ -35,6 +36,8 @@ class MyApp extends StatelessWidget {
       home: const LoginFormScreen(),
       routes: {
         '/productDetail': (context) => const ProductDetailPage(),
+        '/orderConfirm': (context) => const OrderConfirmPage(),
+        '/orderHistory': (context) => const OrderHistoryPage(),
       },
     );
   }

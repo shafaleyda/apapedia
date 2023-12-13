@@ -64,7 +64,7 @@ public class CartItemController {
     @GetMapping(value = "cart/customer/{user_id}")
     private List<CartItemRest> getCartByUserId(@PathVariable(value = "user_id") UUID userId) throws IOException, InterruptedException{
         var cart = cartService.getCartByUserId(userId);
-        List<CartItemModel> cartItems = cart.get().getListCartItem();
+        List<CartItemModel> cartItems = cart.get(0).getListCartItem();
         List<CartItemRest> cartItemRests = new ArrayList<CartItemRest>();
         for (CartItemModel cartItemModel : cartItems) {
             HttpRequest request = HttpRequest.newBuilder()

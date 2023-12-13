@@ -1,6 +1,8 @@
-// ignore_for_file: use_build_context_synchronously, sort_child_properties_last, prefer_const_constructors, avoid_print, use_super_parameters
+// ignore_for_file: use_build_context_synchronously, sort_child_properties_last, prefer_const_constructors, avoid_print, use_super_parameters, unrelated_type_equality_checks
 
 import 'package:flutter/material.dart';
+import 'package:frontend_mobile/page/order/orderConfirm.dart';
+import 'package:frontend_mobile/service/auth_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -19,7 +21,18 @@ class _ProductDetailState extends State<ProductDetailPage> {
     super.initState();
   }
 
-  void addToChart() async {
+  Future<bool> _checkToken() async {
+    AuthService authService = AuthService();
+    String? token = await authService.getTokenFromStorage();
+
+    if (token != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void addToCart() async {
     try {
       var url = Uri.parse('http://localhost:8081/api/user/user-loggedin');
 
@@ -35,11 +48,13 @@ class _ProductDetailState extends State<ProductDetailPage> {
 
         if (responseCart.statusCode == 200) {
           //check if product already in cart
+          print(userLoggedIn['id']);
           var urlGetCartItems = Uri.parse(
               'http://localhost:8080/cart/customer/${userLoggedIn['id']}');
 
           http.Response responseCartItems = await http.get(urlGetCartItems);
           if (responseCartItems.statusCode == 200) {
+            print('cart items');
             List<Map<String, dynamic>> cartItems =
                 List<Map<String, dynamic>>.from(
                     json.decode(responseCartItems.body));
@@ -78,7 +93,7 @@ class _ProductDetailState extends State<ProductDetailPage> {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Product successfully added to cart'),
-                backgroundColor: Color.fromARGB(255, 196, 96, 89),
+                backgroundColor: Color.fromARGB(255, 89, 196, 119),
               ),
             );
             return;
@@ -108,8 +123,15 @@ class _ProductDetailState extends State<ProductDetailPage> {
   }
 
   void orderItem() {
-    // Implement your logic for another action
-    print('hello');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const OrderConfirmPage(),
+        settings: RouteSettings(
+          arguments: product,
+        ),
+      ),
+    );
   }
 
   @override
@@ -181,12 +203,34 @@ class _ProductDetailState extends State<ProductDetailPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(
-            onPressed: addToChart,
+            onPressed: () {
+              if (_checkToken() == true) {
+                addToCart();
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Please login to add product to cart'),
+                    backgroundColor: Color.fromARGB(255, 196, 96, 89),
+                  ),
+                );
+              }
+            },
             child: const Text('Add to Chart'),
           ),
           const SizedBox(width: 16.0),
           ElevatedButton(
-              onPressed: orderItem,
+              onPressed: () {
+                if (_checkToken() == true) {
+                  orderItem();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please login to order product'),
+                      backgroundColor: Color.fromARGB(255, 196, 96, 89),
+                    ),
+                  );
+                }
+              },
               child: const Text('Order Now',
                   style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(

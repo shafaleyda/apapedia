@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final page = [
       CatalogHome(),
-      OrderHistoryPage(), //cart page
+      OrderHistoryPage(),
       CartPage(),
       ProfilePage(),
     ];

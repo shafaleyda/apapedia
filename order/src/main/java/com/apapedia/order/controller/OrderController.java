@@ -65,6 +65,8 @@ public class OrderController {
         System.out.println(orderRequestDTO.getItems().size());
         for(Map.Entry<UUID,Integer> entry : orderRequestDTO.getItems().entrySet()){
             UUID productId = entry.getKey();
+
+            System.out.println("product:"+ productId);
             Integer quantity = entry.getValue();
 
             //Product product = productService.getProductById(productId).block();
@@ -80,6 +82,8 @@ public class OrderController {
             String responseBody = response.body();
             ObjectMapper objectMapper = new ObjectMapper();
             Catalogue catalog = objectMapper.readValue(responseBody, Catalogue.class);
+            System.out.println("product:"+ catalog.getProductName());
+            System.out.println("stock:"+ catalog.getStock());
 
             if(catalog.getStock() < quantity){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product stock is not enough");
