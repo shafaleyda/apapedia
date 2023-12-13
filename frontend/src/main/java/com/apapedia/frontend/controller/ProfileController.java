@@ -3,7 +3,7 @@ package com.apapedia.frontend.controller;
 import com.apapedia.frontend.dto.request.UpdateUserRequestDTO;
 import com.apapedia.frontend.dto.response.UserDTO;
 
-import com.apapedia.frontend.service.UserService;
+//import com.apapedia.frontend.service.UserService;
 import com.apapedia.frontend.setting.Setting;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,7 +43,7 @@ public class ProfileController {
 
     }
 
-    private final UserService userService;
+//    private final UserService userService;
 
 
     // ----------- VIEW PROFILE -----------
@@ -94,33 +94,33 @@ public class ProfileController {
 
     // ----------- UPDATE -----------
 
-    @GetMapping("user/update/{id}")
-    public String updatePage(@PathVariable String id, Model model) {
-        var userDto = userService.getUserById(id);
-
-        if (userDto.getStatusCode().is2xxSuccessful()) {
-            model.addAttribute("data", userDto.getBody());
-            return "profile/update-profile";
-        } else {
-            return "error";
-        }
-    }
-
-    @PostMapping("user/update/{id}")
-    public String update(@ModelAttribute("data") UpdateUserRequestDTO updateUserRequestDTO,
-                         @PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
-        try {
-            userService.updateUserById(id, updateUserRequestDTO);
-            redirectAttributes.addFlashAttribute("message", " Success");
-            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-            return "redirect:/user/profile";
-        } catch (HttpClientErrorException e){
-            redirectAttributes.addFlashAttribute("message", " Failed");
-            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
-            return redirectError(e.getStatusCode());
-        }
-
-    }
+//    @GetMapping("user/update/{id}")
+//    public String updatePage(@PathVariable String id, Model model) {
+//        var userDto = userService.getUserById(id);
+//
+//        if (userDto.getStatusCode().is2xxSuccessful()) {
+//            model.addAttribute("data", userDto.getBody());
+//            return "profile/update-profile";
+//        } else {
+//            return "error";
+//        }
+//    }
+//
+//    @PostMapping("user/update/{id}")
+//    public String update(@ModelAttribute("data") UpdateUserRequestDTO updateUserRequestDTO,
+//                         @PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
+//        try {
+//            userService.updateUserById(id, updateUserRequestDTO);
+//            redirectAttributes.addFlashAttribute("message", " Success");
+//            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+//            return "redirect:/user/profile";
+//        } catch (HttpClientErrorException e){
+//            redirectAttributes.addFlashAttribute("message", " Failed");
+//            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+//            return redirectError(e.getStatusCode());
+//        }
+//
+//    }
 
 
     // User Service Get by ID
