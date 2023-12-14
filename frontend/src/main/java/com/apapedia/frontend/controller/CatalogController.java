@@ -72,14 +72,12 @@ public class CatalogController {
     // Seller - Find By Name
     @GetMapping("/catalog/find-by-name-seller")
     public String sellerViewAllCatalogByName(@RequestParam(name = "name", required = false) String name, Model model,
-            HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
+                                             HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
 
-<<<<<<< HEAD
         Cookie[] cookies = httpServletRequest.getCookies();
-=======
-            String urlLogin = baseUrlUser + "/api/user/user-loggedin";
-            ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
->>>>>>> 567df3d833c8f5102f893324c6301e491d198294
+        String urlLogin = baseUrlUser + "/api/user/user-loggedin";
+
+        ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
 
         if (cookies == null) {
             return "user/access-denied.html";
@@ -151,8 +149,8 @@ public class CatalogController {
     // Guest - Price Range
     @GetMapping("/catalog/price-range")
     public String viewAllCatalogByPrice(@RequestParam(name = "minPrice", required = false) String minPrice,
-            @RequestParam(name = "maxPrice", required = false) String maxPrice,
-            Model model) {
+                                        @RequestParam(name = "maxPrice", required = false) String maxPrice,
+                                        Model model) {
         if (!(minPrice.isEmpty()) && !(maxPrice.isEmpty())) {
             RestTemplate restTemplate = new RestTemplate();
 
@@ -193,8 +191,8 @@ public class CatalogController {
     // Seller - Price Range
     @GetMapping("/catalog/price-range-seller")
     public String sellerViewAllCatalogByPrice(@RequestParam(name = "minPrice", required = false) String minPrice,
-            @RequestParam(name = "maxPrice", required = false) String maxPrice,
-            Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
+                                              @RequestParam(name = "maxPrice", required = false) String maxPrice,
+                                              Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
 
         Cookie[] cookies = httpServletRequest.getCookies();
         if (cookies == null) {
@@ -280,8 +278,8 @@ public class CatalogController {
     // Guest - Sort By
     @GetMapping("/catalog/sort-by")
     public String sortAllCatalog(@RequestParam(defaultValue = "productName") String sortField,
-            @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection,
-            Model model) {
+                                 @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection,
+                                 Model model) {
         if (sortField != null && sortDirection != null) {
             RestTemplate restTemplate = new RestTemplate();
 
@@ -303,8 +301,8 @@ public class CatalogController {
     // Seller - Sort By
     @GetMapping("/catalog/sort-by-seller")
     public String sellerSortAllCatalog(@RequestParam(defaultValue = "productName") String sortField,
-            @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection,
-            Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
+                                       @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection,
+                                       Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
 
         Cookie[] cookies = httpServletRequest.getCookies();
 
@@ -413,9 +411,9 @@ public class CatalogController {
     // Seller - Add Catalog POST
     @PostMapping(value = { "/catalog/create" }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public String addBarang(@ModelAttribute("catalogDTO") CreateCatalogueRequestDTO catalogDTO,
-            HttpServletRequest httpServletRequest,
-            @RequestParam("imageFile") MultipartFile imageFile,
-            Model model) throws IOException, InterruptedException {
+                            HttpServletRequest httpServletRequest,
+                            @RequestParam("imageFile") MultipartFile imageFile,
+                            Model model) throws IOException, InterruptedException {
 
         boolean isUserLoggedIn = isUserLoggedId(httpServletRequest);
 
@@ -472,9 +470,9 @@ public class CatalogController {
 
         RestTemplate restTemplate = new RestTemplate();
         String getUserIdUrl = baseUrlUser + "/api/user/user-id";
-        
+
         ResponseEntity<UserId> responseEntity = restTemplate.getForEntity(getUserIdUrl, UserId.class);
-        
+
         UserId user = responseEntity.getBody();
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -489,7 +487,7 @@ public class CatalogController {
         // Parse JSON using Jackson
         ObjectMapper objectMapper = new ObjectMapper();
         Catalogue catalog = objectMapper.readValue(responseBody, Catalogue.class);
-        
+
         if(!catalog.getSeller().equals(UUID.fromString(user.getUserId()))) {
             return "user/access-denied.html";
         }
@@ -501,9 +499,9 @@ public class CatalogController {
     // Seller - Update Catalog POST
     @PostMapping(value = { "/catalog/update/{id}" }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public String updateBarang(@PathVariable("id") String id,
-            @ModelAttribute("catalogue") UpdateCatalogueRequestDTO catalogue,
-            @RequestParam("imageFile") MultipartFile imageFile,
-            Model model) throws IOException, InterruptedException {
+                               @ModelAttribute("catalogue") UpdateCatalogueRequestDTO catalogue,
+                               @RequestParam("imageFile") MultipartFile imageFile,
+                               Model model) throws IOException, InterruptedException {
 
         RestTemplate restTemplate = new RestTemplate();
         String getUserIdUrl = baseUrlUser + "/api/user/user-id";
