@@ -455,69 +455,75 @@ class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
                       shrinkWrap: true,
                       children: [
                         for (var product in products)
-                          Container(
-                            padding:
-                                EdgeInsets.only(left: 15, right: 15, top: 5),
-                            margin: EdgeInsets.symmetric(
-                                vertical: 3, horizontal: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Column(
-                              children: [
-                                InkWell(
-                                  onTap: () {},
-                                  child: Container(
-                                    margin: EdgeInsets.all(10),
-                                    child: AspectRatio(
-                                      aspectRatio:
-                                          1, // Set the aspect ratio as needed
-                                      child: Image.memory(
-                                        base64Decode(product!['image']),
-                                        fit: BoxFit
-                                            .cover, // Adjust how the image fills the space
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, '/productDetailGuest',
+                                  arguments: product);
+                            },
+                            child: Container(
+                              padding:
+                                  EdgeInsets.only(left: 15, right: 15, top: 5),
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 3, horizontal: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Column(
+                                children: [
+                                  InkWell(
+                                    onTap: () {},
+                                    child: Container(
+                                      margin: EdgeInsets.all(10),
+                                      child: AspectRatio(
+                                        aspectRatio:
+                                            1, // Set the aspect ratio as needed
+                                        child: Image.memory(
+                                          base64Decode(product!['image']),
+                                          fit: BoxFit
+                                              .cover, // Adjust how the image fills the space
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.only(bottom: 8),
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(product['productName'],
+                                  Container(
+                                    padding: EdgeInsets.only(bottom: 8),
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(product['productName'],
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Color(0xFF4C53A5),
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      product['productDescription'],
                                       style: TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 15,
                                         color: Color(0xFF4C53A5),
-                                        fontWeight: FontWeight.bold,
-                                      )),
-                                ),
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    product['productDescription'],
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Color(0xFF4C53A5),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 10),
-                                  child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          product['price'].toString(),
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xFF4C53A5),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 10),
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            product['price'].toString(),
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFF4C53A5),
+                                            ),
                                           ),
-                                        ),
-                                      ]),
-                                )
-                              ],
+                                        ]),
+                                  )
+                                ],
+                              ),
                             ),
                           )
                       ],

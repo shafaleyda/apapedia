@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_mobile/page/catalogue/catalogDetail.dart';
 import 'package:frontend_mobile/page/catalogue/productDetailPage.dart';
+import 'package:frontend_mobile/page/catalogue/productDetailPageGuest.dart';
 import 'package:frontend_mobile/page/customer-login/login.dart';
 import 'package:frontend_mobile/page/catalogue/catalogHomeGuest.dart';
 import 'package:frontend_mobile/page/home.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         '/orderHistory': (context) => const OrderHistoryPage(),
         '/catalogDetail': (context) => catalogDetail(),
         '/confirmOrder': (context) => catalogDetail(),
+        '/productDetailGuest': (context) => const ProductDetailGuestPage(),
       },
     );
   }

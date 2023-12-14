@@ -74,12 +74,7 @@ public class CatalogController {
     public String sellerViewAllCatalogByName(@RequestParam(name = "name", required = false) String name, Model model,
             HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
 
-<<<<<<< HEAD
         Cookie[] cookies = httpServletRequest.getCookies();
-=======
-            String urlLogin = baseUrlUser + "/api/user/user-loggedin";
-            ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
->>>>>>> 567df3d833c8f5102f893324c6301e491d198294
 
         if (cookies == null) {
             return "user/access-denied.html";
@@ -94,7 +89,6 @@ public class CatalogController {
 
                     String urlLogin = baseUrlUser + "/api/user/user-loggedin";
                     ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
-                    // System.out.println(userLoggedIn);
 
                     if (userLoggedIn.getStatusCode().is2xxSuccessful()) {
                         // Catalog Data

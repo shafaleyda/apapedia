@@ -53,7 +53,7 @@ class _CartPageState extends State<CartPage> {
     try {
       Map<String, dynamic> userLoggedIn = await fetchLoggedInUser();
       String customerId = userLoggedIn['id'];
-
+      print('Sampe SINI 1');
       var url = Uri.parse('http://localhost:8080/cart/user/$customerId');
 
       var response = await http.get(url);
@@ -63,7 +63,7 @@ class _CartPageState extends State<CartPage> {
         return cart;
       }
     } catch (error) {
-      print('Error: $error');
+      print('Error 1: $error');
     }
 
     return {'error': 'Failed to fetch cart'};
@@ -84,7 +84,7 @@ class _CartPageState extends State<CartPage> {
         return cartItems;
       }
     } catch (error) {
-      print('Error: $error');
+      print('Error 2: $error');
     }
 
     return [];
@@ -129,7 +129,7 @@ class _CartPageState extends State<CartPage> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
+                  return Text('Error 3: ${snapshot.error}');
                 } else {
                   cart = snapshot.data![0];
                   cartItems = snapshot.data![1];
@@ -265,7 +265,7 @@ class _CartPageState extends State<CartPage> {
                                               });
                                             }
                                           } catch (error) {
-                                            print('Error: $error');
+                                            print('Error 4: $error');
                                           }
                                         },
                                         icon: const Icon(Icons.remove),
