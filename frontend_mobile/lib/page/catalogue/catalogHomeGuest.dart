@@ -225,8 +225,6 @@ class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
   }
 
   void filterCatalogByProductName(String productName) {
-    print("FILTER BY PRODUCT NAME");
-
     String urlCatalog = "http://localhost:8082";
     String urlFilterByProductName =
         '$urlCatalog/api/catalog/view-all-by-name?name=$productName';
@@ -248,8 +246,6 @@ class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
   }
 
   void filterCatalogByProductPrice(int minPrice, int maxPrice) {
-    print("FILTER BY PRODUCT PRICE");
-
     String urlCatalog = "http://localhost:8082";
     String urlFilterByProductPrice =
         '$urlCatalog/api/catalog/view-all-by-price?minPrice=$minPrice&maxPrice=$maxPrice';
@@ -271,12 +267,9 @@ class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
   }
 
   void sortCatalog(String sortField, String sortDirection) {
-    print("FILTER BY PRODUCT PRICE");
-
     String urlCatalog = "http://localhost:8082";
     String urlSort =
         '$urlCatalog/api/catalog/view-all-sort-by?sortField=$sortField&sortDirection=$sortDirection';
-    print(urlSort);
     //Fetch API
     http.get(Uri.parse(urlSort)).then((response) {
       if (response.statusCode == 200) {
@@ -319,9 +312,10 @@ class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
         children: [
           //CatalogBar,
           Container(
-              color: Colors.white,
-              padding: EdgeInsets.all(25),
-              child: Row(children: [
+            color: Colors.white,
+            padding: EdgeInsets.all(25),
+            child: Row(
+              children: [
                 Padding(
                   padding: EdgeInsets.only(left: 20),
                   child: Text(
@@ -333,13 +327,13 @@ class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
                     ),
                   ),
                 ),
+                Spacer(), // Add a spacer to push icons to the right
                 InkWell(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              RegisterFormScreen()), 
+                          builder: (context) => RegisterFormScreen()),
                     );
                   },
                   child: Icon(
@@ -348,6 +342,7 @@ class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
                     color: Color(0xFF4C53A5),
                   ),
                 ),
+                SizedBox(width: 10), // Adjust the width between the icons
                 InkWell(
                   onTap: () {
                     _showFilterSearchDrawer(context);
@@ -358,7 +353,10 @@ class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
                     color: Color(0xFF4C53A5),
                   ),
                 ),
-              ])),
+              ],
+            ),
+          ),
+
           Container(
             //temp height
             //height: 500,

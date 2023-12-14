@@ -1,7 +1,6 @@
 package com.apapedia.catalogue.service;
 
 import com.apapedia.catalogue.config.FileStorageProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +15,6 @@ import java.nio.file.StandardCopyOption;
 public class FileStoreService {
 
     private final Path fileStorageLocation;
-    @Autowired
 
     public FileStoreService(FileStorageProperties fileStorageProperties) {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
@@ -26,7 +24,7 @@ public class FileStoreService {
             throw new RuntimeException("Couldn't create the directory where the upload files will be saved.", ex);
         }
     }
-    public String storeFile(MultipartFile file) {
+    public String storeFile(MultipartFile file) throws IOException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         try {
 
@@ -38,8 +36,7 @@ public class FileStoreService {
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             return fileName;
         } catch (IOException ex) {
-            ex.printStackTrace();
+            throw ex;
         }
-        return "";
     }
 }
