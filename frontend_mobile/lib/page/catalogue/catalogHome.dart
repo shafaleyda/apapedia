@@ -41,9 +41,7 @@ class _CatalogHomeState extends State<CatalogHome> {
               .map((category) => category['categoryName'].toString())
               .toList();
         });
-        categories.asMap().forEach((index, value) {
-          print("Index $index: $value['categoryName']");
-        });
+        categories.asMap().forEach((index, value) {});
       } else {
         // Handle errors if any
         print("Failed to fetch data");
@@ -160,8 +158,6 @@ class _CatalogHomeState extends State<CatalogHome> {
   }
 
   void filterCatalogByProductName(String productName) {
-    print("FILTER BY PRODUCT NAME");
-
     String urlCatalog = "http://localhost:8082";
     String urlFilterByProductName =
         '$urlCatalog/api/catalog/view-all-by-name?name=$productName';
@@ -183,12 +179,9 @@ class _CatalogHomeState extends State<CatalogHome> {
   }
 
   void filterCatalogByProductPrice(int minPrice, int maxPrice) {
-    print("FILTER BY PRODUCT PRICE");
-
     String urlCatalog = "http://localhost:8082";
     String urlFilterByProductPrice =
         '$urlCatalog/api/catalog/view-all-by-price?minPrice=$minPrice&maxPrice=$maxPrice';
-    print(urlFilterByProductPrice);
     //Fetch API
     http.get(Uri.parse(urlFilterByProductPrice)).then((response) {
       if (response.statusCode == 200) {
@@ -206,12 +199,9 @@ class _CatalogHomeState extends State<CatalogHome> {
   }
 
   void sortCatalog(String sortField, String sortDirection) {
-    print("FILTER BY PRODUCT PRICE");
-
     String urlCatalog = "http://localhost:8082";
     String urlSort =
         '$urlCatalog/api/catalog/view-all-sort-by?sortField=$sortField&sortDirection=$sortDirection';
-    print(urlSort);
     //Fetch API
     http.get(Uri.parse(urlSort)).then((response) {
       if (response.statusCode == 200) {
@@ -415,7 +405,11 @@ class _CatalogHomeState extends State<CatalogHome> {
                                   ],
                                 ),
                                 InkWell(
-                                  onTap: () {},
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, '/productDetail',
+                                        arguments: product);
+                                  },
                                   child: Container(
                                     margin: EdgeInsets.all(10),
                                     child: AspectRatio(

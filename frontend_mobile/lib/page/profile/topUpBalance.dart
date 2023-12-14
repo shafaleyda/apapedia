@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:frontend_mobile/page/home.dart';
 import 'package:frontend_mobile/service/auth_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -8,7 +9,8 @@ import 'package:frontend_mobile/page/profile/profile.dart';
 import 'package:provider/provider.dart';
 
 class TopUpBalancePage extends StatefulWidget {
-  const TopUpBalancePage({Key? key}) : super(key: key);
+  final VoidCallback onTopUpComplete;
+  const TopUpBalancePage({Key? key, required this.onTopUpComplete}) : super(key: key);
 
   @override
   State<TopUpBalancePage> createState() => _TopUpBalancePageState();
@@ -41,12 +43,8 @@ class _TopUpBalancePageState extends State<TopUpBalancePage> {
           actions: <Widget>[
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop(); 
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => ProfilePage(),
-                  ),
-                );
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
               },
               child: Text('OK'),
             ),

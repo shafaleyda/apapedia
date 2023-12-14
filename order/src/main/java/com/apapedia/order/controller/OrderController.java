@@ -62,17 +62,17 @@ public class OrderController {
     @PostMapping(value = "/order/create")
     private List<OrderModel> createOrder(@Valid @RequestBody CreateOrderRequestDTO orderRequestDTO) throws IOException, InterruptedException{
         List<OrderModel> orderModels = new ArrayList<>();
-        System.out.println(orderRequestDTO.getItems().size());
         for(Map.Entry<UUID,Integer> entry : orderRequestDTO.getItems().entrySet()){
             UUID productId = entry.getKey();
+
             Integer quantity = entry.getValue();
 
             //Update product stock
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(baseUrlCatalogue + "/api/catalog/" + productId))
-                    .header("Content-Type", "application/json")
-                    .method("GET", HttpRequest.BodyPublishers.noBody())
-                    .build();
+                .uri(URI.create(baseUrlCatalogue + "/api/catalog/" + productId))
+                .header("Content-Type", "application/json")
+                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .build();
 
             HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             String responseBody = response.body();
@@ -96,10 +96,10 @@ public class OrderController {
             HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
             restTemplate.exchange(
-                    baseUrlCatalogue + "/api/catalog/update/" + productId,
-                    HttpMethod.PUT,
-                    requestEntity,
-                    Catalogue.class);
+                baseUrlCatalogue + "/api/catalog/update/" + productId,
+                HttpMethod.PUT,
+                requestEntity,
+                Catalogue.class);
 
             //Check if order already exist
             OrderModel order = null;
@@ -111,13 +111,12 @@ public class OrderController {
                     }
                 }
             }
-
+            
             //Create order item
             OrderItemModel orderItem = new OrderItemModel();
             orderItem.setProductId(productId);
             orderItem.setQuantity(quantity);
             orderItem.setProductPrice(catalog.getPrice());
-            System.out.println("product:"+ catalog.getProductName());
             orderItem.setProductName(catalog.getProductName());
 
             //Create order
@@ -137,7 +136,6 @@ public class OrderController {
                 order.getListOrderItem().add(orderItem);
                 orderModels.add(order);
             }
-            System.out.println("product:"+orderItem.getProductName());
             orderItem.setOrder(order);
             orderItemService.createOrderItem(orderItem);
             orderService.saveOrder(order);
@@ -167,18 +165,17 @@ public class OrderController {
 
     @PutMapping("/order/update/{orderId}")
     public OrderModel updateOrderStatus(@PathVariable("orderId") UUID id,
-                                        @Valid @RequestBody UpdateOrderRequestDTO orderDTO, BindingResult bindingResult) {
-
+            @Valid @RequestBody UpdateOrderRequestDTO orderDTO, BindingResult bindingResult) {
+    
         OrderModel oldOrder = orderService.getOrderByOrderId(id);
-
+    
         if(bindingResult.hasFieldErrors()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request body has invalid type or missing field");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request body has invalid type or missing field"); 
         } else {
             var order = orderMapper.updateOrderRequestDTOToOrder(orderDTO);
             order.setId(id);
-            order.setStatus(orderDTO.getStatus());;
-            OrderModel orderUpdated = orderService.updateOrder(order, oldOrder);
-            return orderUpdated;
+            order.setStatus(orderDTO.getStatus());
+            return orderService.updateOrder(order, oldOrder); 
         }
     }
 
@@ -188,5 +185,5 @@ public class OrderController {
         return ResponseEntity.ok(mapTotalOrdersPerDay);
     }
 
-
+   
 }

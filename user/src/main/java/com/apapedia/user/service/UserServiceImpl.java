@@ -7,7 +7,6 @@ import com.apapedia.user.config.JwtService;
 import com.apapedia.user.dto.request.LoginJwtRequestDTO;
 import com.apapedia.user.model.User;
 import com.apapedia.user.repository.UserDb;
-
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -23,7 +22,11 @@ public class UserServiceImpl implements UserService {
         String username = loginJwtRequestDTO.getUsername();
         String name = loginJwtRequestDTO.getName();
 
+        System.out.println("Before find user");
+        
         User user = userDb.findByUsername(username);
+
+        System.out.println("After find user");
 
         if (user != null) {
 
@@ -32,6 +35,8 @@ public class UserServiceImpl implements UserService {
             user.setUsername(username);
             userDb.save(user);
         } else {
+
+            System.out.println("Exception in service");
 
             throw new IllegalArgumentException("User not found");
         }

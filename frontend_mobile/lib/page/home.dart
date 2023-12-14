@@ -5,7 +5,6 @@ import 'package:frontend_mobile/main.dart';
 import 'package:frontend_mobile/page/catalogue/catalogHomeCustomer.dart';
 import 'package:frontend_mobile/page/catalogue/catalogHomeGuest.dart';
 import 'package:frontend_mobile/page/home.dart';
-import 'package:frontend_mobile/page/landingPage.dart';
 import 'package:frontend_mobile/page/order-history/order-history.dart';
 import 'package:frontend_mobile/page/profile/profile.dart';
 import 'package:frontend_mobile/page/cart/cartPage.dart';
@@ -29,12 +28,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final page = [
-      LandingPage(),
       CatalogHomeCustomer(),
       OrderHistoryPage(),
-      LandingPage(), //cart page
-      ProfilePage(),
       CartPage(),
+      ProfilePage(),
     ];
     return Scaffold(
       body: page[pageIndex],
@@ -58,10 +55,6 @@ class _HomePageState extends State<HomePage> {
           ),
           Icon(
             Icons.person_outlined,
-            size: 30,
-          ),
-          Icon(
-            Icons.shopping_cart_outlined,
             size: 30,
           ),
         ],

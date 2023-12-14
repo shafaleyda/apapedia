@@ -28,8 +28,7 @@ public class User implements UserDetails {
 
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue
-    private UUID id = UUID.randomUUID();
+    private UUID id;
 
     @NotNull
     @Column(name = "name", nullable = false)

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.function.client.WebClient;
-// import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.apapedia.user.config.JwtService;
@@ -44,25 +43,33 @@ public class PageController {
         public ModelAndView adminLoginSSO(@RequestParam(value = "ticket", required = false) String ticket,
                         HttpServletRequest request, HttpServletResponse httpResponse) {
 
-                ServiceResponse serviceResponse = this.webClient.get().uri(
-                                String.format(
-                                                Setting.SERVER_VALIDATE_TICKET,
-                                                ticket,
-                                                Setting.CLIENT_LOGIN))
-                                .retrieve().bodyToMono(ServiceResponse.class).block();
-
-                Attributes attributes = serviceResponse.getAuthenticationSuccess().getAttributes();
-                String username = serviceResponse.getAuthenticationSuccess().getUser();
-
-                Authentication authentication = new UsernamePasswordAuthenticationToken(username, "webadmin", null);
-                SecurityContext securityContext = SecurityContextHolder.getContext();
-                securityContext.setAuthentication(authentication);
-
-                String name = attributes.getNama();
-
-
                 try {
+
+                        System.out.println("Exception in page 0");
+
+                        ServiceResponse serviceResponse = this.webClient.get().uri(
+                                        String.format(
+                                                        Setting.SERVER_VALIDATE_TICKET,
+                                                        ticket,
+                                                        Setting.CLIENT_LOGIN))
+                                        .retrieve().bodyToMono(ServiceResponse.class).block();
+
+                        Attributes attributes = serviceResponse.getAuthenticationSuccess().getAttributes();
+                        String username = serviceResponse.getAuthenticationSuccess().getUser();
+
+                        Authentication authentication = new UsernamePasswordAuthenticationToken(username, "webadmin",
+                                        null);
+                        SecurityContext securityContext = SecurityContextHolder.getContext();
+                        securityContext.setAuthentication(authentication);
+
+                        System.out.println("Exception in page 0.1");
+
+                        String name = attributes.getNama();
+
                         var token = userRestService.getToken(username, name);
+                        if(token == null){
+                                return new ModelAndView("redirect:http://localhost:8085/failed-login");
+                        }
 
                         HttpSession httpSession = request.getSession(true);
                         httpSession.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
@@ -87,6 +94,8 @@ public class PageController {
                                 var idUser = jwtService.extractUserId(token);
                                 userRestService.deleteUser(idUser);
                         }
+
+                        System.out.println("Exception in page");
 
                         return new ModelAndView("redirect:http://localhost:8085/failed-login");
 

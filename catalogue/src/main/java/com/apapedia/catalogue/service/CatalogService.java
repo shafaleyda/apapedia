@@ -14,16 +14,11 @@ import java.util.UUID;
 @Service
 public interface CatalogService {
     void saveCatalog(Catalog catalog);
-
-//    CatalogRest createCatalog(CreateCatalogueRequestDTO createRequest, MultipartFile imageFile) throws Exception;
-//    CatalogRest createRestCatalog(CatalogRest catalogRest, MultipartFile imageFile) throws Exception;
-
     List<CatalogRest> getAllCatalog();
-
     CatalogRest createCatalog(CreateCatalogueRequestDTO createRequest, MultipartFile imageFile) throws Exception;
-
     List<CatalogRest> createRestCatalog(CatalogRest catalogRest, MultipartFile imageFile) throws Exception;
-    List<CatalogRest> updateRestCatalog(UUID id, UpdateCatalogRequestDTO updateCatalogRequestDto, MultipartFile imageFile) throws Exception;
-    CatalogRest updateCatalog(UUID id, UpdateCatalogRequestDTO updateCatalogRequestDto, MultipartFile imageFile) throws Exception;
 
+    List<CatalogRest> updateRestCatalog(UUID id, UpdateCatalogRequestDTO updateCatalogRequestDto, MultipartFile imageFile) throws Exception;
+
+    CatalogRest updateCatalog(UUID id, UpdateCatalogRequestDTO updateCatalogRequestDto, MultipartFile imageFile) throws Exception;
 }

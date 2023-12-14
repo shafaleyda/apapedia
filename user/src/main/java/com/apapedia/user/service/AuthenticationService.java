@@ -1,5 +1,9 @@
 package com.apapedia.user.service;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -17,9 +21,9 @@ import com.apapedia.user.model.Seller;
 import com.apapedia.user.repository.CustomerDb;
 import com.apapedia.user.repository.SellerDb;
 import com.apapedia.user.repository.UserDb;
+import com.google.gson.JsonObject;
 import com.apapedia.user.config.JwtService;
 import lombok.RequiredArgsConstructor;
-
 
 import static com.apapedia.user.model.Role.CUSTOMER;
 import static com.apapedia.user.model.Role.SELLER;;
@@ -43,8 +47,32 @@ public class AuthenticationService {
             throw new Exception("User already registered");
         }
 
+        var userId = UUID.randomUUID();
+
+        JsonObject jsonBody = new JsonObject();
+        jsonBody.addProperty("userId", userId.toString());
+
+        HttpRequest requestCartId = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/cart/create"))
+                .header("content-type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody.toString()))
+                .build();
+
+        HttpResponse<String> responseCartId = HttpClient.newHttpClient().send(requestCartId,
+                HttpResponse.BodyHandlers.ofString());
+
+        String responseBody = responseCartId.body();
+
+        // Menghapus tanda kutip dari string
+        String responseBodyTanpaPetik = responseBody.replace("\"", "");
+
+        UUID cartId = UUID.fromString(responseBodyTanpaPetik);
+
+        // Output string tanpa tanda kutip
+        System.out.println("Response body tanpa tanda kutip:");
+        System.out.println(responseBodyTanpaPetik);
         var user = Customer.builder()
-                .id(UUID.randomUUID())
+                .id(userId)
                 .name(request.getName())
                 .email(request.getEmail())
                 .username(request.getUsername())
@@ -53,7 +81,7 @@ public class AuthenticationService {
                 .balance(0)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
-                .cartId(UUID.randomUUID())
+                .cartId(cartId)
                 .role(CUSTOMER)
                 .build();
         custDb.save(user);

@@ -23,7 +23,7 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
   String urlCatalog = "http://localhost:8082";
   String urlOrder = "http://localhost:8080";
   String urlUser = "http://localhost:8081";
-  String? idCart = null;
+
   bool productStockExist = false;
 
   @override
@@ -39,7 +39,6 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
     AuthService authService = AuthService();
     String? token = await authService.getTokenFromStorage();
 
-    print("token: $token");
     if (token != null) {
       fetchCatalog();
       fetchCategories();
@@ -59,9 +58,6 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
               .map((category) => category['categoryName'].toString())
               .toList();
         });
-        // categories.asMap().forEach((index, value) {
-        //   print("Index $index: $value['categoryName']");
-        // });
       } else {
         // Handle errors if any
         print("Failed to fetch data");
@@ -242,8 +238,6 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
   }
 
   void filterCatalogByProductName(String productName) {
-    print("FILTER BY PRODUCT NAME");
-
     String urlFilterByProductName =
         '$urlCatalog/api/catalog/view-all-by-name?name=$productName';
 
@@ -264,11 +258,8 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
   }
 
   void filterCatalogByProductPrice(int minPrice, int maxPrice) {
-    print("FILTER BY PRODUCT PRICE");
-
     String urlFilterByProductPrice =
         '$urlCatalog/api/catalog/view-all-by-price?minPrice=$minPrice&maxPrice=$maxPrice';
-    print(urlFilterByProductPrice);
     //Fetch API
     http.get(Uri.parse(urlFilterByProductPrice)).then((response) {
       if (response.statusCode == 200) {
@@ -286,8 +277,6 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
   }
 
   void sortCatalog(String sortField, String sortDirection) {
-    print("FILTER BY PRODUCT PRICE");
-
     String urlSort =
         '$urlCatalog/api/catalog/view-all-sort-by?sortField=$sortField&sortDirection=$sortDirection';
     print(urlSort);
@@ -333,7 +322,6 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
       if (response.statusCode == 200) {
         final Map<String, dynamic> userData = json.decode(response.body);
         final String userId = userData['id'] as String;
-        print("BERHASIL USER ID");
         return userId;
       } else {
         // Handle other status codes
@@ -347,96 +335,98 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
     }
   }
 
-  Future<bool> checkIfCartExists(String? userId) async {
-    final String apiUrl = '$urlOrder/cart/customer/$userId';
-    print(apiUrl);
-    try {
-      final response = await http.get(Uri.parse(apiUrl));
-      if (response.statusCode == 200) {
-        if (idCart == null) {
-          //Punya cart, tapi baru login
-          final String urlGetCartId = '$urlOrder/cart/get-user/$userId';
-          final cartIdFromApi = await http.get(Uri.parse(urlGetCartId));
-          idCart = json.decode(cartIdFromApi.body) as String;
-        }
-        return true;
-      } else if (response.statusCode == 404) {
-        return false;
-      } else {
-        //Belum punya cart
-        print('Failed to check cart existence: ${response.statusCode}');
-        final String urlCreateCart = '$urlOrder/cart/create';
-        final Map<String, dynamic> requestData = {
-          'userId': userId,
-        };
+  // Future<bool> checkIfCartExists(String? userId) async {
+  //   final String apiUrl =
+  //       '$urlOrder/cart/customer/$userId'; //List<CartItemRest>
+  //   print(apiUrl);
+  //   try {
+  //     final response = await http.get(Uri.parse(apiUrl));
+  //     if (response.statusCode == 200) {
+  //       if (idCart == null) {
+  //         //Punya cart, tapi baru login
+  //         final String urlGetCartId = '$urlOrder/cart/user/$userId';
+  //         final cartIdFromApi = await http.get(Uri.parse(urlGetCartId));
+  //         idCart = json.decode(cartIdFromApi.body) as String;
+  //       }
+  //       return true;
+  //     } else if (response.statusCode == 404) {
+  //       return false;
+  //     } else {
+  //       //Belum punya cart
+  //       print('Failed to check cart existence: ${response.statusCode}');
+  //       final String urlCreateCart = '$urlOrder/cart/create';
+  //       final Map<String, dynamic> requestData = {
+  //         'userId': userId,
+  //       };
 
-        try {
-          final response = await http.post(
-            Uri.parse(urlCreateCart),
-            body: json.encode(requestData),
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          );
-          if (response.statusCode == 200) {
-            print("BERHASIL CREATE CART");
-            return true;
-          } else {
-            // Handle other status codes
-            print('Failed to create cart: ${response.statusCode}');
-            return false;
-          }
-        } catch (error) {
-          print('Error create cart: $error');
-          return false;
-        }
-      }
-    } catch (error) {
-      print('Error checking cart existence: $error');
-      return false;
-    }
-  }
+  //       try {
+  //         final response = await http.post(
+  //           Uri.parse(urlCreateCart),
+  //           body: json.encode(requestData),
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //           },
+  //         );
+  //         if (response.statusCode == 200) {
+  //           print("BERHASIL CREATE CART");
+  //           return true;
+  //         } else {
+  //           // Handle other status codes
+  //           print('Failed to create cart: ${response.statusCode}');
+  //           return false;
+  //         }
+  //       } catch (error) {
+  //         print('Error create cart: $error');
+  //         return false;
+  //       }
+  //     }
+  //   } catch (error) {
+  //     print('Error checking cart existence: $error');
+  //     return false;
+  //   }
+  // }
 
   void addToCart(String idProduct) async {
-    getUserId().then((String? userId) async {
-      if (userId != null) {
-        if (await checkIfCartExists(userId)) {
-          final String urlAddItemCart = '$urlOrder/cart/$idCart/add';
-          final Map<String, dynamic> requestData = {
-            'productId': idProduct,
-            'quantity': 1,
-          };
+    String? userId = await getUserId();
+    print('User id plis $userId');
+    final String urlGetCartId = '$urlOrder/cart/user/$userId';
+    try {
+      final cartIdFromApi = await http.get(Uri.parse(urlGetCartId));
 
-          try {
-            final response = await http.post(
-              Uri.parse(urlAddItemCart),
-              body: json.encode(requestData),
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            );
+      final Map<String, dynamic> cartData = json.decode(cartIdFromApi.body);
+      final String idCart = cartData['id'] as String;
 
-            if (response.statusCode == 200) {
-              print('Added to cart successfully');
-            } else {
-              // Handle other status codes
-              print('Failed to add to cart: ${response.statusCode}');
-            }
-          } catch (error) {
-            // Handle errors during the HTTP request
-            print('Error adding to cart: $error');
-          }
+      //idCart = (json.decode(cartIdFromApi.body))['id'] as String;
+      print('idCart:  $idCart');
+      final String urlAddItemCart = '$urlOrder/cart/$idCart/add';
+      final Map<String, dynamic> requestData = {
+        'productId': idProduct,
+        'quantity': 1,
+      };
+
+      try {
+        final response = await http.post(
+          Uri.parse(urlAddItemCart),
+          body: json.encode(requestData),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          print('Added to cart successfully');
+        } else {
+          // Handle other status codes
+          print('Failed to add to cart: ${response.statusCode}');
         }
-        print('User ID: $userId');
-        // Perform actions with the userId...
-      } else {
-        // Handle the case where userId is null
-        print('User ID is null');
+      } catch (error) {
+        // Handle errors during the HTTP request
+        print('Error adding to cart: $error');
       }
-    }).catchError((error) {
-      // Handle errors if the future throws an exception
-      print('Error fetching user ID: $error');
-    });
+      print('User ID: $userId');
+    } catch (error) {
+      print('disini $error');
+    }
   }
 
   Future<bool> checkStock(String idProduct) async {
@@ -602,8 +592,8 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
                         for (var product in products)
                           GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(context, '/catalogDetail',
-                                  arguments: product['idCatalog'] as String);
+                              Navigator.pushNamed(context, '/productDetail',
+                                  arguments: product);
                             },
                             child: Container(
                               padding:
@@ -695,7 +685,9 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
                                       ),
                                       GestureDetector(
                                         onTap: () async {
-                                          bool isStockAvailable = await checkStock(product['idCatalog']);
+                                          bool isStockAvailable =
+                                              await checkStock(
+                                                  product['idCatalog']);
                                           if (isStockAvailable) {
                                             addToCart(
                                                 product['idCatalog'] as String);
