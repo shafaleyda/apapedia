@@ -26,6 +26,7 @@ public class AuthRestController {
             String jwtToken = userService.loginJwtAdmin(loginJwtRequestDTO);
             return new ResponseEntity<>(new LoginJwtResponseDTO(jwtToken), HttpStatus.OK);
         } catch (Exception e) {
+            System.out.println("Exception in auth");
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
