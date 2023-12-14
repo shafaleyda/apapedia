@@ -6,7 +6,6 @@ import 'package:frontend_mobile/page/catalogue/catalogHome.dart';
 import 'package:frontend_mobile/page/catalogue/catalogHomeGuest.dart';
 import 'package:frontend_mobile/page/home.dart';
 import 'package:frontend_mobile/page/order-history/order-history.dart';
-import 'package:frontend_mobile/page/profile/customer.dart';
 import 'package:frontend_mobile/page/profile/profile.dart';
 
 class GuestHomePage extends StatefulWidget {

@@ -31,37 +31,37 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
 
     private final AuthenticationProvider authenticationProvider;
-    
+
     private static final String[] WHITE_LIST_URL = {
 
 
-        //USER SERVICE
-        "/**",
-        "/",
-        "/api/authentication/**",
-        "/api/auth/**",
+            //USER SERVICE
+            "/**",
+            "/",
+            "/api/authentication/**",
+            "/api/auth/**",
 
-        "/api/user/**",
+            "/api/user/**",
 
-        "/validate-ticket",
-        "/login-sso",
-        "/logout-sso",
-        "/failed-register",
-        "/failed-login",
-        "/dashboard/seller/guest",
-        "/dashboard/seller",
-        "/register/seller",
-        "/api/catalog/view-all-by-name",
-        "/api/catalog/all",
-        "/api/user/**"
+            "/validate-ticket",
+            "/login-sso",
+            "/logout-sso",
+            "/failed-register",
+            "/failed-login",
+            "/dashboard/seller/guest",
+            "/dashboard/seller",
+            "/register/seller",
+            "/api/catalog/view-all-by-name",
+            "/api/catalog/all",
+            "/api/user/**"
     };
 
-    
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-        .csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(req -> req
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(req -> req
                         .requestMatchers(WHITE_LIST_URL)
                         .permitAll()
                         //Disini masukkin URL yang perlu keamanan
@@ -70,7 +70,7 @@ public class SecurityConfig {
                         .requestMatchers(POST, "/api/v1/admin/**").hasAnyAuthority(SELLER_CREATE.name())
                         .requestMatchers(PUT, "/api/v1/admin/**").hasAnyAuthority(SELLER_UPDATE.name())
                         .requestMatchers(DELETE, "/api/v1/admin/**").hasAnyAuthority(SELLER_DELETE.name())
-                        
+
                         //View all catalog (role seller)
                         .requestMatchers(GET, "/api/catalog/seller-view-all-by-name").hasRole("SELLER")
                         .requestMatchers(POST, "/api/catalog/create").hasRole("SELLER")
@@ -79,17 +79,17 @@ public class SecurityConfig {
                         .requestMatchers(GET, "/api/catalog/seller-view-all-sort-by").hasRole("SELLER")
                         .anyRequest()
                         .authenticated())
-                        .logout((logout) -> logout
+                .logout((logout) -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .logoutSuccessUrl("http://localhost:8085/")
-                        )   
-                        
-                        
+                )
 
-        .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-        .authenticationProvider(authenticationProvider)
-        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        
+
+
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 }

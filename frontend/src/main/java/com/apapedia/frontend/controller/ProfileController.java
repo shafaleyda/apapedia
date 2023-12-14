@@ -259,3 +259,241 @@ public class ProfileController {
 //                                  HttpServletRequest httpServletRequest,
 //                                  RedirectAttributes redirectAttributes
 //    ) throws io.jsonwebtoken.io.IOException, InterruptedException{
+////        Cookie[] cookies = httpServletRequest.getCookies();
+////
+////        if (cookies == null) {
+////            return "user/access-denied.html";
+////        }
+////
+////        for (Cookie cookie : cookies) {
+////            if (!("jwtToken".equals(cookie.getName()))) {
+////                continue;
+////            } else{
+//                try {
+//                    RestTemplate restTemplate = new RestTemplate();
+//                    String url = "http://localhost:8081/api/user/user-loggedin";
+//                    ResponseEntity<Map<String, Object>> sellerResponse = restTemplate.exchange(
+//                            url,
+//                            HttpMethod.GET,
+//                            null,
+//                            new ParameterizedTypeReference<Map<String, Object>>() {
+//                            });
+//
+//                    if (sellerResponse.getStatusCode().is2xxSuccessful()) {
+//                        Object data = sellerResponse.getBody();
+//
+//                        Map<String, Object> userLoggedIn = sellerResponse.getBody();
+//                        String sellerId = (String) userLoggedIn.get("id");
+//
+//
+//                        ResponseEntity<UserDTO> response = restTemplate.exchange(
+//                                url,
+//                                HttpMethod.GET,
+//                                null,
+//                                new ParameterizedTypeReference<UserDTO>() {
+//                                }
+//                                );
+//                        model.addAttribute("data", data);
+//                        final String urlGetId = "http://localhost:8081/api/user/" + sellerId;
+//
+//                        ResponseEntity<String> getIdResponse = restTemplate.exchange(
+//                                urlGetId,
+//                                HttpMethod.GET,
+//                                null,
+//                                String.class
+//                        );
+//
+//                        if (getIdResponse.getStatusCode().is2xxSuccessful()) {
+//                            Object responseBody = sellerResponse.getBody();
+//                            model.addAttribute("data", responseBody);
+//
+//
+//                        }
+//
+//                            return "profile/update-profile";
+//                    } else {
+//                        return "error";
+//                    }
+//                } catch (Exception e) {
+//                    System.out.println("Caught an exception: " + e.getMessage());
+//                    e.printStackTrace();
+//                    return "error";
+//                }
+////            }
+////        }
+////
+////        return "user/access-denied.html";
+//    }
+
+//    @PostMapping("user/update/{id}")
+//    public String submitUpdateForm(@PathVariable String id,
+//                                Model model,
+//                                HttpServletRequest httpServletRequest,
+//                                RedirectAttributes redirectAttributes,
+//                                UpdateUserRequestDTO updateDTO
+//    ) throws io.jsonwebtoken.io.IOException, InterruptedException{
+//        return null;
+//    }
+
+//    @DeleteMapping("user/delete")
+//    public String deleteAccount(  Model model,
+//                                  HttpServletRequest httpServletRequest
+//    ) throws IOException, InterruptedException{
+//        Cookie[] cookies = httpServletRequest.getCookies();
+//
+//        if (cookies == null) {
+//            return "user/access-denied.html";
+//        }
+//
+//        for (Cookie cookie : cookies) {
+//            if (!("jwtToken".equals(cookie.getName()))) {
+//                continue;
+//            } else{
+//                try {
+//                    RestTemplate restTemplate = new RestTemplate();
+//                    String urlLoggedIn = "http://localhost:8081/api/user/user-loggedin";
+//                    ResponseEntity<Map<String, Object>> sellerResponse = restTemplate.exchange(
+//                            urlLoggedIn,
+//                            HttpMethod.GET,
+//                            null,
+//                            new ParameterizedTypeReference<Map<String, Object>>() {
+//                            });
+//
+//                    if (sellerResponse.getStatusCode().is2xxSuccessful()) {
+//                        Object data = sellerResponse.getBody();
+//
+//                        Map<String, Object> userLoggedIn = sellerResponse.getBody();
+//                        String sellerId = (String) userLoggedIn.get("id");
+//
+//                            final String urlDelete = "http://localhost:8081/api/user/delete/" + sellerId;
+//
+//                            ResponseEntity<String> getDeleteResponse = restTemplate.exchange(
+//                                    urlDelete,
+//                                    HttpMethod.DELETE,
+//                                    null,
+//                                    String.class
+//                            );
+//
+//                            if (getDeleteResponse.getStatusCode().is2xxSuccessful()) {
+//                                return "redirect:register.html";
+//                            }
+//                        }
+//
+//                } catch (Exception e) {
+//                    System.out.println("Caught an exception: " + e.getMessage());
+//                    e.printStackTrace();
+//                    return "user/access-denied.html";
+//                }
+//            }
+//        }
+//
+//        return "user/access-denied.html";
+//    }
+
+//    @DeleteMapping("user/delete/{id}")
+//    public String deleteAccount(@PathVariable String id, Model model, HttpServletRequest httpServletRequest)
+//            throws IOException, InterruptedException {
+////        try {
+//        Cookie[] cookies = httpServletRequest.getCookies();
+//
+//        if (cookies == null) {
+//            return "user/access-denied.html";
+//        }
+//
+//        for (Cookie cookie : cookies) {
+//            if (!("jwtToken".equals(cookie.getName()))) {
+//                continue;
+//            } else {
+//                try {
+//                    RestTemplate restTemplate = new RestTemplate();
+//                    String urlLoggedIn = "http://localhost:8081/api/user/user-loggedin";
+//                    ResponseEntity<Map<String, Object>> responseLoggedIn =
+//                            restTemplate.exchange(
+//                                    urlLoggedIn,
+//                                    HttpMethod.GET,
+//                                    null,
+//                                    new ParameterizedTypeReference<Map<String, Object>>() {
+//                                    }
+//                            );
+//
+//                    if (responseLoggedIn.getStatusCode().is2xxSuccessful()) {
+//                        Object responseBody = responseLoggedIn.getBody();
+//                        Map<String, Object> response = responseLoggedIn.getBody();
+//                        String seller = (String) response.get("id");
+//
+//                        // Delete the user account using the correct URL
+//                        String urlDelete = "http://localhost:8081/api/user/delete/" + seller;
+//
+//                        ResponseEntity<String> deleteResponse =
+//                                restTemplate.exchange(
+//                                        urlDelete,
+//                                        HttpMethod.DELETE,
+//                                        null,
+//                                        String.class
+//                                );
+//
+//                        if (deleteResponse.getStatusCode().is2xxSuccessful()) {
+//                            String deleteResponseBody = deleteResponse.getBody();
+//                            model.addAttribute("message", deleteResponseBody);
+//                            System.out.println(deleteResponseBody);
+//                            return "successful";
+//                        }
+//                    } else {
+//                        return "error";
+//                    }
+//
+//                } catch (Exception e) {
+//                    System.out.println("Caught an exception: " + e.getMessage());
+//                    e.printStackTrace();
+//                    return "error";
+//                }
+//            }
+//        }
+//        return "user/access-denied.html";
+//
+//    }
+//
+//    @DeleteMapping("user/delete")
+//    public String deleteAccount(Model model) throws IOException, InterruptedException {
+//        RestTemplate restTemplate = new RestTemplate();
+//        String urlLoggedIn = "http://localhost:8081/api/user/user-loggedin";
+//
+//        ResponseEntity<Map<String, Object>> responseLoggedIn =
+//                restTemplate.exchange(
+//                        urlLoggedIn,
+//                        HttpMethod.GET,
+//                        null,
+//                        new ParameterizedTypeReference<Map<String, Object>>() {}
+//                );
+//
+//        if (responseLoggedIn.getStatusCode().is2xxSuccessful()) {
+//            Map<String, Object> response = responseLoggedIn.getBody();
+//            String seller = (String) response.get("id");
+//
+//            String urlDelete = "http://localhost:8081/api/user/delete/" + seller;
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//            ResponseEntity<Map<String, Object>> deleteResponse =
+//                    restTemplate.exchange(
+//                            urlDelete,
+//                            HttpMethod.DELETE,
+//                            null,
+//                            new ParameterizedTypeReference<Map<String, Object>>() {}
+//                    );
+//
+//            if (deleteResponse.getStatusCode().is2xxSuccessful()) {
+//                return "successful";
+//            } else {
+//                // Log error or handle unsuccessful DELETE response
+//                System.err.println("DELETE request was not successful. Response code: " + deleteResponse.getStatusCodeValue());
+//            }
+//        } else {
+//            // Log error or handle unsuccessful GET response
+//            System.err.println("GET request to /api/user/user-loggedin was not successful. Response code: " + responseLoggedIn.getStatusCodeValue());
+//        }
+//
+//        // Handle the case where the execution did not reach the successful return statement
+//        return "error";
+//    }

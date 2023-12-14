@@ -46,12 +46,7 @@
                     <input type="text" readonly class="form-control-plaintext" id="username" th:value="*{username}">
                 </div>
             </div>
-            <div class="mb-4 row">
-                <label class="col-sm-5 col-form-label" for="name">Password:</label>
-                <div class="col-sm-7">
-                    <input type="text" readonly class="form-control-plaintext" id="password" th:value="*{password}">
-                </div>
-            </div>
+
             <div class="mb-4 row">
                 <label class="col-sm-5 col-form-label" for="name">Name:</label>
                 <div class="col-sm-7">
@@ -68,6 +63,12 @@
                 <label class="col-sm-5 col-form-label" for="address">Address:</label>
                 <div class="col-sm-7">
                     <input type="text" readonly class="form-control-plaintext" id="address" th:value="*{address}">
+                </div>
+            </div>
+            <div class="mb-4 row">
+                <label class="col-sm-5 col-form-label" for="address">Category:</label>
+                <div class="col-sm-7">
+                    <input type="text" readonly class="form-control-plaintext" id="category" th:value="*{category}">
                 </div>
             </div>
 
@@ -102,8 +103,8 @@
 
     <div class="text-center mb-2 mt-4">
         <a class="btn btn-danger" th:href="@{/user/logout}">Sign Out</a>
-<!--        <a type="button" class="btn btn-outline-danger" th:href="@{/user/delete/{id}(id=${data.id})}">Delete Account</a>-->
-        <a type="button" class="btn btn-outline-danger" th:href="@{/user/delete}">Delete Account</a>
+        <a type="button" class="btn btn-outline-danger" th:href="@{/user/delete/{id}(id=${data.id})}">Delete Account</a>
+<!--        <a type="button" class="btn btn-outline-danger" th:href="@{/user/delete}">Delete Account</a>-->
     </div>
 </div>
 

@@ -68,10 +68,10 @@ public class CartItemController {
         List<CartItemRest> cartItemRests = new ArrayList<CartItemRest>();
         for (CartItemModel cartItemModel : cartItems) {
             HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(baseUrlCatalogue + "/api/catalog/" + cartItemModel.getProductId()))
-                .header("Content-Type", "application/json")
-                .method("GET", HttpRequest.BodyPublishers.noBody())
-                .build();
+                    .uri(URI.create(baseUrlCatalogue + "/api/catalog/" + cartItemModel.getProductId()))
+                    .header("Content-Type", "application/json")
+                    .method("GET", HttpRequest.BodyPublishers.noBody())
+                    .build();
 
             HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             String responseBody = response.body();
