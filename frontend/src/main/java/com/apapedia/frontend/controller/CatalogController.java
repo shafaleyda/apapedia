@@ -89,7 +89,6 @@ public class CatalogController {
 
                     String urlLogin = baseUrlUser + "/api/user/user-loggedin";
                     ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
-                    // System.out.println(userLoggedIn);
 
                     if (userLoggedIn.getStatusCode().is2xxSuccessful()) {
                         // Catalog Data

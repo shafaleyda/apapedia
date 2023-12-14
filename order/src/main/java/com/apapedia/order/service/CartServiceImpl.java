@@ -16,6 +16,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CartServiceImpl implements CartService{
@@ -35,7 +36,7 @@ public class CartServiceImpl implements CartService{
     }
 
     @Override
-    public List<CartModel> getCartByUserId(UUID userId){
+    public Optional<CartModel> getCartByUserId(UUID userId){
         return cartDb.findByUserId(userId);
     }
 
