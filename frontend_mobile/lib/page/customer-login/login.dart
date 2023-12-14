@@ -7,7 +7,6 @@ import 'package:frontend_mobile/page/catalogue/catalogHomeGuest.dart';
 import 'package:frontend_mobile/page/customer-login/register.dart';
 import 'package:frontend_mobile/page/home.dart';
 import 'package:frontend_mobile/page/home_guest.dart';
-import 'package:frontend_mobile/page/profile/customer.dart';
 import 'package:frontend_mobile/page/profile/profile.dart';
 
 // import 'package:bacabaca_mobile/screens/view_all_buku.dart';

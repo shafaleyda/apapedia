@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.apapedia.frontend.dto.request.CreateCatalogueRequestDTO;
 import com.apapedia.frontend.dto.request.UpdateCatalogueRequestDTO;
 import com.apapedia.frontend.dto.response.Catalogue;
-import com.apapedia.frontend.dto.response.UserId;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -149,7 +148,7 @@ public class CatalogController {
     // Seller - Find By Name
     @GetMapping("/catalog/find-by-name-seller")
     public String sellerViewAllCatalogByName(@RequestParam(name = "name", required = false) String name, Model model,
-            HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
+                                             HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
         if (name.length() > 0) {
             RestTemplate restTemplate = new RestTemplate();
 
@@ -208,8 +207,8 @@ public class CatalogController {
     // Guest - Price Range
     @GetMapping("/catalog/price-range")
     public String viewAllCatalogByPrice(@RequestParam(name = "minPrice", required = false) String minPrice,
-            @RequestParam(name = "maxPrice", required = false) String maxPrice,
-            Model model) {
+                                        @RequestParam(name = "maxPrice", required = false) String maxPrice,
+                                        Model model) {
         if (!(minPrice.isEmpty()) && !(maxPrice.isEmpty())) {
             RestTemplate restTemplate = new RestTemplate();
 
@@ -250,8 +249,8 @@ public class CatalogController {
     // Seller - Price Range
     @GetMapping("/catalog/price-range-seller")
     public String sellerViewAllCatalogByPrice(@RequestParam(name = "minPrice", required = false) String minPrice,
-            @RequestParam(name = "maxPrice", required = false) String maxPrice,
-            Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
+                                              @RequestParam(name = "maxPrice", required = false) String maxPrice,
+                                              Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
         if (!(minPrice.isEmpty()) && !(maxPrice.isEmpty())) {
             RestTemplate restTemplate = new RestTemplate();
 
@@ -324,8 +323,8 @@ public class CatalogController {
     // Guest - Sort By
     @GetMapping("/catalog/sort-by")
     public String sortAllCatalog(@RequestParam(defaultValue = "productName") String sortField,
-            @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection,
-            Model model) {
+                                 @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection,
+                                 Model model) {
         if (sortField != null && sortDirection != null) {
             RestTemplate restTemplate = new RestTemplate();
 
@@ -347,8 +346,8 @@ public class CatalogController {
     // Seller - Sort By
     @GetMapping("/catalog/sort-by-seller")
     public String sellerSortAllCatalog(@RequestParam(defaultValue = "productName") String sortField,
-            @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection,
-            Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
+                                       @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection,
+                                       Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
         RestTemplate restTemplate = new RestTemplate();
 
         if (sortField != null && sortDirection != null) {
@@ -401,40 +400,9 @@ public class CatalogController {
         return null;
     }
 
-    public boolean isUserLoggedId(HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
-        Cookie[] cookies = httpServletRequest.getCookies();
-
-        if (cookies == null) {
-            return false;
-        }
-
-        for (Cookie cookie : cookies) {
-            if (!("jwtToken".equals(cookie.getName()))) {
-                continue;
-            } else {
-                RestTemplate restTemplate = new RestTemplate();
-                String urlLogin = baseUrlUser + "/api/user/user-loggedin";
-
-                ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
-
-                if (userLoggedIn.getStatusCode().is2xxSuccessful()) { // User login
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     // Seller - Add Catalog GET
     @GetMapping("/catalog/create")
-    public String formAddBarang(Model model, HttpServletRequest httpServletRequest)
-            throws IOException, InterruptedException {
-        boolean isUserLoggedIn = isUserLoggedId(httpServletRequest);
-
-        if (!isUserLoggedIn) {
-            return "user/access-denied.html";
-        }
-
+    public String formAddBarang(Model model) {
         var catalogDTO = new CreateCatalogueRequestDTO();
         model.addAttribute("catalogDTO", catalogDTO);
         return "form-add-catalogue";
@@ -443,25 +411,11 @@ public class CatalogController {
     // Seller - Add Catalog POST
     @PostMapping(value = { "/catalog/create" }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public String addBarang(@ModelAttribute("catalogDTO") CreateCatalogueRequestDTO catalogDTO,
-            HttpServletRequest httpServletRequest,
-            @RequestParam("imageFile") MultipartFile imageFile,
-            Model model) throws IOException, InterruptedException {
-
-        boolean isUserLoggedIn = isUserLoggedId(httpServletRequest);
-
-        if (!isUserLoggedIn) {
-            return "user/access-denied.html";
-        }
-
+                            @RequestParam("imageFile") MultipartFile imageFile,
+                            Model model) throws IOException, InterruptedException {
         RestTemplate restTemplate = new RestTemplate();
-        String getUserIdUrl = baseUrlUser + "/api/user/user-id";
 
-        ResponseEntity<UserId> responseEntity = restTemplate.getForEntity(getUserIdUrl, UserId.class);
-
-        UserId user = responseEntity.getBody();
-        catalogDTO.setSeller(UUID.fromString(user.getUserId()));
-
-        restTemplate = new RestTemplate();
+        catalogDTO.setSeller(UUID.randomUUID());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -486,20 +440,13 @@ public class CatalogController {
                 requestEntity,
                 Catalogue.class);
 
-        return userController.dashboardSeller(model, httpServletRequest);
+        return "redirect:/catalog/all";
     }
 
     // Seller - Update Catalog GET
     @GetMapping("/catalog/update/{id}")
-    public String formUpdateBarang(@PathVariable("id") String id, Model model, HttpServletRequest httpServletRequest)
+    public String formUpdateBarang(@PathVariable("id") String id, Model model)
             throws IOException, InterruptedException {
-
-        boolean isUserLoggedIn = isUserLoggedId(httpServletRequest);
-
-        if (!isUserLoggedIn) {
-            return "user/access-denied.html";
-        }
-
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(baseUrlCatalogue + "/api/catalog/" + id))
                 .header("Content-Type", "application/json")
@@ -519,23 +466,12 @@ public class CatalogController {
     // Seller - Update Catalog POST
     @PostMapping(value = { "/catalog/update/{id}" }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public String updateBarang(@PathVariable("id") String id,
-            @ModelAttribute("catalogue") UpdateCatalogueRequestDTO catalogue,
-            @RequestParam("imageFile") MultipartFile imageFile,
-            Model model) throws IOException, InterruptedException {
-                
+                               @ModelAttribute("catalogue") UpdateCatalogueRequestDTO catalogue,
+                               @RequestParam("imageFile") MultipartFile imageFile,
+                               Model model) throws IOException, InterruptedException {
         RestTemplate restTemplate = new RestTemplate();
-        String getUserIdUrl = baseUrlUser + "/api/user/user-id";
-        
-        ResponseEntity<UserId> responseEntity = restTemplate.getForEntity(getUserIdUrl, UserId.class);
-        
-        UserId user = responseEntity.getBody();
-        catalogue.setSeller(UUID.fromString(user.getUserId()));
-        
-        HttpHeaders headers = new HttpHeaders();
-                
-        restTemplate = new RestTemplate();
 
-        restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
 
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
@@ -548,7 +484,7 @@ public class CatalogController {
             }
         };
 
-        // catalogue.setSeller(UUID.randomUUID());
+        catalogue.setSeller(UUID.randomUUID());
 
         body.add("image", resource);
         body.add("model", catalogue);
@@ -561,7 +497,7 @@ public class CatalogController {
                 requestEntity,
                 Catalogue.class);
 
-        return userController.dashboardSeller(model, httpServletRequest);
+        return "redirect:/catalog/viewall-seller";
     }
 
 }

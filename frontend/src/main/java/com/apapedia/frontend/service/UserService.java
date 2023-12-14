@@ -20,10 +20,13 @@ import java.util.Collections;
 @Slf4j
 @RequiredArgsConstructor
 public class UserService {
-    private final RestTemplate restTemplate;
+//    private final RestTemplate restTemplate;
     private static final String baseUrlUser = "http://localhost:8081/api/user/";
 
     public ResponseEntity<UserDTO> getUserById(String id) {
+
+        RestTemplate restTemplate = new RestTemplate();
+
         return restTemplate.exchange(
                 baseUrlUser + id,
                 HttpMethod.GET,
@@ -33,6 +36,8 @@ public class UserService {
     }
 
     public ResponseEntity<UserDTO> updateUserById(String id, UpdateUserRequestDTO requestDTO) {
+        RestTemplate restTemplate = new RestTemplate();
+
         return restTemplate.exchange(baseUrlUser + "update/" + id,
                 HttpMethod.PUT,
                 new HttpEntity<>(requestDTO),
@@ -41,6 +46,8 @@ public class UserService {
     }
 
     public ResponseEntity<String> deleteUserById(String id) {
+        RestTemplate restTemplate = new RestTemplate();
+
         return restTemplate.exchange(baseUrlUser + "delete/" + id,
                 HttpMethod.DELETE,
                 null,

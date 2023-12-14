@@ -12,10 +12,7 @@ import com.apapedia.order.dto.request.CreateCartRequestDTO;
 import com.apapedia.order.model.CartModel;
 import com.apapedia.order.service.CartService;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-
-import java.util.UUID; 
 
 @RestController
 @CrossOrigin
@@ -28,7 +25,9 @@ public class CartController {
 
     @PostMapping(value = "/cart/create")
     private UUID createCart(@Valid @RequestBody CreateCartRequestDTO cartRequestDTO){
+        System.out.println(cartRequestDTO.getUserId());
         CartModel cartModel = cartMapper.createCartRequestDTOToCartModel(cartRequestDTO);
+        System.out.println(cartModel.getUserId());
         return cartService.createCart(cartModel).getId();
     }
 
@@ -41,5 +40,5 @@ public class CartController {
     private Optional<CartModel> getCartByUserId(@PathVariable(value = "id") String id){
         return cartService.getCartByUserId(UUID.fromString(id));
     }
-    
+
 }

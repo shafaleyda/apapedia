@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +24,6 @@ import com.apapedia.user.restservice.UserRestService;
 
 import jakarta.validation.Valid;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/user")
 public class UserRestController {
@@ -48,7 +46,6 @@ public class UserRestController {
 
     @GetMapping("/user-loggedin")
     private User getUserLoggedIn() {
-        System.out.println("sini");
         User user = userRestService.getUserLoggedIn();
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There are no users logged in");
@@ -63,7 +60,7 @@ public class UserRestController {
 
     @PutMapping(value = "/update/{id}")
     private User updateUser(@PathVariable("id") UUID id, @Valid @RequestBody UpdateUserRequestDTO userDTO,
-            BindingResult bindingResult) {
+                            BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request body has invalid type or missing field");
         } else {

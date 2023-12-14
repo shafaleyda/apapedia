@@ -629,7 +629,7 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
                                         },
                                         style: ElevatedButton.styleFrom(
                                           padding: EdgeInsets.all(5),
-                                          primary: Color(0xFF4C53A5),
+                                          backgroundColor: Color(0xFF4C53A5),
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(20),
