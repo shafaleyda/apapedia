@@ -88,7 +88,7 @@ public class ProfileController {
     // ----------- UPDATE -----------
 
     @GetMapping("user/update/{id}")
-    public String updatePage(@PathVariable String id, Model model) {
+    public String updateForm(@PathVariable String id, Model model) {
         var userDto = userService.getUserById(id);
 
         if (userDto.getStatusCode().is2xxSuccessful()) {
@@ -100,7 +100,7 @@ public class ProfileController {
     }
 
     @PostMapping("user/update/{id}")
-    public String update(@ModelAttribute("data")
+    public String submitUpdateForm(@ModelAttribute("data")
                          UpdateUserRequestDTO updateUserRequestDTO,
                          @PathVariable("id") String id, Model model,
                          RedirectAttributes redirectAttributes) {
