@@ -13,5 +13,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserRequestDTO extends RegisterSellerRequestDTO {
-    private UUID id;
+    private String id;
 }

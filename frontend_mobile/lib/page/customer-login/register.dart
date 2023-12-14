@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend_mobile/common/cookie_request.dart';
 import 'package:frontend_mobile/main.dart';
 import 'package:frontend_mobile/page/customer-login/login.dart';
-import 'package:frontend_mobile/page/profile/customer.dart';
 import 'package:frontend_mobile/page/profile/profile.dart';
 
 // import 'package:bacabaca_mobile/screens/view_all_buku.dart';

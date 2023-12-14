@@ -95,7 +95,7 @@
                     <div th:if="${orderDetails['order']['status'] == 4}">
                       <button type="submit" class="btn btn-sm btn-danger" disabled>Barang diterima</button>
                     </div>
-                    <div th:unless="${orderDetails['order']['status'] == 5}">
+                    <div th:unless="${orderDetails['order']['status'] == 5 or orderDetails['order']['status'] == 4}">
                       <button type="submit" class="btn btn-sm btn-primary">Update Order Status</button>
                     </div>
                   </div>

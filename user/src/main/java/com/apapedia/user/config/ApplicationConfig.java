@@ -17,14 +17,14 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
-    
+
 
     private final UserDb userDb;
 
     @Bean
     public UserDetailsService userDetailsService() {
-      return username -> userDb.findByEmail(username)
-          .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return username -> userDb.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @Bean

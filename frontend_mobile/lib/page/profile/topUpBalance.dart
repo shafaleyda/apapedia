@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend_mobile/common/cookie_request.dart';
-import 'package:frontend_mobile/page/profile/customer.dart';
 import 'package:frontend_mobile/page/profile/profile.dart';
 import 'package:provider/provider.dart';
 
@@ -37,21 +36,22 @@ class _TopUpBalancePageState extends State<TopUpBalancePage> {
   }
 
   void displayDialog(context, title, text) => showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(title),
-          content: Text(text),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        ),
-      );
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(text),
+        actions: <Widget>[
+          ElevatedButton(
+            onPressed: () {
+              widget.onTopUpComplete();
+              Navigator.of(context).pop();
+              Navigator.of(context).pop(); 
+            },
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
 
   Future<Map<String, dynamic>> fetchLoggedInUser() async {
     try {
