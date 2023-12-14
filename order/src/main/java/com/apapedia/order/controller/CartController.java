@@ -40,5 +40,5 @@ public class CartController {
     private List<CartModel> getCartByUserId(@PathVariable(value = "id") String id){
         return cartService.getCartByUserId(UUID.fromString(id));
     }
-    
+
 }
