@@ -38,18 +38,13 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public CatalogRest createCatalog(CreateCatalogueRequestDTO createRequest, MultipartFile imageFile) throws Exception {
-
-        // buat configuration agar tidak terlalu sering instansiasi object dan duplication code
-        // https://www.geeksforgeeks.org/spring-boot-configure-a-resttemplate-with-resttemplatebuilder/
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        // Set up request data
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
-        // Ubah multipart Menjadi Byte
         ByteArrayResource contentsAsResource = new ByteArrayResource(imageFile.getBytes()) {
             @Override
             public String getFilename() {
@@ -58,33 +53,25 @@ public class CatalogServiceImpl implements CatalogService {
         };
 
         body.add("model",objectMapper.writeValueAsString(createRequest));
-        // untuk multivalue input
         body.add("image", contentsAsResource);
 
 
-        // Create an HttpEntity with headers and body
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        // Make the HTTP request
         ResponseEntity<CatalogRest> responseEntity = restTemplate.exchange(
                 "http://localhost:8989/api/catalog/create",
                 HttpMethod.POST,
                 requestEntity,
                 CatalogRest.class);
-
-        // Return the response body
         return responseEntity.getBody();
     }
 
     @Override
     public List<CatalogRest> createRestCatalog(CatalogRest catalogRest, MultipartFile imageFile) throws Exception {
-        // Create a RestTemplate instance
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        // Set up request data
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
         ByteArrayResource contentsAsResource = new ByteArrayResource(imageFile.getBytes()) {
@@ -98,47 +85,41 @@ public class CatalogServiceImpl implements CatalogService {
         body.add("image", contentsAsResource);
 
 
-        // Create an HttpEntity with headers and body
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        // Make the POST request
         restTemplate.postForEntity(
                 "http://localhost:8989/api/catalog/create",
                 requestEntity,
                 CatalogRest.class
         );
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
     public List<CatalogRest> updateRestCatalog(UUID id, UpdateCatalogRequestDTO updateCatalogRequestDto, MultipartFile imageFile) throws Exception {
-        // Create a RestTemplate instance
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        // Set up request data
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
         // Create an HttpEntity with headers and body
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        // Make the POST request
         ResponseEntity<CatalogRest[]> responseEntity = restTemplate.postForEntity(
                 "http://localhost:8989/api/catalog/update/{idCatalog}",
                 requestEntity,
                 CatalogRest[].class
         );
-
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             CatalogRest catalogsArray[] = responseEntity.getBody();
             if (catalogsArray != null) {
 
-                return Arrays.asList(catalogsArray); // Convert array to list
+                return Arrays.asList(catalogsArray); 
             }
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
@@ -148,7 +129,6 @@ public class CatalogServiceImpl implements CatalogService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        // Set up request data
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
         ByteArrayResource contentsAsResource = new ByteArrayResource(imageFile.getBytes()) {
@@ -162,38 +142,37 @@ public class CatalogServiceImpl implements CatalogService {
         body.add("image", contentsAsResource);
 
 
-        // Create an HttpEntity with headers and body
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        // Make the HTTP request
         ResponseEntity<CatalogRest> responseEntity = restTemplate.exchange(
                 "http://localhost:8989/api/catalog/update/"+id.toString(),
                 HttpMethod.PUT,
                 requestEntity,
                 CatalogRest.class);
 
-        // Return the response body
         return responseEntity.getBody();
     }
 
     @Override
     public List<CatalogRest> getAllCatalog() {
-        // Create a RestTemplate instance
         RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(headers);
         
         ResponseEntity<CatalogRest[]> response = restTemplate.getForEntity(
                 "http://localhost:8080/api/catalog/all",
                 CatalogRest[].class
         );
-
         if (response.getStatusCode().is2xxSuccessful()) {
             CatalogRest[] catalogsArray = response.getBody();
             if (catalogsArray != null) {
 
-                return Arrays.asList(catalogsArray); // Convert array to list
+                return Arrays.asList(catalogsArray); 
             }
         }
-        return null;
+        return new ArrayList<>();
     }
 
 }

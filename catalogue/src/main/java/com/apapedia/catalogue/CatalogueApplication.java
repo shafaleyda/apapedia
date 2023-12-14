@@ -31,8 +31,8 @@ public class CatalogueApplication {
 					"Hobi & Koleksi", "Jam Tangan", "Perawatan & Kecantikan",
 					"Makanan & Minuman", "Otomotif", "Perlengkapan Rumah", "Souvenir & Party Supplies");
 
-			if (categoryRestService.retrieveAllCategory().size() < 1) {
-				for (int i = 0; i <= 12; i++){
+			if (categoryRestService.retrieveAllCategory().isEmpty()) {
+				for (var i = 0; i <= 12; i++){
 				var category = new Category();
 				var categoryName = categoryNameList.get(i);
 				category.setCategoryName(categoryName);

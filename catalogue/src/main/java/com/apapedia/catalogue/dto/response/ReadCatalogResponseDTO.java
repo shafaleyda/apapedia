@@ -1,7 +1,3 @@
-
-// ****------------------------NOT USED FOR NOW------------------------****??
-
-
 package com.apapedia.catalogue.dto.response;
 
 import lombok.AllArgsConstructor;

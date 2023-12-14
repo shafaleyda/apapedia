@@ -4,7 +4,7 @@ services:
     image: apap-registry.cs.ui.ac.id/abc/apap-xxx
     restart: always
     ports:
-      - "10086:8080"
+      - "10148:8080"
     volumes:
       - ./file-storage:/file-storage
       - ./log:/log
@@ -19,7 +19,7 @@ services:
     image: apap-registry.cs.ui.ac.id/abc/apap-xxx
     restart: always
     ports:
-      - "10087:8080"
+      - "10149:8080"
     volumes:
       - ./file-storage:/file-storage
       - ./log:/log
@@ -34,7 +34,7 @@ services:
     image: apap-registry.cs.ui.ac.id/abc/apap-xxx
     restart: always
     ports:
-      - "10088:8080"
+      - "10150:8080"
     volumes:
       - ./file-storage:/file-storage
       - ./log:/log
@@ -49,7 +49,7 @@ services:
     image: apap-registry.cs.ui.ac.id/abc/apap-xxx
     restart: always
     ports:
-      - "10089:8080"
+      - "10151:8080"
     volumes:
       - ./file-storage:/file-storage
       - ./log:/log
@@ -65,7 +65,7 @@ services:
   user-db:
     image: postgres:14-alpine
     ports:
-      - '15086:5432'
+      - '15148:5432'
     restart: 'no'
     environment:
       - POSTGRES_USER=postgres
@@ -78,7 +78,7 @@ services:
   catalog-db:
     image: postgres:14-alpine
     ports:
-      - '15087:5432'
+      - '15149:5432'
     restart: 'no'
     environment:
       - POSTGRES_USER=postgres
@@ -91,7 +91,7 @@ services:
   order-db:
     image: postgres:14-alpine
     ports:
-      - '15088:5432'
+      - '15150:5432'
     restart: 'no'
     environment:
       - POSTGRES_USER=postgres

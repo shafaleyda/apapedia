@@ -8,7 +8,6 @@ import org.mapstruct.Mapper;
 import com.apapedia.catalogue.model.Catalog;
 import com.apapedia.catalogue.rest.CatalogRest;
 
-
 @Mapper(componentModel = "spring")
 public interface CatalogMapper {
     Catalog createCatalogRequestDTOToCatalogModel(CreateCatalogueRequestDTO createCatalogRequestDTO);

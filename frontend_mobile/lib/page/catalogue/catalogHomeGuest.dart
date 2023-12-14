@@ -312,9 +312,10 @@ class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
         children: [
           //CatalogBar,
           Container(
-              color: Colors.white,
-              padding: EdgeInsets.all(25),
-              child: Row(children: [
+            color: Colors.white,
+            padding: EdgeInsets.all(25),
+            child: Row(
+              children: [
                 Padding(
                   padding: EdgeInsets.only(left: 20),
                   child: Text(
@@ -326,6 +327,7 @@ class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
                     ),
                   ),
                 ),
+                Spacer(), // Add a spacer to push icons to the right
                 InkWell(
                   onTap: () {
                     Navigator.push(
@@ -340,6 +342,7 @@ class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
                     color: Color(0xFF4C53A5),
                   ),
                 ),
+                SizedBox(width: 10), // Adjust the width between the icons
                 InkWell(
                   onTap: () {
                     _showFilterSearchDrawer(context);
@@ -350,7 +353,10 @@ class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
                     color: Color(0xFF4C53A5),
                   ),
                 ),
-              ])),
+              ],
+            ),
+          ),
+
           Container(
             //temp height
             //height: 500,
