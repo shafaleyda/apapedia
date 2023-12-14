@@ -6,6 +6,7 @@ import com.apapedia.frontend.dto.response.UserDTO;
 
 //import com.apapedia.frontend.service.UserService;
 import com.apapedia.frontend.model.SellerCategory;
+import com.apapedia.frontend.service.UserService;
 import com.apapedia.frontend.setting.Setting;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,70 +36,12 @@ import java.util.Map;
 @Slf4j
 public class ProfileController {
 
-    public String redirectError(HttpStatusCode code) {
-        if (code.value() == 403) {
-            return "403";
-        } else if (code.is4xxClientError()) {
-            return "error";
-        } else {
-            return "error";
-        }
-
-    }
-
-//    private final UserService userService;
+    private final UserService userService;
 
 
     // ----------- VIEW PROFILE -----------
     @GetMapping("user/profile")
     public String getUserProfile(Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
-//        Cookie[] cookies = httpServletRequest.getCookies();
-//
-//        if (cookies == null) {
-//            return "user/access-denied.html";
-//        }
-
-//        for (Cookie cookie : cookies) {
-//            if (!("jwtToken".equals(cookie.getName()))) {
-//                continue;
-//            } else {
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            String url = "http://localhost:8081/api/user/user-loggedin";
-            ResponseEntity<Map<String, Object>> sellerResponse = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<Map<String, Object>>() {
-                    });
-
-            if (sellerResponse.getStatusCode().is2xxSuccessful()) {
-                Object data = sellerResponse.getBody();
-                model.addAttribute("data", data);
-                return "profile/profile.html";
-            } else {
-                return "error";
-            }
-        } catch (Exception e) {
-            System.out.println("Caught an exception: " + e.getMessage());
-            e.printStackTrace();
-            return "error";
-        }
-//        } catch (Exception e) {
-//            System.out.println("Caught an exception: " + e.getMessage());
-//            e.printStackTrace();
-//            return "error";
-//        }
-//            }
-
-//        }
-//        return "user/access-denied.html";
-    }
-
-    // ----------- UPDATE -----------
-    @GetMapping("user/update/{id}")
-    public String registerForm(Model model, HttpServletRequest httpServletRequest)
-            throws IOException, InterruptedException {
         Cookie[] cookies = httpServletRequest.getCookies();
 
         if (cookies == null) {
@@ -120,89 +63,177 @@ public class ProfileController {
                             });
 
                     if (sellerResponse.getStatusCode().is2xxSuccessful()) {
-                        Object seller = sellerResponse.getBody();
-                        model.addAttribute("data", seller);
-
-                        var listCategory = SellerCategory.values();
-
-                        model.addAttribute("listCategory", listCategory);
-
-                        return "profile/update-profile.html";
-
+                        Object data = sellerResponse.getBody();
+                        model.addAttribute("data", data);
+                        return "profile/profile.html";
+                    } else {
+                        return "error";
                     }
                 } catch (Exception e) {
                     System.out.println("Caught an exception: " + e.getMessage());
                     e.printStackTrace();
                     return "error";
                 }
-
-//        var userDTO = new UpdateUserRequestDTO();
-//        model.addAttribute("data", userDTO);
+//        } catch (Exception e) {
+//            System.out.println("Caught an exception: " + e.getMessage());
+//            e.printStackTrace();
+//            return "error";
+                }
             }
 
-        }
-
-        return null;
+//        }
+        return "user/access-denied.html";
     }
 
+    // ----------- UPDATE -----------
+
+    @GetMapping("user/update/{id}")
+    public String updatePage(@PathVariable String id, Model model) {
+        var userDto = userService.getUserById(id);
+
+        if (userDto.getStatusCode().is2xxSuccessful()) {
+            model.addAttribute("data", userDto.getBody());
+            return "profile/update-profile";
+        } else {
+            return "error";
+        }
+    }
 
     @PostMapping("user/update/{id}")
-    public String submitRegisterForm(@Valid @ModelAttribute UpdateUserRequestDTO updateUserDTO,
-                                     HttpServletRequest httpServletRequest,
-                                     RedirectAttributes redirectAttributes)
-            throws IOException, InterruptedException {
-        Cookie[] cookies = httpServletRequest.getCookies();
+    public String update(@ModelAttribute("data")
+                         UpdateUserRequestDTO updateUserRequestDTO,
+                         @PathVariable("id") String id, Model model,
+                         RedirectAttributes redirectAttributes) {
+        try {
+            userService.updateUserById(id, updateUserRequestDTO);
+            System.out.println("Sukses updatenih");
 
-        if (cookies == null) {
-            return "user/access-denied.html";
+            redirectAttributes.addFlashAttribute("message", " Success");
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            return "redirect:/user/profile";
+        } catch (HttpClientErrorException e){
+            redirectAttributes.addFlashAttribute("message", " Failed");
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            return "error";
         }
 
-        for (Cookie cookie : cookies) {
-            if (!("jwtToken".equals(cookie.getName()))) {
-                continue;
-            } else {
-                try {
-                } catch (Exception e) {
-                    System.out.println("Caught an exception: " + e.getMessage());
-                    e.printStackTrace();
-                    return "error";
-                }
-                return "redirect:profile/profile.html";
-
-            }
-        }
-        return null;
     }
+
+    // ----------- DELETE -----------
+    @GetMapping("user/delete/{id}")
+    public String delete(@PathVariable String id,
+                         Model mode, HttpServletResponse response,
+                         RedirectAttributes redirectAttributes) {
+        try{
+            userService.deleteUserById(id);
+            userService.deleteJwtTokenCookie(response);
+            System.out.println("Sukses nih");
+
+            redirectAttributes.addFlashAttribute("message", " Success Delete");
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            return "redirect:/";
+        }catch (HttpClientErrorException e){
+            redirectAttributes.addFlashAttribute("message", " Failed Delete");
+            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            return "error";
+        }
+    }
+
+
+    // ----------- LOGOUT -----------
+    @GetMapping("user/logout")
+    public ModelAndView logoutSSO(Principal principal, HttpServletResponse response) {
+        Cookie cookie = new Cookie("jwtToken", null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // Set masa berlaku cookie menjadi 0 untuk menghapusnya
+
+        // Menambahkan cookie yang sama dengan nilai null dan masa berlaku yang sudah
+        // lewat
+        response.addCookie(cookie);
+
+        return new ModelAndView("redirect:" + Setting.SERVER_LOGOUT + Setting.CLIENT_LOGOUT);
+    }
+    }
+
 //    @GetMapping("user/update/{id}")
-//    public String updatePage(@PathVariable String id, Model model) {
-//        var userDto = userService.getUserById(id);
+//    public String registerForm(Model model, HttpServletRequest httpServletRequest)
+//            throws IOException, InterruptedException {
+//        Cookie[] cookies = httpServletRequest.getCookies();
 //
-//        if (userDto.getStatusCode().is2xxSuccessful()) {
-//            model.addAttribute("data", userDto.getBody());
-//            return "profile/update-profile";
-//        } else {
-//            return "error";
+//        if (cookies == null) {
+//            return "user/access-denied.html";
 //        }
+//
+//        for (Cookie cookie : cookies) {
+//            if (!("jwtToken".equals(cookie.getName()))) {
+//                continue;
+//            } else {
+//                try {
+//                    RestTemplate restTemplate = new RestTemplate();
+//                    String url = "http://localhost:8081/api/user/user-loggedin";
+//                    ResponseEntity<Map<String, Object>> sellerResponse = restTemplate.exchange(
+//                            url,
+//                            HttpMethod.GET,
+//                            null,
+//                            new ParameterizedTypeReference<Map<String, Object>>() {
+//                            });
+//
+//                    if (sellerResponse.getStatusCode().is2xxSuccessful()) {
+//                        Object seller = sellerResponse.getBody();
+//                        model.addAttribute("data", seller);
+//
+//                        var listCategory = SellerCategory.values();
+//
+//                        model.addAttribute("listCategory", listCategory);
+//
+//                        return "profile/update-profile.html";
+//
+//                    }
+//                } catch (Exception e) {
+//                    System.out.println("Caught an exception: " + e.getMessage());
+//                    e.printStackTrace();
+//                    return "error";
+//                }
+//
+////        var userDTO = new UpdateUserRequestDTO();
+////        model.addAttribute("data", userDTO);
+//            }
+//
+//        }
+//
+//        return null;
 //    }
+//
 //
 //    @PostMapping("user/update/{id}")
-//    public String update(@ModelAttribute("data") UpdateUserRequestDTO updateUserRequestDTO,
-//                         @PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
-//        try {
-//            userService.updateUserById(id, updateUserRequestDTO);
-//            redirectAttributes.addFlashAttribute("message", " Success");
-//            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-//            return "redirect:/user/profile";
-//        } catch (HttpClientErrorException e){
-//            redirectAttributes.addFlashAttribute("message", " Failed");
-//            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
-//            return redirectError(e.getStatusCode());
+//    public String submitRegisterForm(@Valid @ModelAttribute UpdateUserRequestDTO updateUserDTO,
+//                                     HttpServletRequest httpServletRequest,
+//                                     RedirectAttributes redirectAttributes)
+//            throws IOException, InterruptedException {
+//        Cookie[] cookies = httpServletRequest.getCookies();
+//
+//        if (cookies == null) {
+//            return "user/access-denied.html";
 //        }
 //
+//        for (Cookie cookie : cookies) {
+//            if (!("jwtToken".equals(cookie.getName()))) {
+//                continue;
+//            } else {
+//                try {
+//                } catch (Exception e) {
+//                    System.out.println("Caught an exception: " + e.getMessage());
+//                    e.printStackTrace();
+//                    return "error";
+//                }
+//                return "redirect:profile/profile.html";
+//
+//            }
+//        }
+//        return null;
 //    }
 
-
-    // User Service Get by ID
+// User Service Get by ID
 //    public ResponseEntity<UserDTO> getUserById(String id) {
 //        return restTemplate.exchange(
 //                URL_USER_SERVICE + id,
@@ -211,7 +242,7 @@ public class ProfileController {
 //                UserDTO.class);
 //    }
 
-    //  User Service Update
+//  User Service Update
 //    public ResponseEntity<UserDTO> updateUserById(String id, UpdateUserRequestDTO requestDTO) {
 //
 //        return restTemplate.exchange(URL_USER_SERVICE + "update/" + id,
@@ -304,77 +335,60 @@ public class ProfileController {
 //        return null;
 //    }
 
-
-    // ----------- DELETE -----------
-//    @GetMapping("user/delete/{id}")
-//    public String delete(@PathVariable String id, Model mode, HttpServletResponse response, RedirectAttributes redirectAttributes) {
-//        try{
-//            userService.deleteUserById(id);
-//            userService.deleteJwtTokenCookie(response);
-//            redirectAttributes.addFlashAttribute("message", " Success Delete");
-//            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-//            return "redirect:/";
-//        }catch (HttpClientErrorException e){
-//            redirectAttributes.addFlashAttribute("message", " Failed Delete");
-//            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
-//            return redirectError(e.getStatusCode());
+//    @DeleteMapping("user/delete")
+//    public String deleteAccount(  Model model,
+//                                  HttpServletRequest httpServletRequest
+//    ) throws IOException, InterruptedException{
+//        Cookie[] cookies = httpServletRequest.getCookies();
+//
+//        if (cookies == null) {
+//            return "user/access-denied.html";
 //        }
+//
+//        for (Cookie cookie : cookies) {
+//            if (!("jwtToken".equals(cookie.getName()))) {
+//                continue;
+//            } else{
+//                try {
+//                    RestTemplate restTemplate = new RestTemplate();
+//                    String urlLoggedIn = "http://localhost:8081/api/user/user-loggedin";
+//                    ResponseEntity<Map<String, Object>> sellerResponse = restTemplate.exchange(
+//                            urlLoggedIn,
+//                            HttpMethod.GET,
+//                            null,
+//                            new ParameterizedTypeReference<Map<String, Object>>() {
+//                            });
+//
+//                    if (sellerResponse.getStatusCode().is2xxSuccessful()) {
+//                        Object data = sellerResponse.getBody();
+//
+//                        Map<String, Object> userLoggedIn = sellerResponse.getBody();
+//                        String sellerId = (String) userLoggedIn.get("id");
+//
+//                            final String urlDelete = "http://localhost:8081/api/user/delete/" + sellerId;
+//
+//                            ResponseEntity<String> getDeleteResponse = restTemplate.exchange(
+//                                    urlDelete,
+//                                    HttpMethod.DELETE,
+//                                    null,
+//                                    String.class
+//                            );
+//
+//                            if (getDeleteResponse.getStatusCode().is2xxSuccessful()) {
+//                                return "redirect:register.html";
+//                            }
+//                        }
+//
+//                } catch (Exception e) {
+//                    System.out.println("Caught an exception: " + e.getMessage());
+//                    e.printStackTrace();
+//                    return "user/access-denied.html";
+//                }
+//            }
+//        }
+//
+//        return "user/access-denied.html";
 //    }
-
-    @DeleteMapping("user/delete")
-    public String deleteAccount(Model model,
-                                HttpServletRequest httpServletRequest
-    ) throws IOException, InterruptedException {
-        Cookie[] cookies = httpServletRequest.getCookies();
-
-        if (cookies == null) {
-            return "user/access-denied.html";
-        }
-
-        for (Cookie cookie : cookies) {
-            if (!("jwtToken".equals(cookie.getName()))) {
-                continue;
-            } else {
-                try {
-                    RestTemplate restTemplate = new RestTemplate();
-                    String urlLoggedIn = "http://localhost:8081/api/user/user-loggedin";
-                    ResponseEntity<Map<String, Object>> sellerResponse = restTemplate.exchange(
-                            urlLoggedIn,
-                            HttpMethod.GET,
-                            null,
-                            new ParameterizedTypeReference<Map<String, Object>>() {
-                            });
-
-                    if (sellerResponse.getStatusCode().is2xxSuccessful()) {
-                        Object data = sellerResponse.getBody();
-
-                        Map<String, Object> userLoggedIn = sellerResponse.getBody();
-                        String sellerId = (String) userLoggedIn.get("id");
-
-                        final String urlDelete = "http://localhost:8081/api/user/delete/" + sellerId;
-
-                        ResponseEntity<String> getDeleteResponse = restTemplate.exchange(
-                                urlDelete,
-                                HttpMethod.DELETE,
-                                null,
-                                String.class
-                        );
-
-                        if (getDeleteResponse.getStatusCode().is2xxSuccessful()) {
-                            return "redirect:register.html";
-                        }
-                    }
-
-                } catch (Exception e) {
-                    System.out.println("Caught an exception: " + e.getMessage());
-                    e.printStackTrace();
-                    return "user/access-denied.html";
-                }
-            }
-        }
-
-        return "user/access-denied.html";
-    }
 
 //    @DeleteMapping("user/delete/{id}")
 //    public String deleteAccount(@PathVariable String id, Model model, HttpServletRequest httpServletRequest)
@@ -483,19 +497,3 @@ public class ProfileController {
 //        // Handle the case where the execution did not reach the successful return statement
 //        return "error";
 //    }
-
-    // ----------- LOGOUT -----------
-    @GetMapping("user/logout")
-    public ModelAndView logoutSSO(Principal principal, HttpServletResponse response) {
-        Cookie cookie = new Cookie("jwtToken", null);
-        cookie.setPath("/");
-        cookie.setMaxAge(0); // Set masa berlaku cookie menjadi 0 untuk menghapusnya
-
-        // Menambahkan cookie yang sama dengan nilai null dan masa berlaku yang sudah
-        // lewat
-        response.addCookie(cookie);
-
-        return new ModelAndView("redirect:" + Setting.SERVER_LOGOUT + Setting.CLIENT_LOGOUT);
-    }
-}
-
