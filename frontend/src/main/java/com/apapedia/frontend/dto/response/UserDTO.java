@@ -1,13 +1,16 @@
-// package com.apapedia.frontend.dto.response;
+package com.apapedia.frontend.dto.response;
 
 // import lombok.*;
 
-<<<<<<< HEAD
-// import java.time.LocalDateTime;
-// import java.util.List;
-=======
 import java.time.LocalDateTime;
 import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -34,7 +37,6 @@ public class UserDTO {
 
     // Constructors, getters, and setters
 }
->>>>>>> 567df3d833c8f5102f893324c6301e491d198294
 
 // @Getter
 // @Setter
