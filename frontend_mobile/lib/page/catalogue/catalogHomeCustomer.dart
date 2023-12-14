@@ -23,7 +23,7 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
   String urlCatalog = "http://localhost:8082";
   String urlOrder = "http://localhost:8080";
   String urlUser = "http://localhost:8081";
-  
+
   bool productStockExist = false;
 
   @override
@@ -39,7 +39,6 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
     AuthService authService = AuthService();
     String? token = await authService.getTokenFromStorage();
 
-    print("token: $token");
     if (token != null) {
       fetchCatalog();
       fetchCategories();
@@ -59,9 +58,6 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
               .map((category) => category['categoryName'].toString())
               .toList();
         });
-        // categories.asMap().forEach((index, value) {
-        //   print("Index $index: $value['categoryName']");
-        // });
       } else {
         // Handle errors if any
         print("Failed to fetch data");
@@ -242,8 +238,6 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
   }
 
   void filterCatalogByProductName(String productName) {
-    print("FILTER BY PRODUCT NAME");
-
     String urlFilterByProductName =
         '$urlCatalog/api/catalog/view-all-by-name?name=$productName';
 
@@ -264,11 +258,8 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
   }
 
   void filterCatalogByProductPrice(int minPrice, int maxPrice) {
-    print("FILTER BY PRODUCT PRICE");
-
     String urlFilterByProductPrice =
         '$urlCatalog/api/catalog/view-all-by-price?minPrice=$minPrice&maxPrice=$maxPrice';
-    print(urlFilterByProductPrice);
     //Fetch API
     http.get(Uri.parse(urlFilterByProductPrice)).then((response) {
       if (response.statusCode == 200) {
@@ -286,8 +277,6 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
   }
 
   void sortCatalog(String sortField, String sortDirection) {
-    print("FILTER BY PRODUCT PRICE");
-
     String urlSort =
         '$urlCatalog/api/catalog/view-all-sort-by?sortField=$sortField&sortDirection=$sortDirection';
     print(urlSort);
@@ -333,8 +322,6 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
       if (response.statusCode == 200) {
         final Map<String, dynamic> userData = json.decode(response.body);
         final String userId = userData['id'] as String;
-        print("BERHASIL USER ID");
-        print("User ID: $userId");
         return userId;
       } else {
         // Handle other status codes
@@ -605,8 +592,8 @@ class _CatalogHomeCustomerState extends State<CatalogHomeCustomer> {
                         for (var product in products)
                           GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(context, '/catalogDetail',
-                                  arguments: product['idCatalog'] as String);
+                              Navigator.pushNamed(context, '/productDetail',
+                                  arguments: product);
                             },
                             child: Container(
                               padding:

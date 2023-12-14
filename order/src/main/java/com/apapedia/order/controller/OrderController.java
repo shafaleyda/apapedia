@@ -62,9 +62,9 @@ public class OrderController {
     @PostMapping(value = "/order/create")
     private List<OrderModel> createOrder(@Valid @RequestBody CreateOrderRequestDTO orderRequestDTO) throws IOException, InterruptedException{
         List<OrderModel> orderModels = new ArrayList<>();
-        System.out.println(orderRequestDTO.getItems().size());
         for(Map.Entry<UUID,Integer> entry : orderRequestDTO.getItems().entrySet()){
             UUID productId = entry.getKey();
+
             Integer quantity = entry.getValue();
 
             //Update product stock
@@ -117,7 +117,6 @@ public class OrderController {
             orderItem.setProductId(productId);
             orderItem.setQuantity(quantity);
             orderItem.setProductPrice(catalog.getPrice());
-            System.out.println("product:"+ catalog.getProductName());
             orderItem.setProductName(catalog.getProductName());
 
             //Create order
@@ -137,7 +136,6 @@ public class OrderController {
                 order.getListOrderItem().add(orderItem);
                 orderModels.add(order);
             }
-            System.out.println("product:"+orderItem.getProductName());
             orderItem.setOrder(order);
             orderItemService.createOrderItem(orderItem);
             orderService.saveOrder(order);

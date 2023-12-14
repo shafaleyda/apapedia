@@ -7,10 +7,10 @@ import org.springframework.stereotype.Repository;
 import jakarta.transaction.Transactional;
 
 import java.util.UUID;
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 @Transactional
 public interface CartDb extends JpaRepository<CartModel, UUID>{
-    Optional<CartModel> findByUserId(UUID userId);
+    List<CartModel> findByUserId(UUID userId);
 }
