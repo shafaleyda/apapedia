@@ -8,9 +8,10 @@ import jakarta.transaction.Transactional;
 
 import java.util.UUID;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
 public interface CartDb extends JpaRepository<CartModel, UUID>{
-    List<CartModel> findByUserId(UUID userId);
+    Optional<CartModel> findByUserId(UUID userId);
 }

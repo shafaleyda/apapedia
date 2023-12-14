@@ -32,5 +32,3 @@ public class UserDTO {
 
     // Constructors, getters, and setters
 }
-
-
