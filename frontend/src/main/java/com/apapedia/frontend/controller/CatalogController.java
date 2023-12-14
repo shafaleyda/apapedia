@@ -74,7 +74,12 @@ public class CatalogController {
     public String sellerViewAllCatalogByName(@RequestParam(name = "name", required = false) String name, Model model,
             HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
 
+<<<<<<< HEAD
         Cookie[] cookies = httpServletRequest.getCookies();
+=======
+            String urlLogin = baseUrlUser + "/api/user/user-loggedin";
+            ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
+>>>>>>> 567df3d833c8f5102f893324c6301e491d198294
 
         if (cookies == null) {
             return "user/access-denied.html";
@@ -465,6 +470,13 @@ public class CatalogController {
             return "user/access-denied.html";
         }
 
+        RestTemplate restTemplate = new RestTemplate();
+        String getUserIdUrl = baseUrlUser + "/api/user/user-id";
+        
+        ResponseEntity<UserId> responseEntity = restTemplate.getForEntity(getUserIdUrl, UserId.class);
+        
+        UserId user = responseEntity.getBody();
+
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(baseUrlCatalogue + "/api/catalog/" + id))
                 .header("Content-Type", "application/json")
@@ -477,6 +489,11 @@ public class CatalogController {
         // Parse JSON using Jackson
         ObjectMapper objectMapper = new ObjectMapper();
         Catalogue catalog = objectMapper.readValue(responseBody, Catalogue.class);
+        
+        if(!catalog.getSeller().equals(UUID.fromString(user.getUserId()))) {
+            return "user/access-denied.html";
+        }
+
         model.addAttribute("catalogue", catalog);
         return "form-update-catalogue";
     }
@@ -510,8 +527,6 @@ public class CatalogController {
                 return imageFile.getOriginalFilename();
             }
         };
-
-        // catalogue.setSeller(UUID.randomUUID());
 
         body.add("image", resource);
         body.add("model", catalogue);

@@ -54,7 +54,7 @@ public class TokenUtils {
     }
 
     public static Map<String, String> decodeToken(String jwtToken) {
-        Map<String, String> body = new HashMap();
+        Map<String, String> body = new HashMap<>();
 
         try {
             if (jwtToken != null) {

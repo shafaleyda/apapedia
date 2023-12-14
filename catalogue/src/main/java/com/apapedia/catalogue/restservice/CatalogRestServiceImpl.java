@@ -1,7 +1,5 @@
 package com.apapedia.catalogue.restservice;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.*;
 
 import com.apapedia.catalogue.dto.request.CreateCatalogueRequestDTO;
@@ -298,20 +296,19 @@ public class CatalogRestServiceImpl implements CatalogRestService{
                 .build();
     }
 
-    private byte[] concatenateImages(List<byte[]> images) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        for (byte[] image : images) {
-            outputStream.write(image);
-        }
-        return outputStream.toByteArray();
-    }
+    // private byte[] concatenateImages(List<byte[]> images) throws IOException {
+    //     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    //     for (byte[] image : images) {
+    //         outputStream.write(image);
+    //     }
+    //     return outputStream.toByteArray();
+    // }
 
     @Override
     public Catalog updateRestCatalog (
             UUID idCatalog,
             UpdateCatalogRequestDTO updateCatalogRequestDTO) {
         Catalog catalog = getRestCatalogById(idCatalog);
-        Category category = catalog.getCategory();
 
         var catalogDTO = updateCatalogRequestDTO;
 

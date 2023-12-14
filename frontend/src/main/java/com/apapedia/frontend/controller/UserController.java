@@ -69,7 +69,10 @@ public class UserController {
 
             HttpResponse<String> response = HttpClient.newHttpClient().send(request,
                     HttpResponse.BodyHandlers.ofString());
+<<<<<<< HEAD
             //System.out.println(response.body());
+=======
+>>>>>>> 567df3d833c8f5102f893324c6301e491d198294
 
             if (response.statusCode() != 200) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Gagal melakukan registrasi penjual");
@@ -90,7 +93,10 @@ public class UserController {
     public String dashboardSeller(Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
         // Retrieve cookies from the request
         Cookie[] cookies = httpServletRequest.getCookies();
+<<<<<<< HEAD
         //System.out.println("MASUK SINI DASHBOARD SELLER");
+=======
+>>>>>>> 567df3d833c8f5102f893324c6301e491d198294
         if (cookies == null) {
             return "user/access-denied.html";
         }
@@ -103,7 +109,6 @@ public class UserController {
                 String urlLogin = baseUrlUser + "/api/user/user-loggedin";
 
                 ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
-                //System.out.println(userLoggedIn);
 
                 if(userLoggedIn.getStatusCode().is2xxSuccessful()) { //User login
                     ResponseEntity<Map<String, Object>> userResponse = restTemplate.exchange(
@@ -139,12 +144,14 @@ public class UserController {
                     }
 
                     return "catalog/seller-viewall-catalog";
-                } else {
-                    return "user/access-denied.html";
                 }
+                return "catalog/seller-viewall-catalog";
+                
             }
         }
-       return "catalog/seller-viewall-catalog";
+
+        return "user/access-denied.html";
+       
     }
 
     @GetMapping("/dashboard/seller/guest")

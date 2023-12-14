@@ -1,6 +1,6 @@
 package com.apapedia.order.controller;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class CartController {
     }
 
     @GetMapping("/cart/user/{id}")
-    private Optional<CartModel> getCartByUserId(@PathVariable(value = "id") String id){
+    private List<CartModel> getCartByUserId(@PathVariable(value = "id") String id){
         return cartService.getCartByUserId(UUID.fromString(id));
     }
     

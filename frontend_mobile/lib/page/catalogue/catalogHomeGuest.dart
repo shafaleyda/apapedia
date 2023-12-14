@@ -225,8 +225,6 @@ class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
   }
 
   void filterCatalogByProductName(String productName) {
-    print("FILTER BY PRODUCT NAME");
-
     String urlCatalog = "http://localhost:8082";
     String urlFilterByProductName =
         '$urlCatalog/api/catalog/view-all-by-name?name=$productName';
@@ -248,8 +246,6 @@ class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
   }
 
   void filterCatalogByProductPrice(int minPrice, int maxPrice) {
-    print("FILTER BY PRODUCT PRICE");
-
     String urlCatalog = "http://localhost:8082";
     String urlFilterByProductPrice =
         '$urlCatalog/api/catalog/view-all-by-price?minPrice=$minPrice&maxPrice=$maxPrice';
@@ -271,12 +267,9 @@ class _CatalogHomeGuestState extends State<CatalogHomeGuest> {
   }
 
   void sortCatalog(String sortField, String sortDirection) {
-    print("FILTER BY PRODUCT PRICE");
-
     String urlCatalog = "http://localhost:8082";
     String urlSort =
         '$urlCatalog/api/catalog/view-all-sort-by?sortField=$sortField&sortDirection=$sortDirection';
-    print(urlSort);
     //Fetch API
     http.get(Uri.parse(urlSort)).then((response) {
       if (response.statusCode == 200) {

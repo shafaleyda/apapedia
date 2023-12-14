@@ -87,6 +87,12 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  void _refreshProfilePage() {
+    setState(() {
+      profileFuture = fetchLoggedInUser();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -220,13 +226,17 @@ class _ProfilePageState extends State<ProfilePage> {
                               Padding(
                                   padding: const EdgeInsets.all(12),
                                   child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
+                                    onPressed: () async {
+                                      await Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                            //TopUpBalance(customer: snapshot.data!)),
-                                            const TopUpBalancePage()),
+                                          builder: (context) => TopUpBalancePage(
+                                            onTopUpComplete: () {
+                                              // Refresh ProfilePage when top-up is completed
+                                              _refreshProfilePage();
+                                            },
+                                          ),
+                                        ),
                                       );
                                     },
                                     child: const Text('+  ' 'Top Up Balance'),

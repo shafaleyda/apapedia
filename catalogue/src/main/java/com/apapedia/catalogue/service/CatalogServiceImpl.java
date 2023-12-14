@@ -4,6 +4,9 @@ import com.apapedia.catalogue.dto.request.CreateCatalogueRequestDTO;
 import com.apapedia.catalogue.dto.request.UpdateCatalogRequestDTO;
 import com.apapedia.catalogue.repository.CatalogDb;
 import com.apapedia.catalogue.rest.CatalogRest;
+
+import java.util.List;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -11,7 +14,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpEntity;
 import com.apapedia.catalogue.model.Catalog;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
