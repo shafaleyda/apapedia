@@ -127,7 +127,7 @@ public class ProfileController {
         try{
             userService.deleteUserById(id);
             userService.deleteJwtTokenCookie(response);
-            System.out.println("Sukses nih");
+            System.out.println("Sukses delete nih");
 
             redirectAttributes.addFlashAttribute("message", " Success Delete");
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
