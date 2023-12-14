@@ -24,7 +24,7 @@ public class FileStoreService {
             throw new RuntimeException("Couldn't create the directory where the upload files will be saved.", ex);
         }
     }
-    public String storeFile(MultipartFile file) {
+    public String storeFile(MultipartFile file) throws IOException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         try {
 
@@ -36,8 +36,7 @@ public class FileStoreService {
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             return fileName;
         } catch (IOException ex) {
-            ex.printStackTrace();
+            throw ex;
         }
-        return "";
     }
 }

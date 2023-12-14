@@ -73,58 +73,79 @@ public class CatalogController {
     @GetMapping("/catalog/find-by-name-seller")
     public String sellerViewAllCatalogByName(@RequestParam(name = "name", required = false) String name, Model model,
             HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
-        if (name.length() > 0) {
-            RestTemplate restTemplate = new RestTemplate();
 
+<<<<<<< HEAD
+        Cookie[] cookies = httpServletRequest.getCookies();
+=======
             String urlLogin = baseUrlUser + "/api/user/user-loggedin";
             ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
+>>>>>>> 567df3d833c8f5102f893324c6301e491d198294
 
-            if (userLoggedIn.getStatusCode().is2xxSuccessful()) {
-                // Catalog Data
-                String url = baseUrlCatalogue + "/api/catalog/seller-view-all-by-name?name=" + name;
-                List<Map<String, Object>> catalogData = restTemplate.getForObject(url, List.class);
+        if (cookies == null) {
+            return "user/access-denied.html";
+        }
 
-                model.addAttribute("enteredName", name);
+        for (Cookie cookie : cookies) {
+            if (!("jwtToken".equals(cookie.getName()))) {
+                continue;
+            } else {
+                if (name.length() > 0) {
+                    RestTemplate restTemplate = new RestTemplate();
 
-                if (catalogData.size() > 0) { // Ada catalog dengan nama yang dicari
-                    model.addAttribute("catalogData", catalogData);
-                    model.addAttribute("valid", Boolean.TRUE);
-                }
+                    String urlLogin = baseUrlUser + "/api/user/user-loggedin";
+                    ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
+                    // System.out.println(userLoggedIn);
 
-                else { // Tidak ada catalog sesuai dengan nama yang dicari
-                    model.addAttribute("valid", Boolean.FALSE);
-                    model.addAttribute("error", "Tidak ada produk yang sesuai pencarian Anda.");
-                }
+                    if (userLoggedIn.getStatusCode().is2xxSuccessful()) {
+                        // Catalog Data
+                        String url = baseUrlCatalogue + "/api/catalog/seller-view-all-by-name?name=" + name;
+                        List<Map<String, Object>> catalogData = restTemplate.getForObject(url, List.class);
 
-                // Chart
-                ResponseEntity<Map<String, Object>> userResponse = restTemplate.exchange(
-                        urlLogin, HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, Object>>() {
-                        });
-                Map<String, Object> responseBody = userResponse.getBody();
-                UUID seller = UUID.fromString(responseBody.get("id").toString());
+                        model.addAttribute("enteredName", name);
 
-                String urlChart = baseUrlOrder + "/order/salesChart/" + seller.toString();
-                ResponseEntity<Map<LocalDate, Integer>> response = restTemplate.exchange(
-                        urlChart,
-                        HttpMethod.GET,
-                        null,
-                        new ParameterizedTypeReference<Map<LocalDate, Integer>>() {
-                        });
+                        if (catalogData.size() > 0) { // Ada catalog dengan nama yang dicari
+                            model.addAttribute("catalogData", catalogData);
+                            model.addAttribute("valid", Boolean.TRUE);
+                        }
 
-                if (response.getStatusCode().is2xxSuccessful()) {
-                    Map<LocalDate, Integer> mapTotalOrdersPerDay = response.getBody();
-                    Map<String, Integer> salesChartStringKeys = new HashMap<>();
-                    for (Map.Entry<LocalDate, Integer> entry : mapTotalOrdersPerDay.entrySet()) {
-                        String dateStringKey = entry.getKey().toString();
-                        salesChartStringKeys.put(dateStringKey, entry.getValue());
+                        else { // Tidak ada catalog sesuai dengan nama yang dicari
+                            model.addAttribute("valid", Boolean.FALSE);
+                            model.addAttribute("error", "Tidak ada produk yang sesuai pencarian Anda.");
+                        }
+
+                        // Chart
+                        ResponseEntity<Map<String, Object>> userResponse = restTemplate.exchange(
+                                urlLogin, HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, Object>>() {
+                                });
+                        Map<String, Object> responseBody = userResponse.getBody();
+                        UUID seller = UUID.fromString(responseBody.get("id").toString());
+
+                        String urlChart = baseUrlOrder + "/order/salesChart/" + seller.toString();
+                        ResponseEntity<Map<LocalDate, Integer>> response = restTemplate.exchange(
+                                urlChart,
+                                HttpMethod.GET,
+                                null,
+                                new ParameterizedTypeReference<Map<LocalDate, Integer>>() {
+                                });
+
+                        if (response.getStatusCode().is2xxSuccessful()) {
+                            Map<LocalDate, Integer> mapTotalOrdersPerDay = response.getBody();
+                            Map<String, Integer> salesChartStringKeys = new HashMap<>();
+                            for (Map.Entry<LocalDate, Integer> entry : mapTotalOrdersPerDay.entrySet()) {
+                                String dateStringKey = entry.getKey().toString();
+                                salesChartStringKeys.put(dateStringKey, entry.getValue());
+                            }
+                            model.addAttribute("listCatalogChart", mapTotalOrdersPerDay);
+                        }
                     }
-                    model.addAttribute("listCatalogChart", mapTotalOrdersPerDay);
+                    return "catalog/seller-viewall-catalog";
+                } else {
+                    return userController.dashboardSeller(model, httpServletRequest);
                 }
             }
-            return "catalog/seller-viewall-catalog";
-        } else {
-            return userController.dashboardSeller(model, httpServletRequest);
         }
+        return "catalog/seller-viewall-catalog";
+
     }
 
     // Guest - Price Range
@@ -174,73 +195,86 @@ public class CatalogController {
     public String sellerViewAllCatalogByPrice(@RequestParam(name = "minPrice", required = false) String minPrice,
             @RequestParam(name = "maxPrice", required = false) String maxPrice,
             Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
-        if (!(minPrice.isEmpty()) && !(maxPrice.isEmpty())) {
-            RestTemplate restTemplate = new RestTemplate();
 
-            String urlLogin = baseUrlUser + "/api/user/user-loggedin";
-            ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
+        Cookie[] cookies = httpServletRequest.getCookies();
+        if (cookies == null) {
+            return "user/access-denied.html";
+        }
 
-            if (userLoggedIn.getStatusCode().is2xxSuccessful()) { // User login
-                // Chart
-                ResponseEntity<Map<String, Object>> userResponse = restTemplate.exchange(
-                        urlLogin, HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, Object>>() {
-                        });
-                Map<String, Object> responseBody = userResponse.getBody();
-                UUID seller = UUID.fromString(responseBody.get("id").toString());
+        for (Cookie cookie : cookies) {
+            if (!("jwtToken".equals(cookie.getName()))) {
+                continue;
+            } else {
+                if (!(minPrice.isEmpty()) && !(maxPrice.isEmpty())) {
+                    RestTemplate restTemplate = new RestTemplate();
 
-                String urlChart = baseUrlOrder + "/order/salesChart/" + seller.toString();
-                ResponseEntity<Map<LocalDate, Integer>> response = restTemplate.exchange(
-                        urlChart,
-                        HttpMethod.GET,
-                        null,
-                        new ParameterizedTypeReference<Map<LocalDate, Integer>>() {
-                        });
+                    String urlLogin = baseUrlUser + "/api/user/user-loggedin";
+                    ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
 
-                if (response.getStatusCode().is2xxSuccessful()) {
-                    Map<LocalDate, Integer> mapTotalOrdersPerDay = response.getBody();
-                    Map<String, Integer> salesChartStringKeys = new HashMap<>();
-                    for (Map.Entry<LocalDate, Integer> entry : mapTotalOrdersPerDay.entrySet()) {
-                        String dateStringKey = entry.getKey().toString();
-                        salesChartStringKeys.put(dateStringKey, entry.getValue());
-                    }
-                    model.addAttribute("listCatalogChart", mapTotalOrdersPerDay);
-                }
+                    if (userLoggedIn.getStatusCode().is2xxSuccessful()) { // User login
+                        // Chart
+                        ResponseEntity<Map<String, Object>> userResponse = restTemplate.exchange(
+                                urlLogin, HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, Object>>() {
+                                });
+                        Map<String, Object> responseBody = userResponse.getBody();
+                        UUID seller = UUID.fromString(responseBody.get("id").toString());
 
-                // Catalog Data
-                int min = minPrice != null ? Integer.parseInt(minPrice) : 0;
-                int max = maxPrice != null ? Integer.parseInt(maxPrice) : 0;
+                        String urlChart = baseUrlOrder + "/order/salesChart/" + seller.toString();
+                        ResponseEntity<Map<LocalDate, Integer>> response = restTemplate.exchange(
+                                urlChart,
+                                HttpMethod.GET,
+                                null,
+                                new ParameterizedTypeReference<Map<LocalDate, Integer>>() {
+                                });
 
-                if (min < 0 || max < 0 || min > max) {
-                    model.addAttribute("valid", Boolean.FALSE);
-                    model.addAttribute("error", "Input tidak valid");
-                    if (minPrice != null && maxPrice != null) {
+                        if (response.getStatusCode().is2xxSuccessful()) {
+                            Map<LocalDate, Integer> mapTotalOrdersPerDay = response.getBody();
+                            Map<String, Integer> salesChartStringKeys = new HashMap<>();
+                            for (Map.Entry<LocalDate, Integer> entry : mapTotalOrdersPerDay.entrySet()) {
+                                String dateStringKey = entry.getKey().toString();
+                                salesChartStringKeys.put(dateStringKey, entry.getValue());
+                            }
+                            model.addAttribute("listCatalogChart", mapTotalOrdersPerDay);
+                        }
+
+                        // Catalog Data
+                        int min = minPrice != null ? Integer.parseInt(minPrice) : 0;
+                        int max = maxPrice != null ? Integer.parseInt(maxPrice) : 0;
+
+                        if (min < 0 || max < 0 || min > max) {
+                            model.addAttribute("valid", Boolean.FALSE);
+                            model.addAttribute("error", "Input tidak valid");
+                            if (minPrice != null && maxPrice != null) {
+                                model.addAttribute("minPrice", minPrice);
+                                model.addAttribute("maxPrice", maxPrice);
+                            }
+                            return "catalog/seller-viewall-catalog";
+                        }
+
+                        String url = baseUrlCatalogue + "/api/catalog/seller-view-all-by-price?minPrice=" + minPrice
+                                + "&maxPrice=" + maxPrice;
+                        List<Map<String, Object>> catalogData = restTemplate.getForObject(url, List.class);
+
+                        if (catalogData.size() > 0) { // Ada catalog dengan nama yang dicari
+                            model.addAttribute("catalogData", catalogData);
+                            model.addAttribute("valid", Boolean.TRUE);
+                        } else {
+                            model.addAttribute("valid", Boolean.FALSE);
+                            model.addAttribute("error", "Tidak ada produk yang sesuai pencarian Anda.");
+                        }
+
                         model.addAttribute("minPrice", minPrice);
                         model.addAttribute("maxPrice", maxPrice);
+
+                        return "catalog/seller-viewall-catalog";
                     }
-                    return "catalog/seller-viewall-catalog";
-                }
-
-                String url = baseUrlCatalogue + "/api/catalog/seller-view-all-by-price?minPrice=" + minPrice
-                        + "&maxPrice=" + maxPrice;
-                List<Map<String, Object>> catalogData = restTemplate.getForObject(url, List.class);
-
-                if (catalogData.size() > 0) { // Ada catalog dengan nama yang dicari
-                    model.addAttribute("catalogData", catalogData);
-                    model.addAttribute("valid", Boolean.TRUE);
                 } else {
-                    model.addAttribute("valid", Boolean.FALSE);
-                    model.addAttribute("error", "Tidak ada produk yang sesuai pencarian Anda.");
+                    return userController.dashboardSeller(model, httpServletRequest);
                 }
 
-                model.addAttribute("minPrice", minPrice);
-                model.addAttribute("maxPrice", maxPrice);
-
-                return "catalog/seller-viewall-catalog";
             }
-        } else {
-            return userController.dashboardSeller(model, httpServletRequest);
         }
-        return null;
+        return "catalog/seller-viewall-catalog";
     }
 
     // Guest - Sort By
@@ -271,56 +305,70 @@ public class CatalogController {
     public String sellerSortAllCatalog(@RequestParam(defaultValue = "productName") String sortField,
             @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection,
             Model model, HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
-        RestTemplate restTemplate = new RestTemplate();
 
-        if (sortField != null && sortDirection != null) {
+        Cookie[] cookies = httpServletRequest.getCookies();
 
-            String urlLogin = baseUrlUser + "/api/user/user-loggedin";
-            ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
+        if (cookies == null) {
+            return "user/access-denied.html";
+        }
 
-            if (userLoggedIn.getStatusCode().is2xxSuccessful()) { // User login
-                // Catalog Data
-                String url = baseUrlCatalogue + "/api/catalog/seller-view-all-sort-by?sortField=" + sortField
-                        + "&sortDirection=" + sortDirection;
-                List<Map<String, Object>> catalogData = restTemplate.getForObject(url, List.class);
+        for (Cookie cookie : cookies) {
+            if (!("jwtToken".equals(cookie.getName()))) {
+                continue;
+            } else {
+                RestTemplate restTemplate = new RestTemplate();
 
-                model.addAttribute("catalogData", catalogData);
-                model.addAttribute("valid", true);
+                if (sortField != null && sortDirection != null) {
 
-                // Chart
-                ResponseEntity<Map<String, Object>> userResponse = restTemplate.exchange(
-                        urlLogin, HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, Object>>() {
-                        });
-                Map<String, Object> responseBody = userResponse.getBody();
-                UUID seller = UUID.fromString(responseBody.get("id").toString());
+                    String urlLogin = baseUrlUser + "/api/user/user-loggedin";
+                    ResponseEntity<Object> userLoggedIn = restTemplate.getForEntity(urlLogin, Object.class);
 
-                String urlChart = baseUrlOrder + "/order/salesChart/" + seller.toString();
-                ResponseEntity<Map<LocalDate, Integer>> response = restTemplate.exchange(
-                        urlChart,
-                        HttpMethod.GET,
-                        null,
-                        new ParameterizedTypeReference<Map<LocalDate, Integer>>() {
-                        });
+                    if (userLoggedIn.getStatusCode().is2xxSuccessful()) { // User login
+                        // Catalog Data
+                        String url = baseUrlCatalogue + "/api/catalog/seller-view-all-sort-by?sortField=" + sortField
+                                + "&sortDirection=" + sortDirection;
+                        List<Map<String, Object>> catalogData = restTemplate.getForObject(url, List.class);
 
-                if (response.getStatusCode().is2xxSuccessful()) {
-                    Map<LocalDate, Integer> mapTotalOrdersPerDay = response.getBody();
-                    Map<String, Integer> salesChartStringKeys = new HashMap<>();
-                    for (Map.Entry<LocalDate, Integer> entry : mapTotalOrdersPerDay.entrySet()) {
-                        String dateStringKey = entry.getKey().toString();
-                        salesChartStringKeys.put(dateStringKey, entry.getValue());
+                        model.addAttribute("catalogData", catalogData);
+                        model.addAttribute("valid", true);
+
+                        // Chart
+                        ResponseEntity<Map<String, Object>> userResponse = restTemplate.exchange(
+                                urlLogin, HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, Object>>() {
+                                });
+                        Map<String, Object> responseBody = userResponse.getBody();
+                        UUID seller = UUID.fromString(responseBody.get("id").toString());
+
+                        String urlChart = baseUrlOrder + "/order/salesChart/" + seller.toString();
+                        ResponseEntity<Map<LocalDate, Integer>> response = restTemplate.exchange(
+                                urlChart,
+                                HttpMethod.GET,
+                                null,
+                                new ParameterizedTypeReference<Map<LocalDate, Integer>>() {
+                                });
+
+                        if (response.getStatusCode().is2xxSuccessful()) {
+                            Map<LocalDate, Integer> mapTotalOrdersPerDay = response.getBody();
+                            Map<String, Integer> salesChartStringKeys = new HashMap<>();
+                            for (Map.Entry<LocalDate, Integer> entry : mapTotalOrdersPerDay.entrySet()) {
+                                String dateStringKey = entry.getKey().toString();
+                                salesChartStringKeys.put(dateStringKey, entry.getValue());
+                            }
+                            model.addAttribute("listCatalogChart", mapTotalOrdersPerDay);
+                        }
+
+                        model.addAttribute("sortField", sortField);
+                        model.addAttribute("sortDirection", sortDirection);
+                        return "catalog/seller-viewall-catalog";
                     }
-                    model.addAttribute("listCatalogChart", mapTotalOrdersPerDay);
+
+                } else {
+                    return userController.dashboardSeller(model, httpServletRequest);
                 }
 
-                model.addAttribute("sortField", sortField);
-                model.addAttribute("sortDirection", sortDirection);
-                return "catalog/seller-viewall-catalog";
             }
-
-        } else {
-            return userController.dashboardSeller(model, httpServletRequest);
         }
-        return null;
+        return "catalog/seller-viewall-catalog";
     }
 
     public boolean isUserLoggedId(HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
@@ -456,17 +504,17 @@ public class CatalogController {
             @ModelAttribute("catalogue") UpdateCatalogueRequestDTO catalogue,
             @RequestParam("imageFile") MultipartFile imageFile,
             Model model) throws IOException, InterruptedException {
-                
+
         RestTemplate restTemplate = new RestTemplate();
         String getUserIdUrl = baseUrlUser + "/api/user/user-id";
-        
+
         ResponseEntity<UserId> responseEntity = restTemplate.getForEntity(getUserIdUrl, UserId.class);
-        
+
         UserId user = responseEntity.getBody();
         catalogue.setSeller(UUID.fromString(user.getUserId()));
-        
+
         HttpHeaders headers = new HttpHeaders();
-                
+
         restTemplate = new RestTemplate();
 
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);

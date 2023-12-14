@@ -25,7 +25,9 @@ public class CartController {
 
     @PostMapping(value = "/cart/create")
     private UUID createCart(@Valid @RequestBody CreateCartRequestDTO cartRequestDTO){
+        System.out.println(cartRequestDTO.getUserId());
         CartModel cartModel = cartMapper.createCartRequestDTOToCartModel(cartRequestDTO);
+        System.out.println(cartModel.getUserId());
         return cartService.createCart(cartModel).getId();
     }
 

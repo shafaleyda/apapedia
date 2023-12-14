@@ -25,7 +25,6 @@ public interface CatalogRestService {
     List<CatalogRest> retrieveRestAllReadCatalogResponseDTO();
 
     void deleteCatalog(UUID idCatalog);
-    
     CatalogRest createRestCatalog(CreateCatalogueRequestDTO catalog, MultipartFile imageFiles) throws Exception;
 
     CatalogRest editRestCatalog(CreateCatalogueRequestDTO catalog, MultipartFile imageFiles) throws Exception;
@@ -37,7 +36,6 @@ public interface CatalogRestService {
     List<CatalogRest> getListCatalogBySellerId(String sellerId);
 
     void saveCatalog(Catalog catalog);
-
     List<CatalogRest> findAllSortBy(Sort.Direction sortDirection, String sortField,  UUID seller);
 
     List<CatalogRest> retrieveRestAllCatalogByCatalogName(String catalogName, UUID seller);

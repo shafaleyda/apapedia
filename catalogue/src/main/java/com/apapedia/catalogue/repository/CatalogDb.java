@@ -2,7 +2,6 @@ package com.apapedia.catalogue.repository;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.apapedia.catalogue.model.Catalog;
 import org.springframework.stereotype.Repository;
 
